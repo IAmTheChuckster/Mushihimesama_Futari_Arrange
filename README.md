@@ -1,7 +1,7 @@
 # Mushihimesama Futari Arrange
-
-A gameplay patch for Game<br>
+A gameplay patch for `Mushihime-Sama Futari Black Label (Japan, 2007/12/11 BLACK LABEL VER)`<br>
 This repository holds only source, tools and notes. **No ROM data is included**; you patch your own legally owned dump.
+
 ## To Do:
 1. Use Black Label ROM
 2. Only use God Mode
