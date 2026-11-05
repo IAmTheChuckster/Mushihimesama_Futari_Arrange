@@ -8,7 +8,7 @@ This repository holds only source, tools and notes. **No ROM data is included**;
 3. Bombs are now hyper
 4. in hyper bullets cancel into big stars
 5. stars fill hyper
-6. ~~Title menu: after a coin, show **ARCADE** and **ARRANGE** on the title screen~~ (done, build 1)
+6. ~~Title menu: after a coin, show **ARCADE** and **ARRANGE** on the title screen~~ (done)
 
    
 ## About
@@ -17,7 +17,6 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## Patch Notes
-### Build 1
 - **Title menu:** after you insert a coin the title screen shows **ARCADE** and **ARRANGE** where "PRESS 1P OR 2P START" was.
   - The selected item is yellow with an arrow next to it; the other is white.
   - Up and Down move the arrow, Start confirms (the game starts as usual).
