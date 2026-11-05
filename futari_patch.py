@@ -9,13 +9,13 @@ Usage:
     python3 futari_patch.py futariblj.zip -o OUT       -> writes the patched futariarr_u4 to OUT
     python3 futari_patch.py u4                      -> a loose original u4 works too (no --zip)
 
-The original u4 must have CRC32 b9467b6d; the result is checked to be 1f789b07.
+The original u4 must have CRC32 b9467b6d; the result is checked to be 287ad6f2.
 Only the Python standard library is used.
 """
 import argparse, base64, os, sys, zipfile, zlib
 
 ORIG_CRC = 0xB9467B6D
-PATCHED_CRC = 0x1F789B07
+PATCHED_CRC = 0x287AD6F2
 U4_SIZE = 0x200000
 OUT_NAME = "futariarr_u4"
 SET_NAME = "futariarr.zip"
@@ -25,12 +25,12 @@ MRA_NAME = "Mushihimesama Futari Arrange.mra"
 PATCHES = [
     (0x1C4, base64.b64decode("H4AAgA==")),
     (0x1F8000, base64.b64decode(
-    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAEQAfAwAAAbRAOACIQERBdERkAEhBdEF"
+    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAEcAfAwAAAbRAOACIQERBdERkAEhBdEF"
     "0AIhBdArQAkACQB7rAD/CawoIQmsOCF8DDQAAAwwKgPQCQAiT4Yvli+mLyPYJNACYYFSERgnYikh"
-    "gmkTYAHIAIkA6QLIAIkB6ZIoHdqiYAYvAOAAOQOLHNIi0wKgCQAb0iHTIipS5BrVM2cW0AtACQBg"
-    "5BfVGdcT0AtACQAB4AA5A4sR0hfTAqAJABDSFtMiKk7kENUzZwvQC0AJAFzkDdUP1wjQC0AJAPZg"
-    "Air2avZp9mgmTwsACQAJAHsMAP8FDHTEBQxQywUM2Mv/gAD/gICAgAAA2AAAAOgAfAz8AHwMAwF8"
-    "DAsBfAwNAVJBQUNFREEAUlJOQUVHPgAgAAAA")),
+    "gmkTYAHIAIkA6QLIAIkB6ZIoHdqiYAYvAOAAOQOLHNIi0wKgCQAb0iHTIio25BrVM2cW0AtACQBE"
+    "5BfVGdcT0AtACQAB4AA5A4sR0hfTAqAJABDSFtMiKjrkENUzZwvQC0AJAEjkDdUP1wjQC0AJAPZg"
+    "Air2avZp9mgmTwsACQAJAHsMAP8FDHTEBQxQywUM2Mv/gAD/gICAgAAA2AAAAOgAfAz8AHwMCgF8"
+    "DBcBfAwZAVJPR0lOSUxBTSBETwBFUkFBUkdOIEVPTUVEPgAgAAAA")),
 ]
 
 
@@ -85,8 +85,8 @@ MRA_TEMPLATE = """<!--
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="1f789b07"/>
-        <part name="futariarr_u4" crc="1f789b07"/>
+        <part name="futariarr_u4" crc="287ad6f2"/>
+        <part name="futariarr_u4" crc="287ad6f2"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>

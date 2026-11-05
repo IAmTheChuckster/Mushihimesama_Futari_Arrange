@@ -6,7 +6,7 @@
 patcher:
         mov.l   P_vars,r1
         mov     #0,r0
-        mov.l   r0,@r1             ! mode = ARCADE
+        mov.l   r0,@r1             ! mode = ORIGINAL
         mov.l   r0,@(4,r1)         ! previous input
         mov.l   P_hook,r1
         mov.w   P_op,r0        ! mov.l @(3,PC),r0

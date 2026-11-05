@@ -54,12 +54,12 @@ Design agreed with the owner: after a coin, ARCADE then ARRANGE replace the "PRE
 
 ## Title menu patch (build 1, DONE - pushed to GitHub)
 - Hook: PRESS-line draw at 0x0C092128 (`mov.l @(0x16),r0` = word d016) is changed to `d003`; the literal at 0x0C092138 (nop padding) holds our routine. The existing `jsr @r0` then calls our menu every frame.
-- Text routine T = 0x0C05CBD8 (r4 = x, r5 = y, r7 = string). Screen is 240x320 (portrait). Items at y 216 and 232; ARCADE x=96, ARRANGE x=92; arrow ">" 14 px left.
+- Text routine T = 0x0C05CBD8 (r4 = x, r5 = y, r7 = string). Screen is 240x320 (portrait). Items at y 216 and 232; ORIGINAL MODE x=68, ARRANGE MODE x=72; arrow ">" 14 px left.
 - Colour word is global 0x0C05CB50, copied to the text slot; default 0x80808080 (white). Yellow = 0x80FFFF00 (RGB order). Restore the old value after drawing.
 - Input: held bits for P1 at 0x0C05C474 (also 0x0C05C468): Up 0x01, Down 0x02, A 0x10, Start 0x8000. The menu does its own edge detection.
-- Mode variable at 0x0C7BFF00 (0 ARCADE, 1 ARRANGE); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
-- Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 272-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
+- Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
+- Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 284-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC 1f789b07 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC 287ad6f2 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
