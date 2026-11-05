@@ -63,3 +63,12 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Patched u4 CRC dc7aac44 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
+
+## Bomb research (Arrange Mode: bomb cancels bullets into big gems) - in progress, nothing patched yet
+- Input: B = bit 0x20 in the P1 input words (0x0C05C468 / 0x0C05C474); C = 0x40. The player struct copy of the input is at 0x0C383A34.
+- Method: run the same state twice (deterministic), once with B pressed, once without, and diff RAM and instruction traces (`BT_DCMD="299:trace file,0,noloop;302:trace off"` in `tools/mame/futari_harness.lua`, MAME needs `-debug -debugger none -nodrc`).
+- Words that change when the bomb starts: 0x0C38340C 0 -> 0x7FFFFFFE (looks like the invulnerability timer), 0x0C38342C 0 -> 0x3F, 0x0C3834BC 0 -> 1, 0x0C4DA3D0 7 -> 6 and 0x0C4DA3A4 0 -> 7 (bomb stock / used count, not confirmed). New effect objects are linked in at 0x0C3655xx and 0x0C51C5xx.
+- Bomb-only code: input handling 0x0C05C774, player state machine 0x0C07A0xx-0x0C07B1xx (state switch near 0x0C07B0C0), effect spawners 0x0C064CA0 and 0x0C10C0E0-0x0C10F19A. The bomb itself does not loop over bullets in the first frames, so bullets are cancelled later by something else (probably the blast area).
+- Object pool: 84-byte records (stride 0x54) around 0x0C510010-0x0C530000 hold enemies, bullets and more. Fields: +0 x and +4 y (16.16), +8/+0xC velocity, +0x10/+0x14 type pair (for example bullets 0x9E/0x12, enemies 0x8D or 0x80 / 0x0C). Behaviour is script driven (pointers to data at 0x0C28xxxx), so bullets cannot just be edited in place.
+- A normal mass cancel happens in the Reco stage 1 run at frame 499 after the state load (bullet-type records 58 -> 17). Gem creation code and the cancel path are not located yet.
+- Still to do: find the gem (item) spawn function and the item record format, find the routine that removes a bullet, then loop the pool on bomb start in Arrange Mode only.

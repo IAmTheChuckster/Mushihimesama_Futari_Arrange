@@ -56,6 +56,11 @@ local function apply(toks)
   if toks ~= "-" then for c in toks:gmatch(".") do if fields[c] then fields[c]:set_value(1); held[c] = true end end end
 end
 
+local dcmds = {}
+for spec in (os.getenv("BT_DCMD") or ""):gmatch("[^;]+") do
+  local fr, c = spec:match("^(%d+):(.*)$")
+  if fr then dcmds[tonumber(fr)] = c end
+end
 local lua_state = os.getenv("BT_LOADSTATE")
 local loaded = false
 emu.register_frame_done(function()
@@ -69,6 +74,7 @@ emu.register_frame_done(function()
     for i = 0, dump_len - 1 do t[#t+1] = string.char(space:read_u8(dump_addr + i)) end
     dump_fh:write(table.concat(t))
   end
+  if dcmds[frame] and manager.machine.debugger then manager.machine.debugger:command(dcmds[frame]) end
   if ramsnap[frame] then
     local fh = io.open("work/ram_" .. frame .. ".bin", "wb")
     fh:write(space:read_range(ram_base, ram_base + ram_len - 1, 8)); fh:close()
