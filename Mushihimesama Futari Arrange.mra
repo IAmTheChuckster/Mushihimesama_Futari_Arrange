@@ -29,7 +29,7 @@
     <about author="ika-musume" source="https://github.com/ika-musume/ikacore_CV1k"/>
     <name>Mushihimesama Futari Black Label Arrange</name>
     <setname>futariarr</setname>
-    <year>2007</year>
+    <year>2026</year>
     <manufacturer>Cave</manufacturer>
     <category>Shooter</category>
     <rbf>ikacore_CV1k</rbf>
@@ -52,5 +52,5 @@
         <part name="futariarr_u4" crc="1f789b07"/>
     </rom>
 
-    <buttons names="B1,B2,B3,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>
+    <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>
 </misterromdescription>
