@@ -8,7 +8,7 @@ This repository holds only source, tools and notes. **No ROM data is included**;
 3. Bombs are now hyper
 4. in hyper bullets cancel into big stars
 5. stars fill hyper
-6. **Title menu:** after a coin, show **ARCADE** and **ARRANGE** on the title screen (in progress)
+6. ~~Title menu: after a coin, show **ARCADE** and **ARRANGE** on the title screen~~ (done, build 1)
 
    
 ## About
@@ -17,21 +17,38 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## Patch Notes
-- **Title menu (in development, not released yet):** after you insert a coin the title screen shows **ARCADE** and **ARRANGE** where "PRESS 1P OR 2P START" was.
+### Build 1
+- **Title menu:** after you insert a coin the title screen shows **ARCADE** and **ARRANGE** where "PRESS 1P OR 2P START" was.
   - The selected item is yellow with an arrow next to it; the other is white.
-  - Up and Down move the arrow, Start confirms.
-  - ARCADE is meant to play the original game; ARRANGE is meant to use the arrange changes from the To Do list.
+  - Up and Down move the arrow, Start confirms (the game starts as usual).
+  - ARCADE plays the original game. ARRANGE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = ARCADE, 1 = ARRANGE) so the arrange changes from the To Do list can use it; for now it plays the same as ARCADE.
   - Uses the game's own text style (white with a grey shadow, like "CREDITS:").
-- **Patchers:** a web patcher and a Python patcher will be added with the first release.
+- Everything else in the game is unchanged.
 
 ## Patching the game
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `1f789b07`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
-### With the web patcher (easiest)
-Open the **[Web Patcher](https://iamthechuckster.github.io/Akai_Katana_Unlimited/)** (`index.html`) and drop in your `rom.zip`. It checks the file names and CRCs, builds the patched files automatically, and lets you download just the patched files or a complete `rom.zip` romset. Everything runs in your browser; nothing is uploaded.
+### Web patcher
+1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).
+2. Load your `futariblj.zip` (or the loose u4 file). Everything runs in your browser; nothing is uploaded.
+3. Check that the files are shown as OK.
+4. Download what you need: **futariarr.zip** (complete romset), **Mushihimesama Futari Arrange.mra**, **futariarr_u4.zip** or **futariarr_u4**.
 
-### With Python
-Coming with the first release.
+### Python script
+Needs Python 3 only (no extra packages). Download `futari_patch.py` from this repository, then run:
+```
+python3 futari_patch.py futariblj.zip --zip --mra
+```
+- `--zip` also writes `futariarr.zip` (the input must be the zip).
+- `--mra` also writes `Mushihimesama Futari Arrange.mra`.
+- `-o FILE` sets where `futariarr_u4` is written.
 
+### Using the patched files
+- **MAME:** MAME doesn't know the `futariarr` set, so make a copy of your futariblj set (keep the original safe), replace its `futariblk_u4` with `futariarr_u4` renamed to `futariblk_u4`, and run `mame futariblj`. MAME will warn about a wrong checksum; that is expected.
+- **MiSTer (CV1k core):** copy `futariarr.zip` to your `games/mame` folder and the `.mra` to `_Arcade`.
+
+### Building from source
+`src/build.py futariblj.zip OUT.zip` assembles `src/*.s` (needs SH binutils: `sh-elf-as`, `sh-elf-ld`, `sh-elf-objcopy`), then `src/update_patchers.py` embeds the changed bytes into the patchers. See [`src/README.md`](src/README.md).
 
 ## Testing
 This patch was tested with MAME 0.289 and [CV1k core for the MiSTer FPGA by Raki](https://www.patreon.com/c/ikamusume/posts)<br>
