@@ -28,6 +28,12 @@ patcher:
         mov.l   P_klit,r1
         mov.l   P_ek,r0
         mov.l   r0,@r1             ! literal at 0x0C07650C -> enemy_kill
+        mov.l   P_gemlit,r1
+        mov.l   P_gh,r0
+        mov.l   r0,@r1             ! 0x0C0951AC -> gem_hook
+        mov.l   P_pllit,r1
+        mov.l   P_ph,r0
+        mov.l   r0,@r1             ! 0x0C069B64 -> player_hook
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -56,9 +62,14 @@ P_kill:     .long 0xAC0764C0
 P_kw1:      .long 0xD012402B
 P_klit:     .long 0xAC07650C
 P_ek:       .long enemy_kill
+P_gemlit:   .long 0xAC0951AC
+P_gh:       .long gem_hook
+P_pllit:    .long 0xAC069B64
+P_ph:       .long player_hook
         .align 2
         .include "menu.s"
         .include "hyper.s"
         .include "chain.s"
+        .include "meter.s"
         .align 2
 blob_end:

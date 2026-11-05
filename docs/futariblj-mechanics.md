@@ -60,7 +60,7 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
 - Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 288-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC 7dab016a (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC dd259279 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
 
@@ -86,3 +86,10 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - `0x0C0764C0(enemy)`: enemy-remove routine called by the enemy scripts when an enemy is destroyed (sets +0x70, appends to the list at 0x0C475300). Hooked at its start.
 - Per-bullet cancel, copied from 0x0C06E680: free the bullet's hit node (`0x0C0647B0(@(bullet+0x7C+0x10))`), +0xB = 0, +0x2A = gem type, +0x29 = 1, +0xC = word +0xE, +0x28 = 1, +0x7C+0x10 = 0, +0x7C+0xC = arg, state +8 = 3. Live bullets have state 1 or 2.
 - Tested in MAME: chains of 50-85 bullets in stage 1; ORIGINAL ARCADE gives byte-identical player/multiplier traces to the unpatched game.
+
+## Hyper meter (DONE, ARRANGE MODE only) and drawing in gameplay
+- Player object 0x0C383398 (per-frame update 0x0C067B60, called through literal 0x0C069B64). Bomb-stock object = player+0x684 = 0x0C383A1C; bomb count byte +6 (0x0C383A22), add one bomb with 0x0C06BBD0 (caps at 6).
+- Gem collect: item handler 0x0C095040 calls 0x0C06B730(stock object, item type, ...) through literal 0x0C0951AC. Item types: 0 small gem, 1 big gem, 2/3 coins.
+- Draw system: 0x0C05C394(r4 = handler, r5 = arg, r6 = priority 0..511) queues a handler; the draw pass 0x0C05C3EC walks buckets 0..510 (511 is skipped) and calls handler(arg). Display list write pointer @0x0C05100C; sprite command = 5 words: 0x11000000, tile (sheet y<<16 | x), dest, size ((h-1)<<16 | (w-1)), tint (0x808080 = normal). Dest = (0x138 - y)<<16 | x plus the framebuffer origin @0x0C051004 (y, already <<16) and @0x0C051008 (x); it alternates between two buffers each frame.
+- The title text routine T (0x0C05CBD8, priority in r6) does not show in gameplay: its font sheet is not in VRAM there. Useful gameplay tiles: score digits 0x04F80080 + 8*d (8x8), HUD gauge solid block 0x03F800B8 (8x8, tint it).
+- MAME testing: with the DRC on, poking code/literals after a state load does not take effect (the DRC keeps the old literal). Test hooks with the real patched ROM, or run with -nodrc.
