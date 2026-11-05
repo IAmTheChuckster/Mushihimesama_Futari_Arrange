@@ -8,7 +8,6 @@ This repository holds only source, tools and notes. **No ROM data is included**;
 3. Bombs are now hyper
 4. in hyper bullets cancel into big stars
 5. stars fill hyper
-6. ~~Title menu: after a coin, show **ARCADE** and **ARRANGE** on the title screen~~ (done)
 
    
 ## About
