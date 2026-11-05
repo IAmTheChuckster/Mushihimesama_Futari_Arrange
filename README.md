@@ -16,15 +16,15 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## Patch Notes
-- **Title menu:** after you insert a coin the title screen shows **ORIGINAL MODE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
+- **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
   - The selected item is yellow with an arrow next to it; the other is white.
   - Up and Down move the arrow, Start confirms (the game starts as usual).
-  - ORIGINAL MODE plays the original game. ARRANGE MODE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = original, 1 = arrange) so the arrange changes from the To Do list can use it; for now it plays the same as the original.
+  - ORIGINAL ARCADE plays the original game. ARRANGE MODE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = original, 1 = arrange) so the arrange changes from the To Do list can use it; for now it plays the same as the original.
   - Uses the game's own text style (white with a grey shadow, like "CREDITS:").
 - Everything else in the game is unchanged.
 
 ## Patching the game
-You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `287ad6f2`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `dc7aac44`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).

@@ -50,7 +50,7 @@ menu:
         mov.l   L_cg,r10
         mov.l   @r10,r0
         mov.l   r0,@-r15        ! save colour
-        ITEM    0, 68, L_y0, L_s0
+        ITEM    0, 60, L_y0, L_s0
         ITEM    1, 72, L_y1, L_s1
         mov.l   @r15+,r0
         mov.l   r0,@r10         ! restore colour
@@ -73,7 +73,7 @@ L_s0:   .long   str0
 L_s1:   .long   str1
 L_arrow:.long   str_arrow
 L_blank:.long   str_blank
-str0:   .asciz  "ORIGINAL MODE"
+str0:   .asciz  "ORIGINAL ARCADE"
 str1:   .asciz  "ARRANGE MODE"
 str_arrow: .asciz ">"
 str_blank: .asciz " "
