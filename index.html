@@ -102,7 +102,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     <div class="progress" aria-hidden="true"><div id="bar"></div></div>
     <div class="tablebox"><table>
       <thead><tr><th>File</th><th>Expected CRC32</th><th>Built CRC32</th><th>Status</th></tr></thead>
-      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">175a9700</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
+      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">7dab016a</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
     </table></div>
     <div class="buttons">
       <button id="btnSet" disabled>Download futariarr.zip</button>
@@ -119,10 +119,10 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <script>
 (() => {
-  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x175a9700, U4_SIZE = 0x200000;
+  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x7dab016a, U4_SIZE = 0x200000;
   const PATCH = [
     [0x1C4, "H4AAgA=="],
-    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAGgAfAwAAAzRAOACIQERC9EdkAEhC9EL0AIhDdEP0AIhDdEO0AIhBNEB4AIRAOADEQ6QBBEF0CtACQB7rAD/CawoIQmsOCF8DFwAAAwwKgPQeAAGrIC8BqyIvHwMSAF8DHABIk+GL5Yvpi8j2CTQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemSKB3aomAGLwDgADkDixzSItMCoAkAG9Ih0yIqLuQa1TNnFtALQAkAPOQX1RnXE9ALQAkAAeAAOQOLEdIX0wKgCQAQ0hbTIio65BDVM2cL0AtACQBI5A3VD9cI0AtACQD2YAIq9mr2afZoJk8LAAkACQB7DAD/BQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMJAF8DDQBfAxBAXwMQwFST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCK"]
+    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAALsAfAwAABDRAOACIQERD9ElkAEhD9EP0AIhEtEU0AIhEtET0AIhE9EU0AIhGZASgRPRE9ACIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAyAAAAMMCoD0HgACQAJAAasgLwGrIi8fAxsAXwMlAEHrMBkEtArQAesDGV8DMQBIk+GL5Yvpi8j2CTQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemSKB3aomAGLwDgADkDixzSItMCoAkAG9Ih0yIqLuQa1TNnFtALQAkAPOQX1RnXE9ALQAkAAeAAOQOLEdIX0wKgCQAQ0hbTIio65BDVM2cL0AtACQBI5A3VD9cI0AtACQD2YAIq9mr2afZoJk8LAAkACQB7DAD/BQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMSAF8DFgBfAxlAXwMZwFST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCKP9ACYAggKomGL5Yvpi+2L8Yv1i9GLyJPcJBOARghFokSWRNaOds33ADgAiwcsAkAAO3CYAM9Cokz0dNgCEAeARVZFloy2w+wCQDyrwF9Jk/2ZPZt9mz2a/Zq9mn2aOYvL9Aw0StBAmMiTyrQAmAIIECJKdEcMAJoiCg7iYiE/3AMYAHhFjAziYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCHhQNnAOCLgINhKnEAIQHi/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwxgiEBcAIswq+CaCZPCwAJAAkAAAkAAnsMAP97DBT/ewwA8BgAAAAQAAAAJwxI3gQAQIQGDLBHRwz8UgcMxmQ="]
   ];
   const OUT_NAME = "futariarr_u4", SET_NAME = "futariarr.zip", MRA_NAME = "Mushihimesama Futari Arrange.mra";
   // MiSTer MRA; the futariarr_u4 CRC is set from PATCHED_CRC when it is saved.
@@ -269,7 +269,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     if (!u4data) return fail("No u4 found. Drop futariblj.zip or the u4 file from it.");
     if (u4data.length !== U4_SIZE) return fail("u4 is " + u4data.length.toLocaleString() + " bytes; the original is 2,097,152 bytes.");
     const c = crc32(u4data);
-    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC 175a9700). Load the original dump instead.");
+    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC 7dab016a). Load the original dump instead.");
     if (c !== ORIG_CRC) return fail("u4 CRC is " + hex(c) + ", not the original b9467b6d. This patch only works on the original dump.");
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d). Patching…"; $("checkmsg").className = "msg ok";
 
@@ -277,7 +277,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     for (const [off, data] of PATCH) out.set(b64(data), off);
     const oc = crc32(out); bar(.8);
     $("outcrc").textContent = hex(oc);
-    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of 175a9700, so nothing was offered for download."); }
+    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of 7dab016a, so nothing was offered for download."); }
     $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 1";
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched.";
     state.patched = out; bar(1);

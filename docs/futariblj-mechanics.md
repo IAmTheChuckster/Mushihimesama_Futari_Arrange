@@ -60,7 +60,7 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
 - Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 288-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC 175a9700 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC 7dab016a (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
 
@@ -80,3 +80,9 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Bomb start (player state code 0x0C07B0C0): `0x0C06C680(stock, 1)` (bombing flag), then `0x0C06BBF0(stock, kind)`: checks stock byte +6, cooldown (player+0x7C+24, 64 frames), calls the blast spawner `0x0C10EB90` (literal 0x0C06BC80), stock--, cooldown = 64, invulnerability `0x0C068AA0(player, 0x7FFFFFFF)` (literal 0x0C06BC88; counter at 0x0C38340C). On success the caller plays the voice through `0x0C10D170` and friends (-> 0x0C10E7A0).
 - Gem multiplier (the "x367" on the HUD) is player+0x9C (0x0C383AC4), added in 0x0C06B730 when a gem is collected. The normal blast resets it to 1; Hyper Bomb keeps it.
 - MAME harness: `BT_DCMD` runs debugger commands at given frames (one per frame number); `bpset`/`wpset` actions print nothing in this build, but `trace file,0,noloop,{tracelog "%08x ",r4}` works and logs registers.
+
+## Chain cancel (DONE, ARRANGE MODE only)
+- Enemy slots: 128 x 0x920 bytes from about 0x0C414620; slot +0 active, +0x70 set to 1 when removed, +0x900 actor pointer (actor +8 x, +0xC y, 16.16, same space as bullets).
+- `0x0C0764C0(enemy)`: enemy-remove routine called by the enemy scripts when an enemy is destroyed (sets +0x70, appends to the list at 0x0C475300). Hooked at its start.
+- Per-bullet cancel, copied from 0x0C06E680: free the bullet's hit node (`0x0C0647B0(@(bullet+0x7C+0x10))`), +0xB = 0, +0x2A = gem type, +0x29 = 1, +0xC = word +0xE, +0x28 = 1, +0x7C+0x10 = 0, +0x7C+0xC = arg, state +8 = 3. Live bullets have state 1 or 2.
+- Tested in MAME: chains of 50-85 bullets in stage 1; ORIGINAL ARCADE gives byte-identical player/multiplier traces to the unpatched game.

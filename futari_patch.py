@@ -9,13 +9,13 @@ Usage:
     python3 futari_patch.py futariblj.zip -o OUT       -> writes the patched futariarr_u4 to OUT
     python3 futari_patch.py u4                      -> a loose original u4 works too (no --zip)
 
-The original u4 must have CRC32 b9467b6d; the result is checked to be 175a9700.
+The original u4 must have CRC32 b9467b6d; the result is checked to be 7dab016a.
 Only the Python standard library is used.
 """
 import argparse, base64, os, sys, zipfile, zlib
 
 ORIG_CRC = 0xB9467B6D
-PATCHED_CRC = 0x175A9700
+PATCHED_CRC = 0x7DAB016A
 U4_SIZE = 0x200000
 OUT_NAME = "futariarr_u4"
 SET_NAME = "futariarr.zip"
@@ -25,14 +25,20 @@ MRA_NAME = "Mushihimesama Futari Arrange.mra"
 PATCHES = [
     (0x1C4, base64.b64decode("H4AAgA==")),
     (0x1F8000, base64.b64decode(
-    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAGgAfAwAAAzRAOACIQERC9EdkAEhC9EL"
-    "0AIhDdEP0AIhDdEO0AIhBNEB4AIRAOADEQ6QBBEF0CtACQB7rAD/CawoIQmsOCF8DFwAAAwwKgPQ"
-    "eAAGrIC8BqyIvHwMSAF8DHABIk+GL5Yvpi8j2CTQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemS"
-    "KB3aomAGLwDgADkDixzSItMCoAkAG9Ih0yIqLuQa1TNnFtALQAkAPOQX1RnXE9ALQAkAAeAAOQOL"
-    "EdIX0wKgCQAQ0hbTIio65BDVM2cL0AtACQBI5A3VD9cI0AtACQD2YAIq9mr2afZoJk8LAAkACQB7"
-    "DAD/BQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMJAF8DDQBfAxBAXwMQwFST0dJTklMQUEg"
-    "Q1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNAL"
-    "QAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCK")),
+    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAALsAfAwAABDRAOACIQERD9ElkAEhD9EP"
+    "0AIhEtEU0AIhEtET0AIhE9EU0AIhGZASgRPRE9ACIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wms"
+    "KCEJrDghfAyAAAAMMCoD0HgACQAJAAasgLwGrIi8fAxsAXwMlAEHrMBkEtArQAesDGV8DMQBIk+G"
+    "L5Yvpi8j2CTQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemSKB3aomAGLwDgADkDixzSItMCoAkA"
+    "G9Ih0yIqLuQa1TNnFtALQAkAPOQX1RnXE9ALQAkAAeAAOQOLEdIX0wKgCQAQ0hbTIio65BDVM2cL"
+    "0AtACQBI5A3VD9cI0AtACQD2YAIq9mr2afZoJk8LAAkACQB7DAD/BQx0xAUMUMsFDNjL/4AA/4CA"
+    "gIAAANgAAADoAHwMSAF8DFgBfAxlAXwMZwFST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAg"
+    "AAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJl"
+    "B9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCKP9ACYAggKomGL5Yvpi+2L8Yv1i9G"
+    "LyJPcJBOARghFokSWRNaOds33ADgAiwcsAkAAO3CYAM9Cokz0dNgCEAeARVZFloy2w+wCQDyrwF9"
+    "Jk/2ZPZt9mz2a/Zq9mn2aOYvL9Aw0StBAmMiTyrQAmAIIECJKdEcMAJoiCg7iYiE/3AMYAHhFjAz"
+    "iYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCHhQNnAOCLgINhKnEAIQHi"
+    "/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwxgiEBcAIswq+CaCZPCwAJ"
+    "AAkAAAkAAnsMAP97DBT/ewwA8BgAAAAQAAAAJwxI3gQAQIQGDLBHRwz8UgcMxmQ=")),
 ]
 
 
@@ -87,8 +93,8 @@ MRA_TEMPLATE = """<!--
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="175a9700"/>
-        <part name="futariarr_u4" crc="175a9700"/>
+        <part name="futariarr_u4" crc="7dab016a"/>
+        <part name="futariarr_u4" crc="7dab016a"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>
