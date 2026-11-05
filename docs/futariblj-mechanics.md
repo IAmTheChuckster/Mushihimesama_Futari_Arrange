@@ -60,7 +60,7 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
 - Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 288-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC dd259279 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC 9a7fde19 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
 
@@ -93,3 +93,11 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Draw system: 0x0C05C394(r4 = handler, r5 = arg, r6 = priority 0..511) queues a handler; the draw pass 0x0C05C3EC walks buckets 0..510 (511 is skipped) and calls handler(arg). Display list write pointer @0x0C05100C; sprite command = 5 words: 0x11000000, tile (sheet y<<16 | x), dest, size ((h-1)<<16 | (w-1)), tint (0x808080 = normal). Dest = (0x138 - y)<<16 | x plus the framebuffer origin @0x0C051004 (y, already <<16) and @0x0C051008 (x); it alternates between two buffers each frame.
 - The title text routine T (0x0C05CBD8, priority in r6) does not show in gameplay: its font sheet is not in VRAM there. Useful gameplay tiles: score digits 0x04F80080 + 8*d (8x8), HUD gauge solid block 0x03F800B8 (8x8, tint it).
 - MAME testing: with the DRC on, poking code/literals after a state load does not take effect (the DRC keeps the old literal). Test hooks with the real patched ROM, or run with -nodrc.
+
+## Mode Select, God Mode, HUD sprites (notes)
+- Mode is player+0x50 (0x0C3833E8): 0 Original, 1 Maniac, 2 God. Set by 0x0C068520(player, mode) from the Mode Select code (literal 0x0C10458C, two call sites).
+- Mode Select struct 0x0C519B2C: +0x18 cursor, +0x30 frame count, +0x34 frames per second (60), +0x38 seconds left. Timer start `mov #10,r7` at 0x0C102560; when it runs out the current cursor is confirmed.
+- ARRANGE MODE sets that start to 1 s and forces mode 2, so Mode Select shows for about 1.5 s and then Character Select follows.
+- "God Mode" label at the top: two 64x8 sprites, tiles 0x15380160 and 0x15400160, at x=84, y=17..25 (over a red bar, tile 0x14200140). There is no "ARRANGE" graphic in the game.
+- P2 bomb icon (HUD): base 0x1300C0FF tile 0x08E000F0, shade 0x1700FFC3 tile 0x08C000F0 (tint 0x545454), glow 0x1300FF9F tile 0x071000E0 (0x606060) and 0x1300FF87 tile 0x070000F0 (0x787878); 16x16, boxes at x 133 + 17*i, y 314.
+- Character Select: a single short Left/Right press in my schedules did not switch to Palm; Palm still not confirmed.

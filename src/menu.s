@@ -49,6 +49,12 @@ menu:
         bt      4f
         mov     #1,r9
 4:      mov.l   r9,@r8
+        mov.l   L_tinit,r1       ! Mode Select timer start: "mov #10,r7" at 0x0C102560
+        mov.w   L_t10,r0
+        tst     r9,r9
+        bt      5f
+        mov.w   L_t1,r0          ! ARRANGE: 1 second, so it times out at once and takes God Mode
+5:      mov.w   r0,@r1
         mov     #0,r0
         mov.l   L_meter,r1
         mov.l   r0,@r1          ! meter reset on the title
@@ -67,9 +73,12 @@ menu:
         nop
         .align 2
 L_pri:  .word   250
+L_t10:  .word   0xE70A
+L_t1:   .word   0xE701
         .align 2
 L_vars: .long   0x0C7BFF00
 L_meter:.long   0x0C7BFF18
+L_tinit:.long   0x0C102560
 L_inp:  .long   0x0C05C474
 L_cg:   .long   0x0C05CB50
 L_T:    .long   0x0C05CBD8

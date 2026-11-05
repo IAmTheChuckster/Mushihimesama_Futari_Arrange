@@ -31,7 +31,7 @@ def assemble():
         sh('sh-elf-ld', '-e', '0', '-Ttext=0x%X' % addr, '-o', e, o)
         sh('sh-elf-objcopy', '-O', 'binary', '-j', '.text', e, b)
         return open(b, 'rb').read(), e
-    blob, _ = build('patch.s', 0x0C7C0000, 'blob', ['--defsym', 'GEMTYPE=%d' % GEMTYPE, '--defsym', 'INVLEN=%d' % INVLEN, '--defsym', 'BARY=%d' % BARY, '--defsym', 'PRI=%d' % PRI, '--defsym', 'BARX=%d' % int(os.environ.get('BARX','133')), '--defsym', 'BARROWS=%d' % int(os.environ.get('BARROWS','7')), '--defsym', 'TINT=%d' % int(os.environ.get('TINT','0xFF2020'),0), '--defsym', 'BARY0=%d' % int(os.environ.get('BARY0','3')), '--defsym', 'FULL=%d' % int(os.environ.get('FULL','10000')), '--defsym', 'NUMX=%d' % int(os.environ.get('NUMX','230')), '--defsym', 'NUMY=%d' % int(os.environ.get('NUMY','292'))])
+    blob, _ = build('patch.s', 0x0C7C0000, 'blob', ['--defsym', 'GEMTYPE=%d' % GEMTYPE, '--defsym', 'INVLEN=%d' % INVLEN, '--defsym', 'BARY=%d' % BARY, '--defsym', 'PRI=%d' % PRI, '--defsym', 'BARX=%d' % int(os.environ.get('BARX','133')), '--defsym', 'BARROWS=%d' % int(os.environ.get('BARROWS','7')), '--defsym', 'TINT=%d' % int(os.environ.get('TINT','0xFF2020'),0), '--defsym', 'BARY0=%d' % int(os.environ.get('BARY0','3')), '--defsym', 'FULL=%d' % int(os.environ.get('FULL','12000')), '--defsym', 'NUMX=%d' % int(os.environ.get('NUMX','230')), '--defsym', 'NUMY=%d' % int(os.environ.get('NUMY','292'))])
     open(os.path.join(t, 'blob.bin'), 'wb').write(blob)
     stub, _ = build('stub.s', STUB_ADDR, 'stub', ['--defsym', 'BLOBLEN=%d' % len(blob)])
     return stub, blob

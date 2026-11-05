@@ -1,5 +1,5 @@
-! Hyper meter (ARRANGE MODE only): 0..10000, small gem +1, big gem +10, full = extra bomb.
-! Drawn as a red bar in the empty 2P boxes at the bottom right, with a debug number above it.
+! Hyper meter (ARRANGE MODE only): 0..12000, small gem +1, big gem +10, full = extra bomb.
+! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000), with a debug number above.
         .align 2
 ! gem_hook: replaces the gem-collect counter call 0x0C06B730(r4 = bomb/stock object, r5 = item type)
 gem_hook:
@@ -75,38 +75,32 @@ meter_draw:
         add     r0,r4            ! + x origin
         mov.l   M_meter,r0
         mov.l   @r0,r8           ! meter value
-        ! --- bar: a red-tinted copy of the box strip, fill px wide ---
-        mov     #104,r0
-        mulu.w  r0,r8
-        sts     macl,r1
-        mov.l   M_recip1e4,r0
-        dmulu.l r0,r1
-        sts     mach,r1          ! fill 0..104
+        ! --- boxes: one P2 bomb icon per 2000 points, left to right ---
+        mov.l   M_recip2k,r0
+        dmulu.l r0,r8
+        sts     mach,r1          ! boxes to fill (0..6)
         tst     r1,r1
         bt      1f
-        mov.l   M_bardest,r5
-        add     r4,r5            ! dest of the first segment
-3:      mov     #8,r2
-        cmp/gt  r1,r2
-        bf      4f
-        mov     r1,r2            ! last, partial segment
-4:      mov.l   M_hdr,r0
+        mov.l   M_boxdest,r5
+        add     r4,r5            ! dest of the first box
+3:      mova    M_icon,r0
+        mov     r0,r3            ! 4 layers x (header, tile, tint)
+        mov     #4,r2
+6:      mov.l   @r3+,r0
         mov.l   r0,@r7
-        mov.l   M_bartile,r0
+        mov.l   @r3+,r0
         mov.l   r0,@(4,r7)
         mov.l   r5,@(8,r7)
-        mov     r2,r0
-        add     #-1,r0
-        mov.l   M_barsize,r3
-        or      r3,r0
+        mov.l   M_isize,r0
         mov.l   r0,@(12,r7)
-        mov.l   M_red,r0
+        mov.l   @r3+,r0
         mov.l   r0,@(16,r7)
+        dt      r2
+        bf/s    6b
         add     #20,r7
-        add     r2,r5
-        sub     r2,r1
-        cmp/pl  r1
-        bt      3b
+        dt      r1
+        bf/s    3b
+        add     #17,r5           ! next box
         ! --- 5 digits, right to left ---
 1:      mov.l   M_numdest,r6
         add     r4,r6
@@ -158,10 +152,14 @@ M_draw:    .long meter_draw
 M_dlp:     .long 0x0C05100C
 M_org:     .long 0x0C051004
 M_hdr:     .long 0x11000000
-M_bartile: .long 0x03F800B8      ! solid block tile (the HUD gauge segment)
-M_bardest: .long ((0x138-312+BARY0)<<16)+BARX
-M_barsize: .long BARROWS<<16     ! height-1 in the high half
-M_red:     .long TINT
+M_recip2k: .long 2147484        ! 2^32 / 2000
+M_boxdest: .long ((0x138-314)<<16)+133
+M_icon:    ! the game's P2 bomb icon: base, shade, two glow layers (header, tile, tint)
+        .long 0x1300C0FF, 0x08E000F0, 0x808080
+        .long 0x1700FFC3, 0x08C000F0, 0x545454
+        .long 0x1300FF9F, 0x071000E0, 0x606060
+        .long 0x1300FF87, 0x070000F0, 0x787878
+M_isize:   .long 0x000F000F
 M_digtile: .long 0x04F80080
 M_digsize: .long 0x00070007
 M_numdest: .long ((0x138-NUMY)<<16)+NUMX

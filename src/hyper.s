@@ -45,3 +45,19 @@ H_invlen: .long 0x0C7BFF10
 H_blast:  .long 0x0C10EB90
 H_cancel: .long 0x0C06E620
 H_setinv: .long 0x0C068AA0
+
+! mode_set: replaces the Mode Select setter 0x0C068520(player, mode) (literal 0x0C10458C).
+! ARRANGE MODE always plays God Mode (mode 2).
+        .align 2
+mode_set:
+        mov.l   H_mode2,r0
+        mov.l   @r0,r0
+        tst     r0,r0
+        bt      1f
+        mov     #2,r5
+1:      mov.l   H_setmode,r0
+        jmp     @r0
+        nop
+        .align 2
+H_setmode: .long 0x0C068520
+H_mode2:   .long 0x0C7BFF00

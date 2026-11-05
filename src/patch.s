@@ -34,6 +34,9 @@ patcher:
         mov.l   P_pllit,r1
         mov.l   P_ph,r0
         mov.l   r0,@r1             ! 0x0C069B64 -> player_hook
+        mov.l   P_mslit,r1
+        mov.l   P_ms,r0
+        mov.l   r0,@r1             ! 0x0C10458C -> mode_set
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -66,6 +69,8 @@ P_gemlit:   .long 0xAC0951AC
 P_gh:       .long gem_hook
 P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook
+P_mslit:    .long 0xAC10458C
+P_ms:       .long mode_set
         .align 2
         .include "menu.s"
         .include "hyper.s"
