@@ -1,6 +1,6 @@
-! Title menu (ARCADE / ARRANGE) for Mushihime-Sama Futari Black Label (futariblj)
+! Title menu (ORIGINAL ARCADE / ARRANGE MODE) for Mushihime-Sama Futari Black Label (futariblj)
 ! Called every frame instead of the "PRESS 1P OR 2P START" text draw.
-! Variables: VARS+0 = mode (0 = ORIGINAL MODE, 1 = ARRANGE MODE), VARS+4 = previous input
+! Variables: VARS+0 = mode (0 = ORIGINAL ARCADE, 1 = ARRANGE MODE), VARS+4 = previous input
         .align 2
         .macro ITEM idx, x, ylit, strlit
         mov     #\idx,r0

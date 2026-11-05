@@ -35,8 +35,8 @@ Status: partial. Verified items are marked VERIFIED; everything else is open. No
 - Nearby words that changed with movement: 0x0C383A36, 0x0C383A70, 0x0C383A74 (small tilt or velocity-like values).
 - Copies of X exist at 0x0C49146C and 0x0C4D75DC (poking them did not move the ship, so they are derived).
 
-## Title screen text (for the ARCADE / ARRANGE menu)
-Design agreed with the owner: after a coin, ARCADE then ARRANGE replace the "PRESS 1P OR 2P START" line, in the same white-with-grey-shadow text as "CREDITS:", the selected item in yellow with a right-pointing arrow, no box.
+## Title screen text (for the ORIGINAL ARCADE / ARRANGE MODE menu)
+Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE replace the "PRESS 1P OR 2P START" line, in the same white-with-grey-shadow text as "CREDITS:", the selected item in yellow with a right-pointing arrow, no box.
 - VERIFIED: the small system-font lines are real ASCII strings in the game's data, found in the running game's RAM between 0x0C1D2900 and 0x0C1D2F60 (for example "PRESS 1P OR 2P START" at 0x0C1D2DE4, "CREDITS:", "RANK  (NORMAL)", "INSERT COIN", "GOD:", "MANIAC:", "ORIGINAL:"). New menu text can be added through the same text routine; the letters A R C D E N G all exist in that font.
 - A table of pointers to these strings sits near 0x0C092180-0x0C0921A8, just before the code that draws them.
 - NOT FOUND as ASCII: the "SALE BY AMI" and copyright lines. They are most likely pre-drawn images. Strong evidence, not proof (debugger watchpoints do not fire in this build and Lua write taps crash).
