@@ -14,6 +14,19 @@ patcher:
         mov.l   P_lit,r1
         mov.l   P_menu,r0
         mov.l   r0,@r1             ! literal at 0x0C092138 -> menu
+        mov.l   P_blastlit,r1
+        mov.l   P_hb,r0
+        mov.l   r0,@r1             ! 0x0C06BC80 -> hyper_blast
+        mov.l   P_invlit,r1
+        mov.l   P_hi,r0
+        mov.l   r0,@r1             ! 0x0C06BC88 -> hyper_inv
+        mov.l   P_vars,r1
+        mov     #GEMTYPE,r0
+        mov.l   r0,@(8,r1)         ! gem type for the cancel
+        mov     #0,r0
+        mov.l   r0,@(12,r1)
+        mov.w   P_inv,r0
+        mov.l   r0,@(16,r1)        ! hyper bomb invulnerability (frames)
         mov.l   P_main,r0
         jmp     @r0
         nop
@@ -24,7 +37,14 @@ P_lit:  .long 0xAC092138
 P_menu:     .long menu
 P_main:     .long 0x0C002A30
 P_op:   .word 0xD003
+P_inv:      .word INVLEN
+        .align 2
+P_blastlit: .long 0xAC06BC80
+P_invlit:   .long 0xAC06BC88
+P_hb:       .long hyper_blast
+P_hi:       .long hyper_inv
         .align 2
         .include "menu.s"
+        .include "hyper.s"
         .align 2
 blob_end:

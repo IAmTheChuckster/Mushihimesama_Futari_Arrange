@@ -60,7 +60,7 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
 - Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 288-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC dc7aac44 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC 175a9700 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
 
@@ -72,3 +72,11 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Object pool: 84-byte records (stride 0x54) around 0x0C510010-0x0C530000 hold enemies, bullets and more. Fields: +0 x and +4 y (16.16), +8/+0xC velocity, +0x10/+0x14 type pair (for example bullets 0x9E/0x12, enemies 0x8D or 0x80 / 0x0C). Behaviour is script driven (pointers to data at 0x0C28xxxx), so bullets cannot just be edited in place.
 - A normal mass cancel happens in the Reco stage 1 run at frame 499 after the state load (bullet-type records 58 -> 17). Gem creation code and the cancel path are not located yet.
 - Still to do: find the gem (item) spawn function and the item record format, find the routine that removes a bullet, then loop the pool on bomb start in Arrange Mode only.
+
+## Hyper Bomb (DONE, ARRANGE MODE only)
+- Bullet cancel routine: `0x0C06E620(r4 = gem type, r5 = extra item arg)`. Walks the bullet list (manager pointer at 0x0C27DE48, list at +0x48440) and puts every live bullet (state byte +8 = 1/2) into state 3 (the pink ring). When the ring ends (`0x0C06E6D0`, state-3 update), each bullet spawns an item with `0x0C094800(type, x, y, 125, arg)`. r4 = -1 gives no gems (the normal bomb and deaths use that). Wrappers: 0x0C06DDD0, 0x0C06DE20, 0x0C06DE70, 0x0C06DEA0 (enemy kill, uses the type at manager+0x48450).
+- Item types (class table 0x0C2847D4): 0 small gem, 1 big gold gem, 2 and 3 coins. Hyper Bomb uses 1.
+- Items are refused while `0x0C0691E0(player)` is true: word +12 of the bomb-stock objects (player+0x684 / +0x750), set to 1 at bomb start and cleared when the blast ends.
+- Bomb start (player state code 0x0C07B0C0): `0x0C06C680(stock, 1)` (bombing flag), then `0x0C06BBF0(stock, kind)`: checks stock byte +6, cooldown (player+0x7C+24, 64 frames), calls the blast spawner `0x0C10EB90` (literal 0x0C06BC80), stock--, cooldown = 64, invulnerability `0x0C068AA0(player, 0x7FFFFFFF)` (literal 0x0C06BC88; counter at 0x0C38340C). On success the caller plays the voice through `0x0C10D170` and friends (-> 0x0C10E7A0).
+- Gem multiplier (the "x367" on the HUD) is player+0x9C (0x0C383AC4), added in 0x0C06B730 when a gem is collected. The normal blast resets it to 1; Hyper Bomb keeps it.
+- MAME harness: `BT_DCMD` runs debugger commands at given frames (one per frame number); `bpset`/`wpset` actions print nothing in this build, but `trace file,0,noloop,{tracelog "%08x ",r4}` works and logs registers.

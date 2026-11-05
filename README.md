@@ -19,12 +19,13 @@ I did all the testing and planning.
 - **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
   - The selected item is yellow with an arrow next to it; the other is white.
   - Up and Down move the arrow, Start confirms (the game starts as usual).
-  - ORIGINAL ARCADE plays the original game. ARRANGE MODE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = original, 1 = arrange) so the arrange changes from the To Do list can use it; for now it plays the same as the original.
+  - ORIGINAL ARCADE plays the original game. ARRANGE MODE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = original, 1 = arrange) and turns on the arrange changes below.
   - Uses the game's own text style (white with a grey shadow, like "CREDITS:").
-- Everything else in the game is unchanged.
+- **Hyper Bomb (ARRANGE MODE only):** pressing bomb no longer fires the normal blast. Instead every bullet on screen is cancelled into big gems, using the game's own bullet-cancel (the same one you see when a big enemy dies). The character's bomb voice still plays, a bomb is still used, the gem multiplier is kept, and you are invulnerable for 2 seconds. ORIGINAL ARCADE keeps the normal bomb.
+- Everything else in the game is unchanged; ORIGINAL ARCADE plays exactly like the original.
 
 ## Patching the game
-You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `dc7aac44`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `175a9700`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).

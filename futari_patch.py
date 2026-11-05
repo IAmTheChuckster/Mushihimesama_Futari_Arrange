@@ -9,13 +9,13 @@ Usage:
     python3 futari_patch.py futariblj.zip -o OUT       -> writes the patched futariarr_u4 to OUT
     python3 futari_patch.py u4                      -> a loose original u4 works too (no --zip)
 
-The original u4 must have CRC32 b9467b6d; the result is checked to be dc7aac44.
+The original u4 must have CRC32 b9467b6d; the result is checked to be 175a9700.
 Only the Python standard library is used.
 """
 import argparse, base64, os, sys, zipfile, zlib
 
 ORIG_CRC = 0xB9467B6D
-PATCHED_CRC = 0xDC7AAC44
+PATCHED_CRC = 0x175A9700
 U4_SIZE = 0x200000
 OUT_NAME = "futariarr_u4"
 SET_NAME = "futariarr.zip"
@@ -25,12 +25,14 @@ MRA_NAME = "Mushihimesama Futari Arrange.mra"
 PATCHES = [
     (0x1C4, base64.b64decode("H4AAgA==")),
     (0x1F8000, base64.b64decode(
-    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAEgAfAwAAAbRAOACIQERBdERkAEhBdEF"
-    "0AIhBdArQAkACQB7rAD/CawoIQmsOCF8DDQAAAwwKgPQCQAiT4Yvli+mLyPYJNACYYFSERgnYikh"
-    "gmkTYAHIAIkA6QLIAIkB6ZIoHdqiYAYvAOAAOQOLHNIi0wKgCQAb0iHTIiou5BrVM2cW0AtACQA8"
-    "5BfVGdcT0AtACQAB4AA5A4sR0hfTAqAJABDSFtMiKjrkENUzZwvQC0AJAEjkDdUP1wjQC0AJAPZg"
-    "Air2avZp9mgmTwsACQAJAHsMAP8FDHTEBQxQywUM2Mv/gAD/gICAgAAA2AAAAOgAfAz8AHwMDAF8"
-    "DBkBfAwbAVJPR0lOSUxBQSBDUkRBAEVSQUFSR04gRU9NRUQ+ACAAAAAJAA==")),
+    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAGgAfAwAAAzRAOACIQERC9EdkAEhC9EL"
+    "0AIhDdEP0AIhDdEO0AIhBNEB4AIRAOADEQ6QBBEF0CtACQB7rAD/CawoIQmsOCF8DFwAAAwwKgPQ"
+    "eAAGrIC8BqyIvHwMSAF8DHABIk+GL5Yvpi8j2CTQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemS"
+    "KB3aomAGLwDgADkDixzSItMCoAkAG9Ih0yIqLuQa1TNnFtALQAkAPOQX1RnXE9ALQAkAAeAAOQOL"
+    "EdIX0wKgCQAQ0hbTIio65BDVM2cL0AtACQBI5A3VD9cI0AtACQD2YAIq9mr2afZoJk8LAAkACQB7"
+    "DAD/BQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMJAF8DDQBfAxBAXwMQwFST0dJTklMQUEg"
+    "Q1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNAL"
+    "QAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCK")),
 ]
 
 
@@ -85,8 +87,8 @@ MRA_TEMPLATE = """<!--
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="dc7aac44"/>
-        <part name="futariarr_u4" crc="dc7aac44"/>
+        <part name="futariarr_u4" crc="175a9700"/>
+        <part name="futariarr_u4" crc="175a9700"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>

@@ -15,6 +15,8 @@ STUB_ADDR = 0x801F8000     # ROM file offset 0x1F8000
 ENTRY_OFF = 0x1C4          # u4 header: game entry pointer (original 0x0C002A30)
 ORIG_ENTRY = 0x0C002A30
 STUB_OFF = 0x1F8000
+GEMTYPE = int(os.environ.get('GEMTYPE', '1'))
+INVLEN = int(os.environ.get('INVLEN', '120'))
 
 def sh(*a):
     subprocess.run(a, check=True)
@@ -27,7 +29,7 @@ def assemble():
         sh('sh-elf-ld', '-e', '0', '-Ttext=0x%X' % addr, '-o', e, o)
         sh('sh-elf-objcopy', '-O', 'binary', '-j', '.text', e, b)
         return open(b, 'rb').read(), e
-    blob, _ = build('patch.s', 0x0C7C0000, 'blob')
+    blob, _ = build('patch.s', 0x0C7C0000, 'blob', ['--defsym', 'GEMTYPE=%d' % GEMTYPE, '--defsym', 'INVLEN=%d' % INVLEN])
     open(os.path.join(t, 'blob.bin'), 'wb').write(blob)
     stub, _ = build('stub.s', STUB_ADDR, 'stub', ['--defsym', 'BLOBLEN=%d' % len(blob)])
     return stub, blob
