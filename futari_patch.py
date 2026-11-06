@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Mushihimesama Futari Arrange (Cave CV1000) - patch build 1
+Mushihimesama Futari Arrange (Cave CV1000) - patch build 10
 
 Usage:
     python3 futari_patch.py futariblj.zip              -> writes futariarr_u4 next to the zip
@@ -155,7 +155,7 @@ def mra_text():
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Patch Muchi Muchi Pork u4 into futariarr_u4 (Futari Arrange, build 1)")
+    ap = argparse.ArgumentParser(description="Patch Mushihime-Sama Futari Black Label u4 into futariarr_u4 (Futari Arrange, build 10)")
     ap.add_argument("input", help="futariblj.zip or a loose original u4 file")
     ap.add_argument("-o", "--output", help="where to write futariarr_u4")
     ap.add_argument("--zip", action="store_true", help="also write futariarr.zip (input must be a zip)")

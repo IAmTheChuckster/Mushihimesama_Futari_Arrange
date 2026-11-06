@@ -73,7 +73,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 1</div>
+    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 10</div>
     <h1>Mushihimesama Futari Arrange Patcher</h1>
     <div class="privacy"><span class="dot"></span>Everything runs in your browser. Your ROMs are never uploaded.</div>
   </header>
@@ -278,7 +278,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     const oc = crc32(out); bar(.8);
     $("outcrc").textContent = hex(oc);
     if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of a22ef9ca, so nothing was offered for download."); }
-    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 1";
+    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 10";
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched.";
     state.patched = out; bar(1);
     $("btnU4zip").disabled = false; $("btnU4").disabled = false; $("btnMra").disabled = false;

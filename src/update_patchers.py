@@ -1,18 +1,26 @@
 """Write the patchers and the MiSTer .mra from an original zip and a built zip.
 
-    python3 update_patchers.py ORIGINAL_futariblj.zip PATCHED.zip BUILD
+    python3 update_patchers.py ORIGINAL_futariblj.zip PATCHED.zip [BUILD]
 
 Embeds only the changed bytes (no ROM data) into futari_patch.py and index.html and fixes the CRC in
 the .mra. Run once after every build.
+BUILD is the number shown by the patchers ("Matches build N"). Left out (or "auto"), it keeps the number the
+patchers already carry when the u4 CRC is unchanged and adds 1 when the CRC changed.
 """
 import sys, os, re, zipfile, zlib, base64, json
 
-orig_zip, new_zip, build = sys.argv[1], sys.argv[2], sys.argv[3]
+orig_zip, new_zip = sys.argv[1], sys.argv[2]
+build = sys.argv[3] if len(sys.argv) > 3 else 'auto'
 here = os.path.dirname(os.path.abspath(__file__)); root = os.path.join(here, '..')
 o = zipfile.ZipFile(orig_zip).read('futariblk_u4')
 p = zipfile.ZipFile(new_zip).read('futariarr_u4')
 assert zlib.crc32(o) == 0xB9467B6D, 'original u4 CRC is not b9467b6d'
 crc = zlib.crc32(p)
+if build == 'auto':
+    cur = open(os.path.join(root, 'futari_patch.py')).read()
+    old_crc = int(re.search(r'PATCHED_CRC = 0x([0-9A-Fa-f]{8})', cur).group(1), 16)
+    old_build = int(re.search(r'patch build (\d+)', cur).group(1))
+    build = str(old_build if old_crc == crc else old_build + 1)
 diff = [i for i in range(len(o)) if o[i] != p[i]]
 assert all(0x1C4 <= i < 0x1C8 or 0x1F8000 <= i < 0x200000 for i in diff), 'unexpected changes'
 end = (max(diff) + 4) // 4 * 4
