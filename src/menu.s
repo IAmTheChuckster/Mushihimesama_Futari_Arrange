@@ -71,6 +71,12 @@ menu:
         ITEM    1, 72, L_y1, L_s1
         mov.l   @r15+,r0
         mov.l   r0,@r10         ! restore colour
+        mov.l   L_filt,r4       ! hide the "SALE BY AMI" glyph sprites in this frame's draw pass
+        mov     #0,r5
+        mov.w   L_pri2,r6
+        mov.l   L_sub,r0
+        jsr     @r0
+        nop
         mov.l   @r15+,r10
         mov.l   @r15+,r9
         mov.l   @r15+,r8
@@ -79,10 +85,13 @@ menu:
         nop
         .align 2
 L_pri:  .word   250
+L_pri2: .word   255
 L_t10:  .word   0xE70A
 L_t1:   .word   0xE703
         .align 2
 L_vars: .long   0x0C7BFF00
+L_filt: .long   title_filter
+L_sub:  .long   0x0C05C394
 L_meter:.long   0x0C7BFF18
 L_pend: .long   0x0C7BFF28
 L_win:  .long   0x0C7BFF2C
@@ -104,3 +113,50 @@ str1:   .asciz  "ARRANGE MODE"
 str_arrow: .asciz ">"
 str_blank: .asciz " "
         .align 2
+
+! title_filter: draw-pass handler. The title screen's "SALE BY AMI" is nine 16x8 font glyph sprites (display list
+! record: header, tile, dest, size, tint) at screen y 289 (dest y high half = origin + 0x17, size 0x000F0007).
+! Every such sprite already in the display list is moved 64 px down, off the screen.
+        .align 2
+title_filter:
+        mov.l   F_dlp,r0
+        mov.l   @r0,r1           ! display list write pointer
+        mov.l   F_org,r0
+        mov.l   @r0,r2
+        shlr16  r2
+        add     #0x17,r2         ! dest y high half of the line
+        mov.w   F_n,r3           ! words to scan back
+        mov.l   F_sz,r5
+1:      add     #-4,r1
+        mov.l   @(8,r1),r0
+        cmp/eq  r5,r0
+        bf      2f
+        mov.l   @(4,r1),r0
+        mov     r0,r6
+        shlr16  r6
+        cmp/eq  r2,r6
+        bf      2f
+        mov.l   @r1,r0
+        shlr16  r0
+        mov.w   F_mask,r6
+        and     r6,r0
+        mov.w   F_tile,r6
+        cmp/eq  r6,r0
+        bf      2f
+        mov.l   @(4,r1),r0
+        mov.l   F_down,r6
+        sub     r6,r0
+        mov.l   r0,@(4,r1)
+2:      dt      r3
+        bf      1b
+        rts
+        nop
+        .align 2
+F_n:    .word   3500
+F_mask: .word   0xFFE0
+F_tile: .word   0x03C0
+        .align 2
+F_dlp:  .long   0x0C05100C
+F_org:  .long   0x0C051004
+F_sz:   .long   0x000F0007
+F_down: .long   0x00400000
