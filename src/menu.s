@@ -62,6 +62,8 @@ menu:
         mov.l   r0,@r1
         mov.l   L_win,r1
         mov.l   r0,@r1
+        mov.l   L_latch,r1
+        mov.l   r0,@r1
         mov.l   L_cg,r10
         mov.l   @r10,r0
         mov.l   r0,@-r15        ! save colour
@@ -84,6 +86,7 @@ L_vars: .long   0x0C7BFF00
 L_meter:.long   0x0C7BFF18
 L_pend: .long   0x0C7BFF28
 L_win:  .long   0x0C7BFF2C
+L_latch:.long   0x0C7BFF30
 L_tinit:.long   0x0C102560
 L_inp:  .long   0x0C05C474
 L_cg:   .long   0x0C05CB50

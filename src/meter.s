@@ -126,7 +126,12 @@ player_hook:
 7:      mov.l   M_pstate,r0
         mov.l   @r0,r0
         tst     r0,r0
-        bt      8f               ! player state 0 (score tally, game over): the game hides its icons, so do we
+        bf      4f
+        mov.l   M_latch,r1       ! player state 0 (score tally, game over): the game hides its icons, so do we
+        mov     #0,r0
+        bra     8f
+        mov.l   r0,@r1
+4:
         mov.l   M_draw,r4
         mov     #0,r5
         mov.w   M_pri,r6
@@ -146,11 +151,18 @@ meter_draw:
         mov.l   @r0+,r4          ! framebuffer origin (high half: y)
         mov.l   @r0,r0
         add     r0,r4            ! + x origin
-        mov.l   M_slide,r0       ! the game's HUD slide (0x0C38333C: 0 normally, +6 per frame when the stage ends)
+        mov.l   M_slide,r0       ! the game's HUD slide (0x0C38333C: 0 normally, +6 per frame when the stage ends, then back to 0)
         mov.l   @r0,r1
         mov     #96,r2
         cmp/ge  r2,r1
-        bt      M_end            ! below the screen bottom: nothing left to draw
+        bf      5f
+        mov.l   M_latch,r0       ! below the screen bottom: stay hidden until the score tally (player state 0) starts
+        mov     #1,r2
+        mov.l   r2,@r0
+5:      mov.l   M_latch,r0
+        mov.l   @r0,r0
+        tst     r0,r0
+        bf      M_end
         shlr2   r1               ! pixels
         shll16  r1
         sub     r1,r4            ! y grows downward, dest y high half = 0x138 - y
@@ -194,6 +206,7 @@ M_pri:   .word PRI
 M_pstate:  .long 0x0C3833A8
 M_pend:    .long 0x0C7BFF28
 M_win2:    .long 0x0C7BFF2C
+M_latch:   .long 0x0C7BFF30
 M_slide:   .long 0x0C38333C
 M_cancel:  .long 0x0C06E620
 M_mode:    .long 0x0C7BFF00
