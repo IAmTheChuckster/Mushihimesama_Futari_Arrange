@@ -58,6 +58,8 @@ menu:
         mov     #0,r0
         mov.l   L_meter,r1
         mov.l   r0,@r1          ! meter reset on the title
+        mov.l   L_pend,r1
+        mov.l   r0,@r1
         mov.l   L_cg,r10
         mov.l   @r10,r0
         mov.l   r0,@-r15        ! save colour
@@ -78,6 +80,7 @@ L_t1:   .word   0xE703
         .align 2
 L_vars: .long   0x0C7BFF00
 L_meter:.long   0x0C7BFF18
+L_pend: .long   0x0C7BFF28
 L_tinit:.long   0x0C102560
 L_inp:  .long   0x0C05C474
 L_cg:   .long   0x0C05CB50

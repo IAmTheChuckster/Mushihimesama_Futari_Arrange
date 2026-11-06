@@ -112,3 +112,5 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Score tally and game over: player+0x10 (`0x0C3833A8`) is 18 while playing and 0 on the tally and game over screens, so `player_hook` does not draw the meter when it is 0. (A death or bomb leaves it at 18.)
 - 2P: the input poll `0x0C05C55C` (single call site, literal `0x0C062F80`) stores the P1 and P2 held words into the structs at `0x0C05C468` / `0x0C05C4AC` (+12). In ARRANGE MODE `p2_hook` clears the P2 struct after the poll. 2P START then never joins; the "PRESS 2P START" prompt at the top right is still drawn.
 - MAME note: changing a literal that sits in already compiled code at run time has no effect in MAME (DRC); patch such things at boot.
+
+- Build 14: the debug number above the swirls is gone. When the meter reaches 12000 `gem_hook` adds the bomb and sets a flag at 0x0C7BFF28; the next `player_hook` call runs the game's bullet cancel `0x0C06E620(3, 0)` (gem type 3 = big), same as the hyper bomb but with type 3. Checked in MAME with the meter poked to 11999 during stage 1: every bullet turns into gold ring gems the following frames.
