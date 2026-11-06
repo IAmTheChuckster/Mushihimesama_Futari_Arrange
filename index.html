@@ -73,7 +73,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 14</div>
+    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 15</div>
     <h1>Mushihimesama Futari Arrange Patcher</h1>
     <div class="privacy"><span class="dot"></span>Everything runs in your browser. Your ROMs are never uploaded.</div>
   </header>
@@ -102,7 +102,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     <div class="progress" aria-hidden="true"><div id="bar"></div></div>
     <div class="tablebox"><table>
       <thead><tr><th>File</th><th>Expected CRC32</th><th>Built CRC32</th><th>Status</th></tr></thead>
-      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">e791944c</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
+      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">74e78ee7</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
     </table></div>
     <div class="buttons">
       <button id="btnSet" disabled>Download futariarr.zip</button>
@@ -119,10 +119,10 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <script>
 (() => {
-  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0xe791944c, U4_SIZE = 0x200000;
+  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x74e78ee7, U4_SIZE = 0x200000;
   const PATCH = [
     [0x1C4, "H4AAgA=="],
-    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAAQCfAwAACjRAOACIQERJ9FVkAEhJ9En0AIhKtEs0AIhKtEr0AIhK9Es0AIhSZASgSvRK9ACISvRLNACISzRLNACISzRONACITvHA2I30TrjJGAAIRBD+48BcUXHA2Iz0WeTJGAAIRBD+48BcSXRKtACISTRKtACISTRKdACISPRJtACISPRJdACISLRJdACIRrRGtACIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAwsAwAMMCoD0HgACQAJAAasgLwGrIi8fAxIBHwMcAQHrMBkEtArQAesDGV8DLgECaysUXwM4AUGrGSbfAw4BhCsjEUGrIAvfAzkBxCsBEQQrAhEEKwMRBCscEUQrHRFEKx4RXwMsAd8DJ4HfAw4B3wMoAQdrEgoHayEKcABCQAgICAgRiBUVVJBIElSQUFSR04gRSAgICAAAAAAICAgICAgICAgIDAyNjIxLi4xIDYgICAgICAgICAgCQAgIFQgSUggU1JQSk9DRSBUU0lVIE9ORkZDSUFJIEwAACAgQSBETkkgIFNPTiBURkFJRklMVEFERVcgVEksSAAAICBFIEROUk9FUyBEWUIgLFJPQSBUVU9ISVJFWiBEAAAgIEIgIFlBQ0VWIC5MQSBMSVJIR1NUVCAgT0hUIEUAACAgTyBJUklHQU4gTEFHRU1BIEROSSBTVCAgICAgIAAAICBBIFNTQ09BSUVUIEROSUVUTExDRVVUTEEgICAgAAAgIFAgT1JFUFRSIFlFUkFNTklXIFRJIEhIVElFIFIAACAgUiBTRUVQVENWSSBFSVJIR1NUSCBMT0VEU1IgLgAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgICAgICAgIEggVkEgRVVGIU4hISAgICAgICAgICAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAAACAgMiAyMC82MTE2L0YgVFVSQSBJUkFBUkdOIEUgIAAAIk+GL5Yvpi8s2DDQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemSKCfRRJCYKQCJQpABIQDgItECISLRAiEk2qJgBi8A4AA5A4sj0ijTAqAJACLSJ9MiKi7kIdUzZymWHNALQAkAPOQd1R/XIpYZ0AtACQAB4AA5A4sX0hzTAqAJABbSG9MiKjrkFtUzZxGWENALQAkASOQS1RTXCpYN0AtACQD2YAIq9mr2afZoJk8LAAkA+gAK5wPnCQB7DAD/ewwY/3sMKP8QDGAlBQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMJAR8DDQEfAxBBHwMQwRST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCKBNACYAggAIkC5QHQK0AJAAYMIIV7DAD/P9ACYAggKomGL5Yvpi+2L8Yv1i9GLyJPcJBOARghFokSWRNaOds33ADgAiwcsAkAAO3CYAM9Cokz0dNgCEAeARVZFloy2w+wCQDyrwF9Jk/2ZPZt9mz2a/Zq9mn2aOYvL9Aw0StBAmMiTyrQAmAIIECJKdEcMAJoiCg7iYiE/3AMYAHhFjAziYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCHhQNnAOCLgINhKnEAIQHi/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwxgiEBcAIswq+CaCZPCwAJAAkAAAkAAnsMAP97DBT/ewwA8DAAAAAgAAAAJwxI3gQAQIQGDLBHRwz8UgcMxmQ80AJgCCAhiTzQADQei1NiA+EWMhqJD8dcATfSImMcM2CREzMSjzIiAOMyIiJPRi9WL2Yvdi8y0AtACQD2Z/Zm9mX2ZCZPKdAB4RIgLdArQAkACQAFAQ8KIk8r0AtACQAk0AJgCCAUiSDREmAIIAaJAOACIQPkAOUd0AtACQAa0AJgCCAFiSLUAOUslh/QC0AJACZPCwAJAIYvHtACZx7QBmQCYAw0FNACaBzQBTgKARghE4ka1Uw1GscDYwTiNmACJzZgARdSFyLQAxc2YAQXEEL0jxR3EEHujxF1DdByIAsA9mjgLv4BOAyoM3sMKP8GDCDmewwA/3sMGP84DBw6BgzQuwYMMLcGDGB7BQyUw3wMeAYFDAwQBQwEECAAnMT+/4UAABP/wOAI8ACAAICAABfD/8AI8ABUAFRUABOf/xAH4ABgAGBgABOH/wAH8AB4AHh4DwAPACLQAmAIICuJSCQniyDRHFIeUzzgDiMaAywzIdAzMAWJINAA4iIgMRAYoAkAFlIC4AMyE4kb0AJkQDIBiSIgMRAoIgiJAVQ4NAjgAzQGiwDgFdQBJAURAuALAAkACwAA4AzQK0AJAAnQAmAIIAGJCwAA4AnQK0AJAATQAmAIIAGJCwAA4AXQK0AJAAkAewwA/1EMLJsFDBjKBQwwygUMSMoAAFwAewwg/1EMkJsiTwfQC0AJAAbQAmAIIASJBdEA4AMRBBEFESZPCwAJAAUMXMV7DAD/BQysxA=="]
+    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAABsCfAwAACjRAOACIQERJ9FVkAEhJ9En0AIhKtEs0AIhKtEr0AIhK9Es0AIhSZASgSvRK9ACISvRLNACISzRLNACISzRONACITvHA2I30TrjJGAAIRBD+48BcUXHA2Iz0WeTJGAAIRBD+48BcSXRKtACISTRKtACISTRKdACISPRJtACISPRJdACISLRJdACIRrRGtACIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAwsAwAMMCoD0HgACQAJAAasgLwGrIi8fAxIBHwMcAQHrMBkEtArQAesDGV8DLgECaysUXwM4AUGrGSbfAw4BhCsjEUGrIAvfAxACBCsBEQQrAhEEKwMRBCscEUQrHRFEKx4RXwMDAh8DPoHfAyUB3wMoAQdrEgoHayEKcABCQAgICAgRiBUVVJBIElSQUFSR04gRSAgICAAAAAAICAgICAgICAgIDAyNjIxLi4xIDYgICAgICAgICAgCQAgIFQgSUggU1JQSk9DRSBUU0lVIE9ORkZDSUFJIEwAACAgQSBETkkgIFNPTiBURkFJRklMVEFERVcgVEksSAAAICBFIEROUk9FUyBEWUIgLFJPQSBUVU9ISVJFWiBEAAAgIEIgIFlBQ0VWIC5MQSBMSVJIR1NUVCAgT0hUIEUAACAgTyBJUklHQU4gTEFHRU1BIEROSSBTVCAgICAgIAAAICBBIFNTQ09BSUVUIEROSUVUTExDRVVUTEEgICAgAAAgIFAgT1JFUFRSIFlFUkFNTklXIFRJIEhIVElFIFIAACAgUiBTRUVQVENWSSBFSVJIR1NUSCBMT0VEU1IgLgAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgICAgICAgIEggVkEgRVVGIU4hISAgICAgICAgICAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAAACAgMiAyMC82MTE2L0YgVFVSQSBJUkFBUkdOIEUgIAAAIk+GL5Yvpi8s2DDQAmGBUhEYJ2IpIYJpE2AByACJAOkCyACJAemSKCfRRJCYKQCJQpABIQDgItECISLRAiEk2qJgBi8A4AA5A4sj0ijTAqAJACLSJ9MiKi7kIdUzZymWHNALQAkAPOQd1R/XIpYZ0AtACQAB4AA5A4sX0hzTAqAJABbSG9MiKjrkFtUzZxGWENALQAkASOQS1RTXCpYN0AtACQD2YAIq9mr2afZoJk8LAAkA+gAK5wPnCQB7DAD/ewwY/3sMKP8QDGAlBQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMJAR8DDQEfAxBBHwMQwRST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCKBNACYAggAIkC5QHQK0AJAAYMIIV7DAD/P9ACYAggKomGL5Yvpi+2L8Yv1i9GLyJPcJBOARghFokSWRNaOds33ADgAiwcsAkAAO3CYAM9Cokz0dNgCEAeARVZFloy2w+wCQDyrwF9Jk/2ZPZt9mz2a/Zq9mn2aOYvL9Aw0StBAmMiTyrQAmAIIECJKdEcMAJoiCg7iYiE/3AMYAHhFjAziYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCHhQNnAOCLgINhKnEAIQHi/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwxgiEBcAIswq+CaCZPCwAJAAkAAAkAAnsMAP97DBT/ewwA8DAAAAAgAAAAJwxI3gQAQIQGDLBHRwz8UgcMxmRM0AJgCCAhiUzQADQei1NiA+EWMhqJD8dcAUfSImMcM4CREzMSjzIiAOMyIiJPRi9WL2Yvdi9C0AtACQD2Z/Zm9mX2ZCZPOdAB4RIgPdArQAkACQAFAQ8KIk870AtACQA00AJgCCAUiTDREmAIIAaJAOACIQPkAOUt0AtACQAq0AJgCCAFiTLUAOVMli/QC0AJACZPCwAJAIYvLtACZy7QBmQCYAw0JNACaC3QBTgKARghE4kr1Uw1K8cDYwTiNmACJzZgARdSFzPQAxc2YAQXEEL0jxR3EEHujxF1MdZMNgXjMtVVOAoCCUIBQiNhCEEsMRwxg2AYMCNoCEAMMCfRHDAW0RInARdiFyXQAxcm0AQXFHcQQ+WP+XYO0HIgCwD2aAkA4C7+ATgMqDN7DCj/Bgwg5nsMAP97DBj/OAwcOgYM0LsGDDC3BgxgewUMlMN8DHgGBQwMEAUMBBAAEQAAIACcxP7/hQAAE//A4AjwAIAAgIAAF8P/wAjwAFQAVFQAE5//EAfgAGAAYGAAE4f/AAfwAHgAeHgPAA8A+ASAAAcABwAUAOYAgACAgMzMzcwGALmNItACYAggK4lIJCeLINEcUh5TPOAOIxoDLDMh0DMwBYkg0ADiIiAxEBigCQAWUgLgAzITiRvQAmRAMgGJIiAxECgiCIkBVDg0COADNAaLAOAV1AEkBREC4AsACQALAADgDNArQAkACdACYAggAYkLAADgCdArQAkABNACYAggAYkLAADgBdArQAkACQB7DAD/UQwsmwUMGMoFDDDKBQxIygAAXAB7DCD/UQyQmyJPB9ALQAkABtACYAggBIkF0QDgAxEEEQURJk8LAAkABQxcxXsMAP8FDKzE"]
   ];
   const OUT_NAME = "futariarr_u4", SET_NAME = "futariarr.zip", MRA_NAME = "Mushihimesama Futari Arrange.mra";
   // MiSTer MRA; the futariarr_u4 CRC is set from PATCHED_CRC when it is saved.
@@ -269,7 +269,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     if (!u4data) return fail("No u4 found. Drop futariblj.zip or the u4 file from it.");
     if (u4data.length !== U4_SIZE) return fail("u4 is " + u4data.length.toLocaleString() + " bytes; the original is 2,097,152 bytes.");
     const c = crc32(u4data);
-    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC e791944c). Load the original dump instead.");
+    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC 74e78ee7). Load the original dump instead.");
     if (c !== ORIG_CRC) return fail("u4 CRC is " + hex(c) + ", not the original b9467b6d. This patch only works on the original dump.");
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d). Patching…"; $("checkmsg").className = "msg ok";
 
@@ -277,8 +277,8 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     for (const [off, data] of PATCH) out.set(b64(data), off);
     const oc = crc32(out); bar(.8);
     $("outcrc").textContent = hex(oc);
-    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of e791944c, so nothing was offered for download."); }
-    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 14";
+    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of 74e78ee7, so nothing was offered for download."); }
+    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 15";
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched.";
     state.patched = out; bar(1);
     $("btnU4zip").disabled = false; $("btnU4").disabled = false; $("btnMra").disabled = false;
