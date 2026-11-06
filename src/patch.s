@@ -73,6 +73,9 @@ patcher:
         mov.l   P_msl6,r1
         mov.l   P_msheld,r0
         mov.l   r0,@r1             ! 0x0C104578 held
+        mov.l   P_p2lit,r1         ! input poll call literal 0x0C062F80 -> p2_hook (2P off in ARRANGE MODE)
+        mov.l   P_p2h,r0
+        mov.l   r0,@r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -106,6 +109,8 @@ P_gh:       .long gem_hook
 P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
+P_p2lit:    .long 0xAC062F80
+P_p2h:      .long p2_hook
 P_msl1:     .long 0xAC104404
 P_msl2:     .long 0xAC104408
 P_msl3:     .long 0xAC10440C
@@ -159,5 +164,6 @@ P_warnstr:
         .include "chain.s"
         .include "meter.s"
         .include "modesel.s"
+        .include "p2off.s"
         .align 2
 blob_end:

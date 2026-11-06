@@ -1,4 +1,4 @@
-! Hyper meter (ARRANGE MODE only): 0..12000, small gem +1, big gem +10, full = extra bomb.
+! Hyper meter (ARRANGE MODE only): 0..12000, the four gem sizes (item types 0..3) give 1, 5, 10, 15, full = extra bomb.
 ! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000), with a debug number above.
         .align 2
 ! gem_hook: replaces the gem-collect counter call 0x0C06B730(r4 = bomb/stock object, r5 = item type)
@@ -10,13 +10,12 @@ gem_hook:
         mov.l   M_p1stock,r0
         cmp/eq  r0,r4
         bf      9f
-        mov     r5,r0
-        cmp/eq  #0,r0
-        bt/s    1f
-        mov     #1,r1            ! small gem
-        cmp/eq  #1,r0
-        bf      9f
-        mov     #10,r1           ! big gem
+        mov     r5,r2            ! item type 0..3 (the four gem sizes): 1, 5, 10, 15
+        mov     #3,r1
+        cmp/hi  r1,r2
+        bt      9f               ! not a gem
+        mova    M_vals,r0
+        mov.b   @(r0,r5),r1
 1:      mov.l   M_meter,r2
         mov.l   @r2,r3
         add     r1,r3
@@ -42,6 +41,9 @@ gem_hook:
 9:      mov.l   M_gemadd,r0
         jmp     @r0
         nop
+        .align 2
+M_vals:    .byte 1,5,10,15
+        .align 2
 
 ! player_hook: replaces the per-frame player update call 0x0C067B60(r4 = player).
 ! In ARRANGE MODE it queues meter_draw in the game's draw list (0x0C05C394, priority PRI).
@@ -54,6 +56,10 @@ player_hook:
         mov.l   @r0,r0
         tst     r0,r0
         bt      8f
+        mov.l   M_pstate,r0
+        mov.l   @r0,r0
+        tst     r0,r0
+        bt      8f               ! player state 0 (score tally, game over): the game hides its icons, so do we
         mov.l   M_draw,r4
         mov     #0,r5
         mov.w   M_pri,r6
@@ -141,6 +147,7 @@ meter_draw:
 M_full:  .word FULL
 M_pri:   .word PRI
         .align 2
+M_pstate:  .long 0x0C3833A8
 M_mode:    .long 0x0C7BFF00
 M_meter:   .long 0x0C7BFF18
 M_p1stock: .long 0x0C383A1C

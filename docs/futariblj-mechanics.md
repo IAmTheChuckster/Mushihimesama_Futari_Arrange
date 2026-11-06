@@ -60,7 +60,7 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Mode variable at 0x0C7BFF00 (0 original, 1 arrange); previous-input at 0x0C7BFF04. Free RAM from 0x0C7B0000 to 0x0C7FFE9F (stack above).
 - Boot: u4 header entry at file offset 0x1C4 (word-swapped file) was 0x0C002A30; now points at a ROM stub at 0x801F8000 (file 0x1F8000, free tail starts 0x1F2800) which copies the 288-byte blob to 0x0C7C0000, installs the hook, jumps to 0x0C002A30.
 - Pitfall found: a PC-relative mov.l in a branch delay slot gave wrong colours in MAME (and is illegal on SH-3). Avoid.
-- Patched u4 CRC a8dbb84e (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
+- Patched u4 CRC 2995da75 (original b9467b6d). Python patcher == web patcher == build output. Verified in MAME: menu shows, Up/Down toggles, Start goes to Mode Select, mode var = 1 after choosing ARRANGE.
 - Input: Start edge words 0x0C05C478/47C hold newly-pressed bits for one frame.
 - Not done: menu shows wherever the PRESS line shows (title and any screen with credits), not only the title; not tested on MiSTer/real PCB.
 
@@ -106,3 +106,9 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Boot screen strings (RAM, the u4 program is compressed so they are patched after unpacking): title 24 chars at 0x0C1D2848, date line (30 chars, space padded) at 0x0C1D2864.
 - Warning screen text (14 lines x 30 chars + 2 NULs = 32-byte stride) at 0x0C1D2984 (the "THIS GAME IS FOR USE IN JAPAN" block); a second block for other regions follows at 0x0C1D2B44 and is untouched. Patched after unpacking, like the boot strings.
 - Chain cancel radii: 48 px from the dying enemy, 32 px from each cancelled bullet (were 24 / 16; doubled on request). The comparison is per axis on the 16.16 positions in `src/chain.s` (`C_r1`, `C_r2`).
+
+## Gem types, tally, 2P off (build 13)
+- Item types 0..3 are the four gem sizes (the game's own values 1, 5, 10, 20). The pickup code `0x0C095040` calls one of three collectors depending on a mode word (0x0C06B540 / 0x0C06B3A0 / 0x0C06B730 = Original / Maniac / God); only the God one (`0x0C06B730`, literal `0x0C0951AC`) is used in ARRANGE MODE. The hyper meter used to count types 0 and 1 only, so types 2 and 3 (about 1 in 8 gems in stage 1, they are common from the first enemies) did not fill it. Now 1 / 5 / 10 / 15 for types 0 / 1 / 2 / 3, checked exactly against a pickup histogram over a whole stage 1 run (meter == t0 + 5 t1 + 10 t2 + 15 t3 below the 12000 wrap).
+- Score tally and game over: player+0x10 (`0x0C3833A8`) is 18 while playing and 0 on the tally and game over screens, so `player_hook` does not draw the meter when it is 0. (A death or bomb leaves it at 18.)
+- 2P: the input poll `0x0C05C55C` (single call site, literal `0x0C062F80`) stores the P1 and P2 held words into the structs at `0x0C05C468` / `0x0C05C4AC` (+12). In ARRANGE MODE `p2_hook` clears the P2 struct after the poll. 2P START then never joins; the "PRESS 2P START" prompt at the top right is still drawn.
+- MAME note: changing a literal that sits in already compiled code at run time has no effect in MAME (DRC); patch such things at boot.
