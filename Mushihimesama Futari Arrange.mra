@@ -48,8 +48,8 @@
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="21aac156"/>
-        <part name="futariarr_u4" crc="21aac156"/>
+        <part name="futariarr_u4" crc="5a503a52"/>
+        <part name="futariarr_u4" crc="5a503a52"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>

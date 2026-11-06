@@ -106,9 +106,9 @@ player_hook:
         mov.l   @r0,r0
         tst     r0,r0
         bt      8f
-        mov.l   M_larsa,r1       ! the arcade's Spiritual Larsa code (P2 B,B,D,D,C,U,A,C,L,A,R,B): always on
-        mov.l   M_larsav,r0
-        mov.l   r0,@r1
+        mov.l   M_larsa,r1       ! Spiritual Larsa without the no-miss condition: the per-game copy of the arcade code flag
+        mov     #1,r0
+        mov.w   r0,@r1
         mov.l   M_win2,r1        ! cash-out window counts down
         mov.l   @r1,r0
         tst     r0,r0
@@ -220,8 +220,7 @@ M_pstate:  .long 0x0C3833A8
 M_pend:    .long 0x0C7BFF28
 M_win2:    .long 0x0C7BFF2C
 M_latch:   .long 0x0C7BFF30
-M_larsa:   .long 0x0C7042B0
-M_larsav:  .long 0x000C0001
+M_larsa:   .long 0x0C383354
 M_prev:    .long 0x0C7BFF34
 M_slide:   .long 0x0C38333C
 M_cancel:  .long 0x0C06E620
