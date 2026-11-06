@@ -2,14 +2,6 @@
 A gameplay patch for `Mushihime-Sama Futari Black Label (Japan, 2007/12/11 BLACK LABEL VER)`<br>
 This repository holds only source, tools and notes. **No ROM data is included**; you patch your own legally owned dump.
 
-## To Do:
-1. Use Black Label ROM
-2. Only use God Mode
-3. Bombs are now hyper
-4. in hyper bullets cancel into big stars
-5. stars fill hyper
-
-   
 ## About
 Why did I make this? Because it's fun and for my own personal research to see the capabilities of Claude.<br>
 While Claude was used I put effort in making sure there are balanced gameplay.<br>
