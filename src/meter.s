@@ -1,5 +1,5 @@
 ! Hyper meter (ARRANGE MODE only): 0..12000, the four gem sizes (item types 0..3) give 1, 5, 10, 15, full = extra bomb.
-! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000).
+! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000), with a debug number above.
         .align 2
 ! gem_hook: replaces the gem-collect counter call 0x0C06B730(r4 = bomb/stock object, r5 = item type)
 gem_hook:
@@ -153,9 +153,19 @@ meter_draw:
         add     r0,r4            ! + x origin
         mov.l   M_slide,r0       ! the game's HUD slide (0x0C38333C: 0 normally, +6 per frame when the stage ends, then back to 0)
         mov.l   @r0,r1
-        mov     #96,r2
-        cmp/ge  r2,r1
+        mov.l   M_prev,r0        ! previous slide value
+        mov.l   @r0,r2
+        mov.l   r1,@r0
+        mov     #96,r0
+        cmp/ge  r0,r1
         bf      5f
+        mov     r1,r3            ! only the gradual rise at the stage end (+6 per frame); a stage start jumps to 255 in one frame
+        sub     r2,r3
+        cmp/pl  r3
+        bf      5f
+        mov     #8,r0
+        cmp/gt  r0,r3
+        bt      5f
         mov.l   M_latch,r0       ! below the screen bottom: stay hidden until the score tally (player state 0) starts
         mov     #1,r2
         mov.l   r2,@r0
@@ -194,7 +204,38 @@ meter_draw:
         dt      r1
         bf/s    3b
         add     #17,r5           ! next box
-1:
+        ! --- debug number: 5 digits, right to left ---
+1:      mov.l   M_numdest,r6
+        add     r4,r6
+        mov     #5,r3
+        mov.l   M_recip10,r5
+2:      dmulu.l r5,r8
+        sts     mach,r2
+        shlr2   r2
+        shlr    r2               ! q
+        mov     r2,r1
+        shll2   r1
+        add     r2,r1
+        add     r1,r1
+        mov     r8,r0
+        sub     r1,r0            ! digit
+        mov     r2,r8
+        shll2   r0
+        add     r0,r0            ! digit*8
+        mov.l   M_digtile,r1
+        add     r1,r0
+        mov.l   M_hdr,r1
+        mov.l   r1,@r7
+        mov.l   r0,@(4,r7)
+        mov.l   r6,@(8,r7)
+        mov.l   M_digsize,r0
+        mov.l   r0,@(12,r7)
+        mov.l   M_white,r0
+        mov.l   r0,@(16,r7)
+        add     #20,r7
+        dt      r3
+        bf/s    2b
+        add     #-7,r6           ! next digit 7 px to the left
 M_end:  mov.l   M_dlp,r0
         mov.l   r7,@r0
         rts
@@ -207,6 +248,7 @@ M_pstate:  .long 0x0C3833A8
 M_pend:    .long 0x0C7BFF28
 M_win2:    .long 0x0C7BFF2C
 M_latch:   .long 0x0C7BFF30
+M_prev:    .long 0x0C7BFF34
 M_slide:   .long 0x0C38333C
 M_cancel:  .long 0x0C06E620
 M_mode:    .long 0x0C7BFF00
@@ -227,3 +269,9 @@ M_icon:    ! the game's P2 bomb icon: base, shade, two glow layers (header, tile
         .long 0x1300FF9F, 0x071000E0, 0x606060
         .long 0x1300FF87, 0x070000F0, 0x787878
 M_isize:   .long 0x000F000F
+M_hdr:     .long 0x11000000
+M_digtile: .long 0x04F80080
+M_digsize: .long 0x00070007
+M_numdest: .long ((0x138-NUMY)<<16)+NUMX
+M_white:   .long 0x808080
+M_recip10: .long 0xCCCCCCCD
