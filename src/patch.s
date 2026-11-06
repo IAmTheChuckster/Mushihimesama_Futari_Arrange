@@ -46,6 +46,15 @@ patcher:
         dt      r3
         bf/s    1b
         add     #1,r1
+        mova    P_warnstr,r0       ! warning screen text: 14 lines x (30 chars + 2 NULs)
+        mov     r0,r2
+        mov.l   P_warndst,r1
+        mov.w   P_warnlen,r3
+1:      mov.b   @r2+,r0
+        mov.b   r0,@r1
+        dt      r3
+        bf/s    1b
+        add     #1,r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -81,10 +90,42 @@ P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
 P_ms:       .long mode_set
 P_bootdst:  .long 0xAC1D2848
+P_warndst:  .long 0xAC1D2984
+P_warnlen:  .word 448
         .align 2
 P_bootstr:  .ascii "     FUTARI ARRANGE     "
             .byte 0,0,0,0
             .ascii "          2026.11.6           "
+        .align 2
+P_warnstr:
+            .ascii "   THIS PROJECT IS UNOFFICIAL "
+            .byte 0,0
+            .ascii "   AND IS NOT AFFILIATED WITH,"
+            .byte 0,0
+            .ascii "   ENDORSED BY, OR AUTHORIZED "
+            .byte 0,0
+            .ascii "   BY CAVE. ALL RIGHTS TO THE "
+            .byte 0,0
+            .ascii "   ORIGINAL GAME AND ITS      "
+            .byte 0,0
+            .ascii "   ASSOCIATED INTELLECTUAL    "
+            .byte 0,0
+            .ascii "   PROPERTY REMAIN WITH THEIR "
+            .byte 0,0
+            .ascii "   RESPECTIVE RIGHTS HOLDERS. "
+            .byte 0,0
+            .ascii "                              "
+            .byte 0,0
+            .ascii "         HAVE FUN!!!          "
+            .byte 0,0
+            .ascii "                              "
+            .byte 0,0
+            .ascii "                              "
+            .byte 0,0
+            .ascii "                              "
+            .byte 0,0
+            .ascii "   2026/11/6 FUTARI ARRANGE   "
+            .byte 0,0
         .align 2
         .include "menu.s"
         .include "hyper.s"
