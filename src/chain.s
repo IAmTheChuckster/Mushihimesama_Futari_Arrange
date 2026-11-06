@@ -1,7 +1,7 @@
 ! Chain cancel (ARRANGE MODE only).
 ! The game's enemy-remove routine 0x0C0764C0(r4 = enemy) is entered through a jump placed at its start.
-! In ARRANGE MODE, every live bullet within 24 px of the dying enemy is cancelled into a small gem
-! (the game's own per-bullet cancel, as done by 0x0C06E620), and every bullet within 16 px of a
+! In ARRANGE MODE, every live bullet within 48 px of the dying enemy is cancelled into a small gem
+! (the game's own per-bullet cancel, as done by 0x0C06E620), and every bullet within 32 px of a
 ! cancelled bullet is cancelled too, until nothing new is in range.
         .align 2
 enemy_kill:
@@ -141,8 +141,8 @@ C_qmax: .word 512
 C_mode:  .long 0x0C7BFF00
 C_qlen:  .long 0x0C7BFF14
 C_queue: .long 0x0C7BF000
-C_r1:    .long 24<<16
-C_r2:    .long 16<<16
+C_r1:    .long 48<<16
+C_r2:    .long 32<<16
 C_mgr:   .long 0x0C27DE48
 C_list:  .long 0x00048440
 C_free:  .long 0x0C0647B0
