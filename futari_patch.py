@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Mushihimesama Futari Arrange (Cave CV1000) - patch build 11
+Mushihimesama Futari Arrange (Cave CV1000) - patch build 12
 
 Usage:
     python3 futari_patch.py futariblj.zip              -> writes futariarr_u4 next to the zip
@@ -9,13 +9,13 @@ Usage:
     python3 futari_patch.py futariblj.zip -o OUT       -> writes the patched futariarr_u4 to OUT
     python3 futari_patch.py u4                      -> a loose original u4 works too (no --zip)
 
-The original u4 must have CRC32 b9467b6d; the result is checked to be cfd210f1.
+The original u4 must have CRC32 b9467b6d; the result is checked to be a8dbb84e.
 Only the Python standard library is used.
 """
 import argparse, base64, os, sys, zipfile, zlib
 
 ORIG_CRC = 0xB9467B6D
-PATCHED_CRC = 0xCFD210F1
+PATCHED_CRC = 0xA8DBB84E
 U4_SIZE = 0x200000
 OUT_NAME = "futariarr_u4"
 SET_NAME = "futariarr.zip"
@@ -25,12 +25,12 @@ MRA_NAME = "Mushihimesama Futari Arrange.mra"
 PATCHES = [
     (0x1C4, base64.b64decode("H4AAgA==")),
     (0x1F8000, base64.b64decode(
-    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAPABfAwAACfRAOACIQERJtFTkAEhJtEm"
+    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAP4BfAwAACfRAOACIQERJtFTkAEhJtEm"
     "0AIhKdEr0AIhKdEq0AIhKtEr0AIhR5ASgSrRKtACISrRK9ACISvRK9ACISvRNdACITjHA2I00Trj"
     "JGAAIRBD+48BcULHA2Iw0WGTJGAAIRBD+48BcSLRJ9ACISHRJ9ACISHRJtACISDRI9ACISDRItAC"
     "IR/RItACIQXRAeACEQDgAxEPkAQRBdArQAkACQB7rAD/CawoIQmsOCF8DCADAAwwKgPQeAAJAAkA"
     "BqyAvAasiLx8DDQEfAxcBAeswGQS0CtAB6wMZXwMpAQJrKxRfAzMBQasZJt8DBoGEKyMRRCsBEQQ"
-    "rAhEEKwMRBCscEUQrHRFEKx4RXwMlAd8DIIHfAxMB3wMjAQdrEgoHayEKcABCQAgICAgRiBUVVJB"
+    "rAhEEKwMRBCscEUQrHRFEKx4RXwMxAd8DLIHfAxMB3wMjAQdrEgoHayEKcABCQAgICAgRiBUVVJB"
     "IElSQUFSR04gRSAgICAAAAAAICAgICAgICAgIDAyNjIxLi4xIDYgICAgICAgICAgCQAgIFQgSUgg"
     "U1JQSk9DRSBUU0lVIE9ORkZDSUFJIEwAACAgQSBETkkgIFNPTiBURkFJRklMVEFERVcgVEksSAAA"
     "ICBFIEROUk9FUyBEWUIgLFJPQSBUVU9ISVJFWiBEAAAgIEIgIFlBQ0VWIC5MQSBMSVJIR1NUVCAg"
@@ -42,7 +42,7 @@ PATCHES = [
     "ICAgICAgICAAACAgMiAyMC82MTE2L0YgVFVSQSBJUkFBUkdOIEUgIAAAIk+GL5Yvpi8r2C7QAmGB"
     "UhEYJ2IpIYJpE2AByACJAOkCyACJAemSKCXRQpCYKQCJQJABIQDgIdECISPaomAGLwDgADkDiyLS"
     "J9MCoAkAIdIm0yIqLuQg1TNnKZYb0AtACQA85BzVHtcilhjQC0AJAAHgADkDixbSG9MCoAkAFdIa"
-    "0yIqOuQV1TNnEZYP0AtACQBI5BHVE9cKlgzQC0AJAPZgAir2avZp9mgmTwsACQD6AArnBOcJAHsM"
+    "0yIqOuQV1TNnEZYP0AtACQBI5BHVE9cKlgzQC0AJAPZgAir2avZp9mgmTwsACQD6AArnA+cJAHsM"
     "AP97DBj/EAxgJQUMdMQFDFDLBQzYy/+AAP+AgICAAADYAAAA6AB8DBAEfAwgBHwMLQR8DC8EUk9H"
     "SU5JTEFBIENSREEARVJBQVJHTiBFT01FRD4AIAAAAAkADtACYAggAosQ0CtACQAA4EaBIk8K1EJk"
     "CtVSZQzQC0AJACZPCwAB4ATQAmAIIAGJBdVSZQfQK0AJAAkAewwA/3sMCP97DAz/ewwQ/xAMkOsG"
@@ -58,9 +58,10 @@ PATCHES = [
     "L9VVOAoCCUIBQiNhCEEsMRwxg2AYMCNoCEAMMCTRHDAT0RInARdiFyLQAxcj0AQXFHcQQ+WP+XYL"
     "0HIgCwD2aAkA4C7+AXsMAP97DBj/OAwcOgYM0LsGDDC3BgxgewUMlMN8DDwGBQwMEAUMBBAAEQAA"
     "IACcxP7/hQAAE//A4AjwAIAAgIAAF8P/wAjwAFQAVFQAE5//EAfgAGAAYGAAE4f/AAfwAHgAeHgP"
-    "AA8A+ASAAAcABwAUAOYAgACAgMzMzcwGALmNFtACYAggE4lIJA+LFNEcUh5TPOAOIxoDLDMV0DMw"
-    "BYsWUwLiNzIBiwsAAuALAADgDNArQAkACdACYAggAYkLAADgCdArQAkABNACYAggAYkLAADgBdAr"
-    "QAkACQB7DAD/UQwsmwUMGMoFDDDKBQxIygAAkgA=")),
+    "AA8A+ASAAAcABwAUAOYAgACAgMzMzcwGALmNItACYAggK4lIJCeLINEcUh5TPOAOIxoDLDMh0DMw"
+    "BYkg0ADiIiAxEBigCQAWUgLgAzITiRvQAmRAMgGJIiAxECgiCIkBVDg0COADNAaLAOAV1AEkBREC"
+    "4AsACQALAADgDNArQAkACdACYAggAYkLAADgCdArQAkABNACYAggAYkLAADgBdArQAkACQB7DAD/"
+    "UQwsmwUMGMoFDDDKBQxIygAAXAB7DCD/UQyQmw==")),
 ]
 
 
@@ -115,8 +116,8 @@ MRA_TEMPLATE = """<!--
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="cfd210f1"/>
-        <part name="futariarr_u4" crc="cfd210f1"/>
+        <part name="futariarr_u4" crc="a8dbb84e"/>
+        <part name="futariarr_u4" crc="a8dbb84e"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>
@@ -155,7 +156,7 @@ def mra_text():
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Patch Mushihime-Sama Futari Black Label u4 into futariarr_u4 (Futari Arrange, build 11)")
+    ap = argparse.ArgumentParser(description="Patch Mushihime-Sama Futari Black Label u4 into futariarr_u4 (Futari Arrange, build 12)")
     ap.add_argument("input", help="futariblj.zip or a loose original u4 file")
     ap.add_argument("-o", "--output", help="where to write futariarr_u4")
     ap.add_argument("--zip", action="store_true", help="also write futariarr.zip (input must be a zip)")

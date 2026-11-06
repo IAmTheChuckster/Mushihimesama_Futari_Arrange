@@ -53,7 +53,7 @@ menu:
         mov.w   L_t10,r0
         tst     r9,r9
         bt      5f
-        mov.w   L_t1,r0          ! ARRANGE: 4 seconds, the cursor walks to God by itself
+        mov.w   L_t1,r0          ! ARRANGE: 3 seconds, the cursor walks to God by itself
 5:      mov.w   r0,@r1
         mov     #0,r0
         mov.l   L_meter,r1
@@ -74,7 +74,7 @@ menu:
         .align 2
 L_pri:  .word   250
 L_t10:  .word   0xE70A
-L_t1:   .word   0xE704
+L_t1:   .word   0xE703
         .align 2
 L_vars: .long   0x0C7BFF00
 L_meter:.long   0x0C7BFF18

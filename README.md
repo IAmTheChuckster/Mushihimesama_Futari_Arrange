@@ -30,7 +30,7 @@ I did all the testing and planning.
 - Everything else in the game is unchanged; ORIGINAL ARCADE plays exactly like the original.
 
 ## Patching the game
-You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `cfd210f1`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `a8dbb84e`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).
