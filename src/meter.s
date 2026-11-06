@@ -93,6 +93,14 @@ meter_draw:
         mov.l   @r0+,r4          ! framebuffer origin (high half: y)
         mov.l   @r0,r0
         add     r0,r4            ! + x origin
+        mov.l   M_slide,r0       ! the game's HUD slide (0x0C38333C: 0 normally, +6 per frame when the stage ends)
+        mov.l   @r0,r1
+        mov     #96,r2
+        cmp/ge  r2,r1
+        bt      M_end            ! below the screen bottom: nothing left to draw
+        shlr2   r1               ! pixels
+        shll16  r1
+        sub     r1,r4            ! y grows downward, dest y high half = 0x138 - y
         mov.l   M_meter,r0
         mov.l   @r0,r8           ! meter value
         ! --- boxes: one P2 bomb icon per 2000 points, left to right ---
@@ -153,7 +161,7 @@ meter_draw:
         dt      r3
         bf/s    2b
         add     #-7,r6           ! next digit 7 px to the left
-        mov.l   M_dlp,r0
+M_end:  mov.l   M_dlp,r0
         mov.l   r7,@r0
         rts
         mov.l   @r15+,r8
@@ -163,6 +171,7 @@ M_pri:   .word PRI
         .align 2
 M_pstate:  .long 0x0C3833A8
 M_pend:    .long 0x0C7BFF28
+M_slide:   .long 0x0C38333C
 M_cancel:  .long 0x0C06E620
 M_mode:    .long 0x0C7BFF00
 M_meter:   .long 0x0C7BFF18

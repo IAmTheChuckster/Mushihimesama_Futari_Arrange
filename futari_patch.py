@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Mushihimesama Futari Arrange (Cave CV1000) - patch build 15
+Mushihimesama Futari Arrange (Cave CV1000) - patch build 16
 
 Usage:
     python3 futari_patch.py futariblj.zip              -> writes futariarr_u4 next to the zip
@@ -9,13 +9,13 @@ Usage:
     python3 futari_patch.py futariblj.zip -o OUT       -> writes the patched futariarr_u4 to OUT
     python3 futari_patch.py u4                      -> a loose original u4 works too (no --zip)
 
-The original u4 must have CRC32 b9467b6d; the result is checked to be 74e78ee7.
+The original u4 must have CRC32 b9467b6d; the result is checked to be b004fb8d.
 Only the Python standard library is used.
 """
 import argparse, base64, os, sys, zipfile, zlib
 
 ORIG_CRC = 0xB9467B6D
-PATCHED_CRC = 0x74E78EE7
+PATCHED_CRC = 0xB004FB8D
 U4_SIZE = 0x200000
 OUT_NAME = "futariarr_u4"
 SET_NAME = "futariarr.zip"
@@ -25,12 +25,12 @@ MRA_NAME = "Mushihimesama Futari Arrange.mra"
 PATCHES = [
     (0x1C4, base64.b64decode("H4AAgA==")),
     (0x1F8000, base64.b64decode(
-    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAABsCfAwAACjRAOACIQERJ9FVkAEhJ9En"
+    "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAACACfAwAACjRAOACIQERJ9FVkAEhJ9En"
     "0AIhKtEs0AIhKtEr0AIhK9Es0AIhSZASgSvRK9ACISvRLNACISzRLNACISzRONACITvHA2I30Trj"
     "JGAAIRBD+48BcUXHA2Iz0WeTJGAAIRBD+48BcSXRKtACISTRKtACISTRKdACISPRJtACISPRJdAC"
     "ISLRJdACIRrRGtACIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAwsAwAMMCoD0HgA"
     "CQAJAAasgLwGrIi8fAxIBHwMcAQHrMBkEtArQAesDGV8DLgECaysUXwM4AUGrGSbfAw4BhCsjEUG"
-    "rIAvfAxACBCsBEQQrAhEEKwMRBCscEUQrHRFEKx4RXwMDAh8DPoHfAyUB3wMoAQdrEgoHayEKcAB"
+    "rIAvfAxUCBCsBEQQrAhEEKwMRBCscEUQrHRFEKx4RXwMIAh8DA4IfAyoB3wMoAQdrEgoHayEKcAB"
     "CQAgICAgRiBUVVJBIElSQUFSR04gRSAgICAAAAAAICAgICAgICAgIDAyNjIxLi4xIDYgICAgICAg"
     "ICAgCQAgIFQgSUggU1JQSk9DRSBUU0lVIE9ORkZDSUFJIEwAACAgQSBETkkgIFNPTiBURkFJRklM"
     "VEFERVcgVEksSAAAICBFIEROUk9FUyBEWUIgLFJPQSBUVU9ISVJFWiBEAAAgIEIgIFlBQ0VWIC5M"
@@ -52,18 +52,18 @@ PATCHES = [
     "iCg7iYiE/3AMYAHhFjAziYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCH"
     "hQNnAOCLgINhKnEAIQHi/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwx"
     "giEBcAIswq+CaCZPCwAJAAkAAAkAAnsMAP97DBT/ewwA8DAAAAAgAAAAJwxI3gQAQIQGDLBHRwz8"
-    "UgcMxmRM0AJgCCAhiUzQADQei1NiA+EWMhqJD8dcAUfSImMcM4CREzMSjzIiAOMyIiJPRi9WL2Yv"
-    "di9C0AtACQD2Z/Zm9mX2ZCZPOdAB4RIgPdArQAkACQAFAQ8KIk870AtACQA00AJgCCAUiTDREmAI"
-    "IAaJAOACIQPkAOUt0AtACQAq0AJgCCAFiTLUAOVMli/QC0AJACZPCwAJAIYvLtACZy7QBmQCYAw0"
-    "JNACaC3QBTgKARghE4kr1Uw1K8cDYwTiNmACJzZgARdSFzPQAxc2YAQXEEL0jxR3EEHujxF1MdZM"
-    "NgXjMtVVOAoCCUIBQiNhCEEsMRwxg2AYMCNoCEAMMCfRHDAW0RInARdiFyXQAxcm0AQXFHcQQ+WP"
-    "+XYO0HIgCwD2aAkA4C7+ATgMqDN7DCj/Bgwg5nsMAP97DBj/OAwcOgYM0LsGDDC3BgxgewUMlMN8"
-    "DHgGBQwMEAUMBBAAEQAAIACcxP7/hQAAE//A4AjwAIAAgIAAF8P/wAjwAFQAVFQAE5//EAfgAGAA"
-    "YGAAE4f/AAfwAHgAeHgPAA8A+ASAAAcABwAUAOYAgACAgMzMzcwGALmNItACYAggK4lIJCeLINEc"
-    "Uh5TPOAOIxoDLDMh0DMwBYkg0ADiIiAxEBigCQAWUgLgAzITiRvQAmRAMgGJIiAxECgiCIkBVDg0"
-    "COADNAaLAOAV1AEkBREC4AsACQALAADgDNArQAkACdACYAggAYkLAADgCdArQAkABNACYAggAYkL"
-    "AADgBdArQAkACQB7DAD/UQwsmwUMGMoFDDDKBQxIygAAXAB7DCD/UQyQmyJPB9ALQAkABtACYAgg"
-    "BIkF0QDgAxEEEQURJk8LAAkABQxcxXsMAP8FDKzE")),
+    "UgcMxmRR0AJgCCAhiVHQADQei1NiA+EWMhqJD8dcAUzSImMcM4iREzMSjzIiAOMyIiJPRi9WL2Yv"
+    "di9H0AtACQD2Z/Zm9mX2ZCZPPdAB4RIgQtArQAkACQAFAQ8KIk9A0AtACQA50AJgCCAUiTTREmAI"
+    "IAaJAOACIQPkAOUy0AtACQAu0AJgCCAFiTfUAOVUljTQC0AJACZPCwAJAIYvM9ACZzPQBmQCYAw0"
+    "JtACYWDiIzE8iQlBKEEYNCXQAmgu0AU4CgEYIROJLNVMNSzHA2ME4jZgAic2YAEXUhc00AMXNmAE"
+    "FxBC9I8UdxBB7o8RdTLWTDYF4zPVVTgKAglCAUIjYQhBLDEcMYNgGDAjaAhADDAo0RwwF9ESJwEX"
+    "Yhcm0AMXJ9AEFxR3EEPlj/l2D9ByIAsA9mgJAOAu/gE4DKgzewwo/zgMPDMGDCDmewwA/3sMGP84"
+    "DBw6BgzQuwYMMLcGDGB7BQyUw3wMeAYFDAwQBQwEEAARAAAgAJzE/v+FAAAT/8DgCPAAgACAgAAX"
+    "w//ACPAAVABUVAATn/8QB+AAYABgYAATh/8AB/AAeAB4eA8ADwD4BIAABwAHABQA5gCAAICAzMzN"
+    "zAYAuY0i0AJgCCAriUgkJ4sg0RxSHlM84A4jGgMsMyHQMzAFiSDQAOIiIDEQGKAJABZSAuADMhOJ"
+    "G9ACZEAyAYkiIDEQKCIIiQFUODQI4AM0BosA4BXUASQFEQLgCwAJAAsAAOAM0CtACQAJ0AJgCCAB"
+    "iQsAAOAJ0CtACQAE0AJgCCABiQsAAOAF0CtACQAJAHsMAP9RDCybBQwYygUMMMoFDEjKAABcAHsM"
+    "IP9RDJCbIk8H0AtACQAG0AJgCCAEiQXRAOADEQQRBREmTwsACQAFDFzFewwA/wUMrMQ=")),
 ]
 
 
@@ -118,8 +118,8 @@ MRA_TEMPLATE = """<!--
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="74e78ee7"/>
-        <part name="futariarr_u4" crc="74e78ee7"/>
+        <part name="futariarr_u4" crc="b004fb8d"/>
+        <part name="futariarr_u4" crc="b004fb8d"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>
@@ -158,7 +158,7 @@ def mra_text():
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Patch Mushihime-Sama Futari Black Label u4 into futariarr_u4 (Futari Arrange, build 15)")
+    ap = argparse.ArgumentParser(description="Patch Mushihime-Sama Futari Black Label u4 into futariarr_u4 (Futari Arrange, build 16)")
     ap.add_argument("input", help="futariblj.zip or a loose original u4 file")
     ap.add_argument("-o", "--output", help="where to write futariarr_u4")
     ap.add_argument("--zip", action="store_true", help="also write futariarr.zip (input must be a zip)")
