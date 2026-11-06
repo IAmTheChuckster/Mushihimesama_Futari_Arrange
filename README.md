@@ -48,6 +48,10 @@ python3 futari_patch.py futariblj.zip --zip --mra
 ### Building from source
 `src/build.py futariblj.zip OUT.zip` assembles `src/*.s` (needs SH binutils: `sh-elf-as`, `sh-elf-ld`, `sh-elf-objcopy`), then `src/update_patchers.py` embeds the changed bytes into the patchers. See [`src/README.md`](src/README.md).
 
+## Skills
+
+This repo includes a Claude skill for building, testing and releasing the patch: [`skills/futari-arrange-patch/SKILL.md`](skills/futari-arrange-patch/SKILL.md). It lists the source layout, the build and patcher commands, the MAME test workflow and the known memory addresses.
+
 ## Testing
 This patch was tested with MAME 0.289 and [CV1k core for the MiSTer FPGA by Raki](https://www.patreon.com/c/ikamusume/posts)<br>
 It may even work on a PCB but do so on your own risk.
