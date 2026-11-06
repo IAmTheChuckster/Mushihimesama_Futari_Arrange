@@ -21,13 +21,23 @@ hyper_blast:
         mov.l   H_cap,r2
         mov     #0,r3
         cmp/ge  r2,r1
-        bf      4f
+        bf      5f
         mov     #0,r1           ! cash out at x99999: the multiplier starts again from 0, the gems keep 99999 for a while
         mov.l   r1,@(r0,r4)
         mov.l   H_win,r0
         mov.w   H_winlen,r1
         mov.l   r1,@r0
         mov     #1,r3
+        bra     4f
+        nop
+5:      mov.l   @(r0,r4),r1     ! normal bomb: the x counter loses 20% (r1 -= r1 / 5)
+        mov.l   H_recip5,r5
+        dmulu.l r5,r1
+        sts     mach,r2
+        shlr2   r2              ! r2 = r1 / 5 (for 0..99999)
+        sub     r2,r1
+        mov.w   H_cnt,r0
+        mov.l   r1,@(r0,r4)
 4:      mov.l   H_gem,r4
         mov.l   @r4,r4          ! gem type
         tst     r3,r3
@@ -58,6 +68,7 @@ H_cnt:    .word 168
 H_winlen: .word 600
         .align 2
 H_cap:    .long 99999
+H_recip5: .long 0xCCCCCCCD
 H_win:    .long 0x0C7BFF2C
 H_mode:   .long 0x0C7BFF00
 H_gem:    .long 0x0C7BFF08
