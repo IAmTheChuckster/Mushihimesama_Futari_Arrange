@@ -6,7 +6,7 @@ gem_hook:
         mov.l   M_mode,r0
         mov.l   @r0,r0
         tst     r0,r0
-        bt      9f
+        bt      M_orig
         mov.l   M_p1stock,r0
         cmp/eq  r0,r4
         bf      9f
@@ -44,6 +44,23 @@ gem_hook:
 9:      mov.l   M_gemadd,r0
         jmp     @r0
         nop
+! ORIGINAL ARCADE: run the game's collector, then keep the x counter at its old cap of 30000
+M_orig: sts.l   pr,@-r15
+        mov.l   r4,@-r15
+        mov.l   M_gemadd,r0
+        jsr     @r0
+        nop
+        mov     r0,r6
+        mov.l   @r15+,r4
+        mov.w   M_cnt,r0
+        mov.l   @(r0,r4),r2
+        mov.w   M_cap30,r1
+        cmp/gt  r1,r2
+        bf      1f
+        mov.l   r1,@(r0,r4)
+1:      lds.l   @r15+,pr
+        rts
+        mov     r6,r0
         .align 2
 M_vals:    .byte 1,5,10,15
         .align 2
@@ -59,7 +76,7 @@ score_hook:
         bt      9f
         mov.w   M_cnt,r0
         mov.l   @(r0,r4),r1
-        mov.w   M_cap,r2
+        mov.l   M_cap,r2
         cmp/ge  r2,r1
         bt      8f
         mov.l   M_win,r0         ! cash-out window after a bomb at x30000
@@ -72,8 +89,9 @@ score_hook:
         nop
         .align 2
 M_cnt:   .word 168
-M_cap:   .word 30000
+M_cap30: .word 30000
         .align 2
+M_cap:   .long 99999
 M_scadd: .long 0x0C06B120
 M_win:   .long 0x0C7BFF2C
 

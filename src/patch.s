@@ -79,6 +79,15 @@ patcher:
         mov.l   P_p2lit,r1         ! input poll call literal 0x0C062F80 -> p2_hook (2P off in ARRANGE MODE)
         mov.l   P_p2h,r0
         mov.l   r0,@r1
+        mov.l   P_cap1,r1          ! x counter cap 30000 -> 99999 (both clamps; ORIGINAL ARCADE is re-clamped in gem_hook)
+        mov.w   P_cap1v,r0
+        mov.w   r0,@r1             ! 0x0C06B768: mov.l @(0x5B*4,PC),r1 (existing 99998 literal at 0x0C06B8D8)
+        mov.l   P_cap3,r1
+        mov.l   P_capval,r0
+        mov.l   r0,@r1             ! spare slot 0x0C06C7BC = 99998
+        mov.l   P_cap2,r1
+        mov.w   P_cap2v,r0
+        mov.w   r0,@r1             ! 0x0C06C782: mov.l @(14*4,PC),r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -110,6 +119,13 @@ P_ek:       .long enemy_kill
 P_gemlit:   .long 0xAC0951AC
 P_gh:       .long gem_hook
 P_sclit:    .long 0xAC0951A0
+P_cap1:     .long 0xAC06B768
+P_cap2:     .long 0xAC06C782
+P_cap3:     .long 0xAC06C7BC
+P_capval:   .long 99998
+P_cap1v:    .word 0xD15B
+P_cap2v:    .word 0xD10E
+        .align 2
 P_sh:       .long score_hook
 P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook

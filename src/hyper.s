@@ -18,13 +18,11 @@ hyper_blast:
         sts.l   pr,@-r15
         mov.w   H_cnt,r0
         mov.l   @(r0,r4),r1     ! x counter
-        mov.w   H_cap,r2
+        mov.l   H_cap,r2
         mov     #0,r3
         cmp/ge  r2,r1
         bf      4f
-        mov     r1,r3           ! cash out at x30000: the multiplier drops by 25%, the gems keep 30000 for a while
-        shlr2   r3
-        sub     r3,r1
+        mov     #0,r1           ! cash out at x99999: the multiplier starts again from 0, the gems keep 99999 for a while
         mov.l   r1,@(r0,r4)
         mov.l   H_win,r0
         mov.w   H_winlen,r1
@@ -57,9 +55,9 @@ hyper_inv:
         nop
         .align 2
 H_cnt:    .word 168
-H_cap:    .word 30000
 H_winlen: .word 600
         .align 2
+H_cap:    .long 99999
 H_win:    .long 0x0C7BFF2C
 H_mode:   .long 0x0C7BFF00
 H_gem:    .long 0x0C7BFF08
