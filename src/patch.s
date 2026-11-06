@@ -55,6 +55,24 @@ patcher:
         dt      r3
         bf/s    1b
         add     #1,r1
+        mov.l   P_msl1,r1          ! Mode Select input accessors -> wrappers (six literals)
+        mov.l   P_msrel,r0
+        mov.l   r0,@r1             ! 0x0C104404 released
+        mov.l   P_msl2,r1
+        mov.l   P_msedge,r0
+        mov.l   r0,@r1             ! 0x0C104408 newly pressed
+        mov.l   P_msl3,r1
+        mov.l   P_msheld,r0
+        mov.l   r0,@r1             ! 0x0C10440C held
+        mov.l   P_msl4,r1
+        mov.l   P_msrel,r0
+        mov.l   r0,@r1             ! 0x0C104570 released
+        mov.l   P_msl5,r1
+        mov.l   P_msedge,r0
+        mov.l   r0,@r1             ! 0x0C104574 newly pressed
+        mov.l   P_msl6,r1
+        mov.l   P_msheld,r0
+        mov.l   r0,@r1             ! 0x0C104578 held
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -88,6 +106,15 @@ P_gh:       .long gem_hook
 P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
+P_msl1:     .long 0xAC104404
+P_msl2:     .long 0xAC104408
+P_msl3:     .long 0xAC10440C
+P_msl4:     .long 0xAC104570
+P_msl5:     .long 0xAC104574
+P_msl6:     .long 0xAC104578
+P_msrel:    .long ms_rel
+P_msedge:   .long ms_edge
+P_msheld:   .long ms_held
 P_ms:       .long mode_set
 P_bootdst:  .long 0xAC1D2848
 P_warndst:  .long 0xAC1D2984
@@ -131,5 +158,6 @@ P_warnstr:
         .include "hyper.s"
         .include "chain.s"
         .include "meter.s"
+        .include "modesel.s"
         .align 2
 blob_end:
