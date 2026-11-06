@@ -61,8 +61,12 @@ score_hook:
         mov.l   @(r0,r4),r1
         mov.w   M_cap,r2
         cmp/ge  r2,r1
-        bf      9f
-        mov     r2,r5
+        bt      8f
+        mov.l   M_win,r0         ! cash-out window after a bomb at x30000
+        mov.l   @r0,r0
+        tst     r0,r0
+        bt      9f
+8:      mov     r2,r5
 9:      mov.l   M_scadd,r0
         jmp     @r0
         nop
@@ -71,6 +75,7 @@ M_cnt:   .word 168
 M_cap:   .word 30000
         .align 2
 M_scadd: .long 0x0C06B120
+M_win:   .long 0x0C7BFF2C
 
 ! player_hook: replaces the per-frame player update call 0x0C067B60(r4 = player).
 ! In ARRANGE MODE it queues meter_draw in the game's draw list (0x0C05C394, priority PRI).
@@ -83,7 +88,13 @@ player_hook:
         mov.l   @r0,r0
         tst     r0,r0
         bt      8f
-        mov.l   M_pend,r1
+        mov.l   M_win2,r1        ! cash-out window counts down
+        mov.l   @r1,r0
+        tst     r0,r0
+        bt      6f
+        add     #-1,r0
+        mov.l   r0,@r1
+6:      mov.l   M_pend,r1
         mov.l   @r1,r0
         tst     r0,r0
         bt      7f
@@ -164,6 +175,7 @@ M_pri:   .word PRI
         .align 2
 M_pstate:  .long 0x0C3833A8
 M_pend:    .long 0x0C7BFF28
+M_win2:    .long 0x0C7BFF2C
 M_slide:   .long 0x0C38333C
 M_cancel:  .long 0x0C06E620
 M_mode:    .long 0x0C7BFF00

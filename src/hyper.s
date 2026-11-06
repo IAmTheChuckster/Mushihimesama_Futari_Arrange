@@ -16,8 +16,26 @@ hyper_blast:
 1:      mov     #0,r0
         mov.w   r0,@(12,r4)     ! clear the "bombing" flag (normally cleared when the blast ends)
         sts.l   pr,@-r15
-        mov.l   H_gem,r4
+        mov.w   H_cnt,r0
+        mov.l   @(r0,r4),r1     ! x counter
+        mov.w   H_cap,r2
+        mov     #0,r3
+        cmp/ge  r2,r1
+        bf      4f
+        mov     r1,r3           ! cash out at x30000: the multiplier drops by 25%, the gems keep 30000 for a while
+        shlr2   r3
+        sub     r3,r1
+        mov.l   r1,@(r0,r4)
+        mov.l   H_win,r0
+        mov.w   H_winlen,r1
+        mov.l   r1,@r0
+        mov     #1,r3
+4:      mov.l   H_gem,r4
         mov.l   @r4,r4          ! gem type
+        tst     r3,r3
+        bt      3f
+        mov     #3,r4           ! cash out: big (gold) gems
+3:
         mov.l   H_gemarg,r5
         mov.l   @r5,r5
         mov.l   H_cancel,r0
@@ -38,6 +56,11 @@ hyper_inv:
         jmp     @r0
         nop
         .align 2
+H_cnt:    .word 168
+H_cap:    .word 30000
+H_winlen: .word 600
+        .align 2
+H_win:    .long 0x0C7BFF2C
 H_mode:   .long 0x0C7BFF00
 H_gem:    .long 0x0C7BFF08
 H_gemarg: .long 0x0C7BFF0C
