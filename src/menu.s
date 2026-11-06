@@ -69,6 +69,22 @@ menu:
         mov.l   r0,@-r15        ! save colour
         ITEM    0, 60, L_y0, L_s0
         ITEM    1, 72, L_y1, L_s1
+        mov.l   L_red,r0         ! red "NOT FOR SALE" where "SALE BY AMI" was
+        mov.l   r0,@r10
+        mov     #72,r4
+        mov.l   L_y2,r5
+        mov.l   L_s2,r7
+        mov.w   L_pri,r6
+        mov.l   L_T,r0
+        jsr     @r0
+        nop
+        mov     #73,r4
+        mov.l   L_y2,r5
+        mov.l   L_s2,r7
+        mov.w   L_pri,r6
+        mov.l   L_T,r0
+        jsr     @r0
+        nop
         mov.l   @r15+,r0
         mov.l   r0,@r10         ! restore colour
         mov.l   L_filt,r4       ! hide the "SALE BY AMI" glyph sprites in this frame's draw pass
@@ -104,12 +120,16 @@ L_yel:  .long   0x80FFFF00      ! yellow (tint word, RGB order)
 L_neu:  .long   0x80808080
 L_y0:   .long   216
 L_y1:   .long   232
+L_y2:   .long   285
+L_red:  .long   0x80FF2020
+L_s2:   .long   str2
 L_s0:   .long   str0
 L_s1:   .long   str1
 L_arrow:.long   str_arrow
 L_blank:.long   str_blank
 str0:   .asciz  "ORIGINAL ARCADE"
 str1:   .asciz  "ARRANGE MODE"
+str2:   .asciz  "NOT FOR SALE"
 str_arrow: .asciz ">"
 str_blank: .asciz " "
         .align 2
