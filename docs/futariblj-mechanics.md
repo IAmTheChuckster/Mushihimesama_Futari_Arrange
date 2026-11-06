@@ -100,4 +100,4 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - ARRANGE MODE sets that start to 1 s and forces mode 2, so Mode Select shows for about 1.5 s and then Character Select follows.
 - "God Mode" label at the top: two 64x8 sprites, tiles 0x15380160 and 0x15400160, at x=84, y=17..25 (over a red bar, tile 0x14200140). There is no "ARRANGE" graphic in the game.
 - P2 bomb icon (HUD): base 0x1300C0FF tile 0x08E000F0, shade 0x1700FFC3 tile 0x08C000F0 (tint 0x545454), glow 0x1300FF9F tile 0x071000E0 (0x606060) and 0x1300FF87 tile 0x070000F0 (0x787878); 16x16, boxes at x 133 + 17*i, y 314.
-- Character Select: a single short Left/Right press in my schedules did not switch to Palm; Palm still not confirmed.
+- Character Select: Right (or Left) toggles Reco/Palm once the screen accepts input (about frame 3000 in the Arrange flow, presses at 2950 are ignored). Palm verified in ARRANGE MODE: God Mode, chain cancel, Hyper Bomb and meter all work.
