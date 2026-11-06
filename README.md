@@ -19,8 +19,8 @@ I did all the testing and planning.
 - **x99999 multiplier and cash out (ARRANGE MODE only):** the gem multiplier (the x counter) now goes up to 99999 instead of 30000. While it is at the 99999 cap every gem and every bullet cancelled into a gem pays a flat 99999 points. **Cash out:** pressing the bomb button at x99999 cancels every bullet on the screen into big (gold) gems, each worth 99999 for the next 10 seconds, and the multiplier resets to 0. A bomb below the cap works as before. ORIGINAL ARCADE keeps the 30000 cap.
 - **God Mode only (ARRANGE MODE):** ARRANGE MODE always plays God Mode. The Mode Select screen steps ORIGINAL, MANIAC, GOD by itself and lands on God; your buttons are ignored there, so the mode cannot be chosen by hand.
 - **1P only (ARRANGE MODE):** 2P is disabled: 2P START and the 2P controls are ignored. ORIGINAL ARCADE still lets two players play.
-- **Boot screen:** the memory-check screen now reads FUTARI ARRANGE and 2026.11.6.
-- **Warning screen:** the "for use in Japan only" notice is replaced by an unofficial-project disclaimer, HAVE FUN!!! and 2026/11/6 FUTARI ARRANGE.
+- **Boot screen:** the memory-check screen now reads FUTARI ARRANGE and 2026.11.7.
+- **Warning screen:** the "for use in Japan only" notice is replaced by an unofficial-project disclaimer, HAVE FUN!!! and 2026/11/7 FUTARI ARRANGE.
 - Everything else in the game is unchanged; ORIGINAL ARCADE plays exactly like the original.
 
 ## Patching the game
