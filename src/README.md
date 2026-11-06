@@ -10,6 +10,6 @@
 - `build.py` - builds the patched u4 from your own `futariblj.zip`.
 - `update_patchers.py` - embeds the changed bytes into `futari_patch.py`, `index.html` and the `.mra`.
 
-Build 1 gives `futariarr_u4` CRC `9a7fde19`.
+Build 1 gives `futariarr_u4` CRC `ebe0a360`.
 
 Notes: a PC-relative `mov.l` must not sit in a branch delay slot (illegal on real SH-3). The yellow tint word is `0x80FFFF00` (neutral is `0x80808080`).

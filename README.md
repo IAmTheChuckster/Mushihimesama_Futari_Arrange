@@ -25,10 +25,11 @@ I did all the testing and planning.
 - **Chain cancel (ARRANGE MODE only):** when an enemy is destroyed, every bullet within 24 px of it is cancelled into a small gem, and every bullet within 16 px of a cancelled bullet is cancelled too, so dense bullet clusters chain away.
 - **Hyper meter (ARRANGE MODE only):** the six empty 2P boxes at the bottom right fill with red swirls (the 2P bomb icon), one box per 2000. Small gems add 1, big gems add 10; at 12000 you get an extra bomb (up to the game's maximum) and the boxes start again from empty. A number above shows the value (for debugging, will be removed later). Reset on the title screen.
 - **God Mode only (ARRANGE MODE):** ARRANGE MODE always plays God Mode; the Mode Select screen times out straight away instead of waiting for a choice.
+- **Boot screen:** the memory-check screen now reads FUTARI ARRANGE and 2026.11.6.
 - Everything else in the game is unchanged; ORIGINAL ARCADE plays exactly like the original.
 
 ## Patching the game
-You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `9a7fde19`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `ebe0a360`), the complete romset `futariarr.zip` (u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).

@@ -37,6 +37,15 @@ patcher:
         mov.l   P_mslit,r1
         mov.l   P_ms,r0
         mov.l   r0,@r1             ! 0x0C10458C -> mode_set
+        mova    P_bootstr,r0       ! boot screen text: title (24) + 4 NULs + date line (30)
+        mov     r0,r2
+        mov.l   P_bootdst,r1
+        mov     #58,r3
+1:      mov.b   @r2+,r0
+        mov.b   r0,@r1
+        dt      r3
+        bf/s    1b
+        add     #1,r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -71,6 +80,11 @@ P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
 P_ms:       .long mode_set
+P_bootdst:  .long 0xAC1D2848
+        .align 2
+P_bootstr:  .ascii "     FUTARI ARRANGE     "
+            .byte 0,0,0,0
+            .ascii "          2026.11.6           "
         .align 2
         .include "menu.s"
         .include "hyper.s"

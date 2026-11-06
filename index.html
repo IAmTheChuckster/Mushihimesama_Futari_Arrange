@@ -102,7 +102,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     <div class="progress" aria-hidden="true"><div id="bar"></div></div>
     <div class="tablebox"><table>
       <thead><tr><th>File</th><th>Expected CRC32</th><th>Built CRC32</th><th>Status</th></tr></thead>
-      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">9a7fde19</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
+      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">ebe0a360</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
     </table></div>
     <div class="buttons">
       <button id="btnSet" disabled>Download futariarr.zip</button>
@@ -119,10 +119,10 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <script>
 (() => {
-  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x9a7fde19, U4_SIZE = 0x200000;
+  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0xebe0a360, U4_SIZE = 0x200000;
   const PATCH = [
     [0x1C4, "H4AAgA=="],
-    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAADYBfAwAABXRAOACIQERFNEvkAEhFNEU0AIhF9EZ0AIhF9EY0AIhGNEZ0AIhI5ASgRjRGNACIRjRGdACIRnRGdACIRnRGtACIQXRAeACEQDgAxEPkAQRBdArQAkACQB7rAD/CawoIQmsOCF8DKwAAAwwKgPQeAAJAAkABqyAvAasiLx8DMABfAzoAQeswGQS0CtAB6wMZXwMMAIJrKxRfAxYAwasZJt8DKYDEKyMRXwMGAIiT4Yvli+mLyvYLtACYYFSERgnYikhgmkTYAHIAIkA6QLIAIkB6ZIoJdFCkJgpAIlAkAEhAOAh0QIhI9qiYAYvAOAAOQOLItIn0wKgCQAh0ibTIiou5CDVM2cplhvQC0AJADzkHNUe1yKWGNALQAkAAeAAOQOLFtIb0wKgCQAV0hrTIio65BXVM2cRlg/QC0AJAEjkEdUT1wqWDNALQAkA9mACKvZq9mn2aCZPCwAJAPoACucB5wkAewwA/3sMGP8QDGAlBQx0xAUMUMsFDNjL/4AA/4CAgIAAANgAAADoAHwMnAF8DKwBfAy5AXwMuwFST0dJTklMQUEgQ1JEQQBFUkFBUkdOIEVPTUVEPgAgAAAACQAO0AJgCCACixDQK0AJAADgRoEiTwrUQmQK1VJlDNALQAkAJk8LAAHgBNACYAggAYkF1VJlB9ArQAkACQB7DAD/ewwI/3sMDP97DBD/EAyQ6wYMIOYGDKCKBNACYAggAIkC5QHQK0AJAAYMIIV7DAD/P9ACYAggKomGL5Yvpi+2L8Yv1i9GLyJPcJBOARghFokSWRNaOds33ADgAiwcsAkAAO3CYAM9Cokz0dNgCEAeARVZFloy2w+wCQDyrwF9Jk/2ZPZt9mz2a/Zq9mn2aOYvL9Aw0StBAmMiTyrQAmAIIECJKdEcMAJoiCg7iYiE/3AMYAHhFjAziYVSmDIRQgCJK2KyMiyJhlKoMhFCAIkrYrIyJYmDYXxxFFQc0AtACQCHhQNnAOCLgINhKnEAIQHi/3EgIf9xICFzYIaBg2F8cQDgBBEDEQPgiIDCYA+REzAGiQnRA2IIQiwxgiEBcAIswq+CaCZPCwAJAAkAAAkAAnsMAP97DBT/ewwA8BgAAAAQAAAAJwxI3gQAQIQGDLBHRwz8UgcMxmQ/0AJgCCAfiT/QADQci1NgAIgDjQHhAYgWiwrhOdIiYxwza5ETMw+PMiIA4zIiIk9GL1YvZi92LzTQC0AJAPZn9mb2ZfZkJk8x0CtACQAiTzDQC0AJACrQAmAIIAWJL9QA5UyWLNALQAkAJk8LAAkAhi8r0AJnK9AGZAJgDDQh0AJoKtAFOAoBGCETiSjVTDUoxwNjBOI2YAInNmABF1IXMNADFzZgBBcQQvSPFHcQQe6PEXUu1kw2BeMv1VU4CgIJQgFCI2EIQSwxHDGDYBgwI2gIQAwwJNEcMBPREicBF2IXItADFyPQBBcUdxBD5Y/5dgvQciALAPZoCQDgLv4BewwA/3sMGP84DBw6BgzQuwYMMLcGDGB7BQyUw3wMyAMFDAwQBQwEEAARAAAgAJzE/v+FAAAT/8DgCPAAgACAgAAXw//ACPAAVABUVAATn/8QB+AAYABgYAATh/8AB/AAeAB4eA8ADwD4BIAABwAHABQA5gCAAICAzMzNzAYAuY0="]
+    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAEoBfAwAABnRAOACIQERGNE3kAEhGNEY0AIhG9Ed0AIhG9Ec0AIhHNEd0AIhK5ASgRzRHNACIRzRHdACIR3RHdACIR3RHtACIR/HA2Id0TrjJGAAIRBD+48BcQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAz8AAAMMCoD0HgACQAJAAasgLwGrIi8fAwQAnwMOAIHrMBkEtArQAesDGV8DIACCaysUXwMqAMGrGSbfAz2AxCsjEV8DGgCHaxIKCAgICBGIFRVUkEgSVJBQVJHTiBFICAgIAAAAAAgICAgICAgICAgMDI2MjEuLjEgNiAgICAgICAgICAJACJPhi+WL6YvK9gu0AJhgVIRGCdiKSGCaRNgAcgAiQDpAsgAiQHpkigl0UKQmCkAiUCQASEA4CHRAiEj2qJgBi8A4AA5A4si0ifTAqAJACHSJtMiKi7kINUzZymWG9ALQAkAPOQc1R7XIpYY0AtACQAB4AA5A4sW0hvTAqAJABXSGtMiKjrkFdUzZxGWD9ALQAkASOQR1RPXCpYM0AtACQD2YAIq9mr2afZoJk8LAAkA+gAK5wHnCQB7DAD/ewwY/xAMYCUFDHTEBQxQywUM2Mv/gAD/gICAgAAA2AAAAOgAfAzsAXwM/AF8DAkCfAwLAlJPR0lOSUxBQSBDUkRBAEVSQUFSR04gRU9NRUQ+ACAAAAAJAA7QAmAIIAKLENArQAkAAOBGgSJPCtRCZArVUmUM0AtACQAmTwsAAeAE0AJgCCABiQXVUmUH0CtACQAJAHsMAP97DAj/ewwM/3sMEP8QDJDrBgwg5gYMoIoE0AJgCCAAiQLlAdArQAkABgwghXsMAP8/0AJgCCAqiYYvli+mL7Yvxi/WL0YvIk9wkE4BGCEWiRJZE1o52zfcAOACLBywCQAA7cJgAz0KiTPR02AIQB4BFVkWWjLbD7AJAPKvAX0mT/Zk9m32bPZr9mr2afZo5i8v0DDRK0ECYyJPKtACYAggQIkp0RwwAmiIKDuJiIT/cAxgAeEWMDOJhVKYMhFCAIkrYrIyLImGUqgyEUIAiStisjIliYNhfHEUVBzQC0AJAIeFA2cA4IuAg2EqcQAhAeL/cSAh/3EgIXNghoGDYXxxAOAEEQMRA+CIgMJgD5ETMAaJCdEDYghCLDGCIQFwAizCr4JoJk8LAAkACQAACQACewwA/3sMFP97DADwGAAAABAAAAAnDEjeBABAhAYMsEdHDPxSBwzGZD/QAmAIIB+JP9AANByLU2AAiAONAeEBiBaLCuE50iJjHDNrkRMzD48yIgDjMiIiT0YvVi9mL3YvNNALQAkA9mf2ZvZl9mQmTzHQK0AJACJPMNALQAkAKtACYAggBYkv1ADlTJYs0AtACQAmTwsACQCGLyvQAmcr0AZkAmAMNCHQAmgq0AU4CgEYIROJKNVMNSjHA2ME4jZgAic2YAEXUhcw0AMXNmAEFxBC9I8UdxBB7o8RdS7WTDYF4y/VVTgKAglCAUIjYQhBLDEcMYNgGDAjaAhADDAk0RwwE9ESJwEXYhci0AMXI9AEFxR3EEPlj/l2C9ByIAsA9mgJAOAu/gF7DAD/ewwY/zgMHDoGDNC7BgwwtwYMYHsFDJTDfAwYBAUMDBAFDAQQABEAACAAnMT+/4UAABP/wOAI8ACAAICAABfD/8AI8ABUAFRUABOf/xAH4ABgAGBgABOH/wAH8AB4AHh4DwAPAPgEgAAHAAcAFADmAIAAgIDMzM3MBgC5jQ=="]
   ];
   const OUT_NAME = "futariarr_u4", SET_NAME = "futariarr.zip", MRA_NAME = "Mushihimesama Futari Arrange.mra";
   // MiSTer MRA; the futariarr_u4 CRC is set from PATCHED_CRC when it is saved.
@@ -269,7 +269,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     if (!u4data) return fail("No u4 found. Drop futariblj.zip or the u4 file from it.");
     if (u4data.length !== U4_SIZE) return fail("u4 is " + u4data.length.toLocaleString() + " bytes; the original is 2,097,152 bytes.");
     const c = crc32(u4data);
-    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC 9a7fde19). Load the original dump instead.");
+    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC ebe0a360). Load the original dump instead.");
     if (c !== ORIG_CRC) return fail("u4 CRC is " + hex(c) + ", not the original b9467b6d. This patch only works on the original dump.");
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d). Patching…"; $("checkmsg").className = "msg ok";
 
@@ -277,7 +277,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     for (const [off, data] of PATCH) out.set(b64(data), off);
     const oc = crc32(out); bar(.8);
     $("outcrc").textContent = hex(oc);
-    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of 9a7fde19, so nothing was offered for download."); }
+    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of ebe0a360, so nothing was offered for download."); }
     $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 1";
     $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched.";
     state.patched = out; bar(1);
