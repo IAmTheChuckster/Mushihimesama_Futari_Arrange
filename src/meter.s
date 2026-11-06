@@ -1,5 +1,5 @@
 ! Hyper meter (ARRANGE MODE only): 0..12000, the four gem sizes (item types 0..3) give 1, 5, 10, 15, full = extra bomb.
-! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000), with a debug number above.
+! Drawn as red P2 bomb icons in the six empty 2P boxes (one per 2000).
         .align 2
 ! gem_hook: replaces the gem-collect counter call 0x0C06B730(r4 = bomb/stock object, r5 = item type)
 gem_hook:
@@ -47,6 +47,30 @@ gem_hook:
         .align 2
 M_vals:    .byte 1,5,10,15
         .align 2
+
+! score_hook: replaces the item-pickup score add 0x0C06B120(r4 = player/stock object, r5 = points), literal 0x0C0951A0.
+! ARRANGE MODE: while the x counter (@(168,r4), cap 30000) is at the cap, every pickup pays a flat 30000.
+! Bombing and dying lower the counter, which ends the flat payout by itself.
+        .align 2
+score_hook:
+        mov.l   M_mode,r0
+        mov.l   @r0,r0
+        tst     r0,r0
+        bt      9f
+        mov.w   M_cnt,r0
+        mov.l   @(r0,r4),r1
+        mov.w   M_cap,r2
+        cmp/ge  r2,r1
+        bf      9f
+        mov     r2,r5
+9:      mov.l   M_scadd,r0
+        jmp     @r0
+        nop
+        .align 2
+M_cnt:   .word 168
+M_cap:   .word 30000
+        .align 2
+M_scadd: .long 0x0C06B120
 
 ! player_hook: replaces the per-frame player update call 0x0C067B60(r4 = player).
 ! In ARRANGE MODE it queues meter_draw in the game's draw list (0x0C05C394, priority PRI).
@@ -129,38 +153,7 @@ meter_draw:
         dt      r1
         bf/s    3b
         add     #17,r5           ! next box
-        ! --- 5 digits, right to left ---
-1:      mov.l   M_numdest,r6
-        add     r4,r6
-        mov     #5,r3
-        mov.l   M_recip10,r5
-2:      dmulu.l r5,r8
-        sts     mach,r2
-        shlr2   r2
-        shlr    r2               ! q
-        mov     r2,r1
-        shll2   r1
-        add     r2,r1
-        add     r1,r1
-        mov     r8,r0
-        sub     r1,r0            ! digit
-        mov     r2,r8
-        shll2   r0
-        add     r0,r0            ! digit*8
-        mov.l   M_digtile,r1
-        add     r1,r0
-        mov.l   M_hdr,r1
-        mov.l   r1,@r7
-        mov.l   r0,@(4,r7)
-        mov.l   r6,@(8,r7)
-        mov.l   M_digsize,r0
-        mov.l   r0,@(12,r7)
-        mov.l   M_white,r0
-        mov.l   r0,@(16,r7)
-        add     #20,r7
-        dt      r3
-        bf/s    2b
-        add     #-7,r6           ! next digit 7 px to the left
+1:
 M_end:  mov.l   M_dlp,r0
         mov.l   r7,@r0
         rts
@@ -183,7 +176,6 @@ M_submit:  .long 0x0C05C394
 M_draw:    .long meter_draw
 M_dlp:     .long 0x0C05100C
 M_org:     .long 0x0C051004
-M_hdr:     .long 0x11000000
 M_recip2k: .long 2147484        ! 2^32 / 2000
 M_boxdest: .long ((0x138-314)<<16)+133
 M_icon:    ! the game's P2 bomb icon: base, shade, two glow layers (header, tile, tint)
@@ -192,9 +184,3 @@ M_icon:    ! the game's P2 bomb icon: base, shade, two glow layers (header, tile
         .long 0x1300FF9F, 0x071000E0, 0x606060
         .long 0x1300FF87, 0x070000F0, 0x787878
 M_isize:   .long 0x000F000F
-M_digtile: .long 0x04F80080
-M_digsize: .long 0x00070007
-M_numdest: .long ((0x138-NUMY)<<16)+NUMX
-M_white:   .long 0x808080
-M_recip10: .long 0xCCCCCCCD
-M_recip1e4:.long 429497

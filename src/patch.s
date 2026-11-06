@@ -31,6 +31,9 @@ patcher:
         mov.l   P_gemlit,r1
         mov.l   P_gh,r0
         mov.l   r0,@r1             ! 0x0C0951AC -> gem_hook
+        mov.l   P_sclit,r1
+        mov.l   P_sh,r0
+        mov.l   r0,@r1             ! 0x0C0951A0 -> score_hook (flat 30000 per gem at x30000)
         mov.l   P_pllit,r1
         mov.l   P_ph,r0
         mov.l   r0,@r1             ! 0x0C069B64 -> player_hook
@@ -106,6 +109,8 @@ P_klit:     .long 0xAC07650C
 P_ek:       .long enemy_kill
 P_gemlit:   .long 0xAC0951AC
 P_gh:       .long gem_hook
+P_sclit:    .long 0xAC0951A0
+P_sh:       .long score_hook
 P_pllit:    .long 0xAC069B64
 P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
