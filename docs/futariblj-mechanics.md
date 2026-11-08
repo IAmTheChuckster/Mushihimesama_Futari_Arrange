@@ -141,3 +141,4 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 - Build 27: a normal hyper bomb in ARRANGE MODE takes 20% off the x counter (counter -= counter/5, integer). A cash-out bomb at x99999 still resets it to 0. Checked in MAME: counter 10000 -> 8000 on one bomb (bombs 3 -> 2).
 
 - Build 28: boot screen date 2026.11.7 and warning screen date 2026/11/7 (were 11.6).
+- Build 29: dates moved to 2026.11.8 and 2026/11/8; MRA replaced with the user-supplied one.
