@@ -33,6 +33,17 @@ gem_hook:
         mov.l   M_addbomb,r0
         jsr     @r0
         nop
+        mov.l   M_sel,r1         ! extra bomb voice: ship byte 0/1 = Palm, 2/3 = Reco (the game's own bomb voice switch)
+        mov.b   @r1,r0
+        mov     #1,r1
+        cmp/hi  r1,r0
+        bt      V_reco
+        mov.l   M_vpalm,r1
+        bra     V_go
+        nop
+V_reco: mov.l   M_vreco,r1
+V_go:   jsr     @r1
+        mov     #0,r4            ! player 1
         mov.l   @r15+,r7
         mov.l   @r15+,r6
         mov.l   @r15+,r5
@@ -228,6 +239,9 @@ M_mode:    .long 0x0C7BFF00
 M_meter:   .long 0x0C7BFF18
 M_p1stock: .long 0x0C383A1C
 M_addbomb: .long 0x0C06BBD0
+M_sel:     .long 0x0C3832F2     ! ship byte of player 1 (player struct 0x0C383254 + 0x9E)
+M_vpalm:   .long 0x0C10D7F0     ! voice id 0xCC (Reco_CC.wav), used when playing Palm
+M_vreco:   .long 0x0C10D8D0     ! voice id 0xBC (Reco_BC.wav), used when playing Reco
 M_gemadd:  .long 0x0C06B730
 M_pupd:    .long 0x0C067B60
 M_submit:  .long 0x0C05C394

@@ -142,3 +142,4 @@ Design agreed with the owner: after a coin, ORIGINAL ARCADE then ARRANGE MODE re
 
 - Build 28: boot screen date 2026.11.7 and warning screen date 2026/11/7 (were 11.6).
 - Build 29: dates moved to 2026.11.8 and 2026/11/8; MRA replaced with the user-supplied one.
+- Build 30: extra bomb (meter full) now plays a voice, ARRANGE only: ship byte 0x0C3832F2 (player struct 0x0C383254 + 0x9E, the byte the game's bomb code switches on: 0/1 = Palm, 2/3 = Reco) picks wrapper 0x0C10D7F0 (id 0xCC) for Palm or 0x0C10D8D0 (id 0xBC) for Reco, called from gem_hook after M_addbomb with r4 = 0. Chosen by the user from the 52-clip voice test. Checked in MAME: meter poked to 11999, audio identical to a control run until the extra bomb, different after.
