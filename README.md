@@ -9,6 +9,8 @@ I did all the testing and planning.
 
 ## Bugs to fix
 1. Reco and Palm bomb fills play the wrong voice
+2. Fix Palms fill meter so they use Reco's glyphs
+3. Reverse the fill meter so they go they fill from right to left
 
 ## Patch Notes
 - **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
