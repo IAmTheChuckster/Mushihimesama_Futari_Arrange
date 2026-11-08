@@ -31,7 +31,7 @@ I did all the testing and planning.
 ## Patching the game
 You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `2995da75`), the complete romset `futariarr.zip` (futariblk_u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
-### Web patcher
+### Web Patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).
 2. Load your `futariblj.zip` (or the loose u4 file). Everything runs in your browser; nothing is uploaded.
 3. Check that the files are shown as OK.
@@ -52,10 +52,6 @@ python3 futari_patch.py futariblj.zip --zip --mra
 
 ### Building from source
 `src/build.py futariblj.zip OUT.zip` assembles `src/*.s` (needs SH binutils: `sh-elf-as`, `sh-elf-ld`, `sh-elf-objcopy`), then `src/update_patchers.py` embeds the changed bytes into the patchers. See [`src/README.md`](src/README.md).
-
-## Skills
-
-This repo includes a Claude skill for building, testing and releasing the patch: [`skills/futari-arrange-patch/SKILL.md`](skills/futari-arrange-patch/SKILL.md). It lists the source layout, the build and patcher commands, the MAME test workflow and the known memory addresses.
 
 ## Testing
 This patch was tested with MAME 0.289 and [CV1k core for the MiSTer FPGA by Raki](https://www.patreon.com/c/ikamusume/posts)<br>
