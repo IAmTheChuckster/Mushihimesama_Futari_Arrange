@@ -7,6 +7,9 @@ Why did I make this? Because it's fun and for my own personal research to see th
 While Claude was used I put effort in making sure there are balanced gameplay.<br>
 I did all the testing and planning.
 
+## Bugs to fix
+1. Reco and Palm bomb fills the wrong voice
+
 ## Patch Notes
 - **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
   - The selected item is yellow with an arrow next to it; the other is white.
