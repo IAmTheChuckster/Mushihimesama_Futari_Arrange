@@ -241,7 +241,7 @@ M_p1stock: .long 0x0C383A1C
 M_addbomb: .long 0x0C06BBD0
 M_sel:     .long 0x0C3832F2     ! ship byte of player 1 (player struct 0x0C383254 + 0x9E)
 M_vpalm:   .long 0x0C10D830     ! wrapper for id 0xB7: sounds like the clip named Reco_CC.wav (the clips lag two slots), used when playing Palm
-M_vreco:   .long 0x0C10D910     ! wrapper for id 0xBE: sounds like the clip named Reco_BC.wav (the clips lag two slots), used when playing Reco
+M_vreco:   .long 0x0C10D8F0     ! wrapper for id 0xBD: should sound like the clip named Reco_BC.wav (clip lag measured: BA<-BC, BD<-BE), used when playing Reco
 M_gemadd:  .long 0x0C06B730
 M_pupd:    .long 0x0C067B60
 M_submit:  .long 0x0C05C394
