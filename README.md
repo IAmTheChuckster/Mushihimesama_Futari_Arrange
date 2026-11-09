@@ -8,7 +8,7 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## Bugs to fix
-1. Reco and Palm bomb fills play the wrong voice (currently paused in claude)
+1. Reco (0xF0) and Palm (0xC8) bomb fills play the wrong voice (currently paused in claude)
 2. Fix Palms fill meter so they use Reco's glyphs
 3. Reverse the fill meter so they go they fill from right to left
 
