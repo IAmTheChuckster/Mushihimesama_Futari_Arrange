@@ -8,7 +8,7 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## Bugs to fix
-None known at the moment.
+1. NOT FOR SALE and SALE BY AMI flash back and forth
 
 ## Patch Notes
 - **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
