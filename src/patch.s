@@ -148,7 +148,7 @@ P_warnlen:  .word 448
         .align 2
 P_bootstr:  .ascii "     FUTARI ARRANGE     "
             .byte 0,0,0,0
-            .ascii "          2026.11.8           "
+            .ascii "          2026.11.10          "
         .align 2
 P_warnstr:
             .ascii "   THIS PROJECT IS UNOFFICIAL "
@@ -177,7 +177,7 @@ P_warnstr:
             .byte 0,0
             .ascii "                              "
             .byte 0,0
-            .ascii "   2026/11/8 FUTARI ARRANGE   "
+            .ascii "   2026/11/10 FUTARI ARRANGE  "
             .byte 0,0
         .align 2
         .include "menu.s"

@@ -1,5 +1,5 @@
 <!--
-  ikacore_CV1k MRA - Mushihimesama Futari Black Label Arrange (2026/11/8 Futari Arrange).
+  ikacore_CV1k MRA - Mushihimesama Futari Black Label Arrange (2026/11/10 FUTARI ARRANGE).
   Same layout as the other CV1k arrange MRAs (DDR3-direct delivery).
 
   DELIVERY: the NAND and YMZ images do not stream over the ioctl/SPI
@@ -27,7 +27,7 @@
 -->
 <misterromdescription>
     <about author="ika-musume" source="https://github.com/ika-musume/ikacore_CV1k"/>
-    <name>Mushihimesama Futari Black Label Arrange (2026/11/8 Futari Arrange)</name>
+    <name>Mushihimesama Futari Black Label Arrange (2026/11/10 FUTARI ARRANGE)</name>
     <setname>futariarr</setname>
     <year>2026</year>
     <manufacturer>Cave</manufacturer>
@@ -48,8 +48,8 @@
     <nvram index="3" size="135680"/>
 
     <rom index="0" zip="futariarr.zip" md5="none">
-        <part name="futariarr_u4" crc="5ad0fd60"/>
-        <part name="futariarr_u4" crc="5ad0fd60"/>
+        <part name="futariarr_u4" crc="96610bbf"/>
+        <part name="futariarr_u4" crc="96610bbf"/>
     </rom>
 
     <buttons names="Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State" default="A,B,X,Y,Start,R,L,Select"/>

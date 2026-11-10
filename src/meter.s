@@ -33,10 +33,9 @@ gem_hook:
         mov.l   M_addbomb,r0
         jsr     @r0
         nop
-        mov.l   M_sel,r1         ! extra bomb voice: ship byte 0/1 = Palm, 2/3 = Reco (the game's own bomb voice switch)
-        mov.b   @r1,r0
-        mov     #1,r1
-        cmp/hi  r1,r0
+        mov.l   M_p1stock,r1     ! extra bomb voice by character: stock object +8 is 0 for Reco, 1 for Palm
+        mov.b   @(8,r1),r0
+        tst     r0,r0
         bt      V_reco
         mov.l   M_vpalm,r1
         bra     V_go
@@ -159,6 +158,7 @@ player_hook:
 ! meter_draw: called by the game's draw pass; appends blitter sprite commands at @0x0C05100C.
 meter_draw:
         mov.l   r8,@-r15
+        mov.l   r9,@-r15
         mov.l   M_dlp,r0
         mov.l   @r0,r7           ! display list write pointer
         mov.l   M_org,r0
@@ -192,17 +192,28 @@ meter_draw:
         sub     r1,r4            ! y grows downward, dest y high half = 0x138 - y
         mov.l   M_meter,r0
         mov.l   @r0,r8           ! meter value
-        ! --- boxes: one P2 bomb icon per 2000 points, left to right ---
+        ! --- boxes: one bomb icon per 2000 points, filling right to left ---
         mov.l   M_recip2k,r0
         dmulu.l r0,r8
         sts     mach,r1          ! boxes to fill (0..6)
         tst     r1,r1
         bt      1f
         mov.l   M_boxdest,r5
-        add     r4,r5            ! dest of the first box
-3:      mova    M_icon,r0
-        mov     r0,r3            ! 4 layers x (header, tile, tint)
-        mov     #4,r2
+        add     r4,r5
+        add     #85,r5           ! dest of the first box: the rightmost of the six
+        mova    M_icon,r0        ! Reco keeps the P2 (Palm) icon: 4 layers x (header, tile, tint)
+        mov     r0,r9
+        mov     #4,r6
+        mov.l   M_p1stock,r0     ! Palm (stock object +8 = 1) draws Reco's swirl: 2 layers
+        mov.b   @(8,r0),r0
+        tst     r0,r0
+        bt      2f
+        mova    M_icon2,r0
+        mov     r0,r9
+        mov     #2,r6
+2:
+3:      mov     r9,r3
+        mov     r6,r2
 6:      mov.l   @r3+,r0
         mov.l   r0,@r7
         mov.l   @r3+,r0
@@ -217,10 +228,11 @@ meter_draw:
         add     #20,r7
         dt      r1
         bf/s    3b
-        add     #17,r5           ! next box
+        add     #-17,r5          ! next box, one step to the left
 1:
 M_end:  mov.l   M_dlp,r0
         mov.l   r7,@r0
+        mov.l   @r15+,r9
         rts
         mov.l   @r15+,r8
         .align 2
@@ -239,9 +251,8 @@ M_mode:    .long 0x0C7BFF00
 M_meter:   .long 0x0C7BFF18
 M_p1stock: .long 0x0C383A1C
 M_addbomb: .long 0x0C06BBD0
-M_sel:     .long 0x0C3832F2     ! ship byte of player 1 (player struct 0x0C383254 + 0x9E)
-M_vpalm:   .long 0x0C10D830     ! wrapper for id 0xB7: sounds like the clip named Reco_CC.wav (the clips lag two slots), used when playing Palm
-M_vreco:   .long 0x0C10D8F0     ! wrapper for id 0xBD: should sound like the clip named Reco_BC.wav (clip lag measured: BA<-BC, BD<-BE), used when playing Reco
+M_vpalm:   .long 0x0C10D730     ! voice id 0xC8 (Palm)
+M_vreco:   .long 0x0C10D0B0     ! voice id 0xF0 (Reco)
 M_gemadd:  .long 0x0C06B730
 M_pupd:    .long 0x0C067B60
 M_submit:  .long 0x0C05C394
@@ -255,6 +266,9 @@ M_icon:    ! the game's P2 bomb icon: base, shade, two glow layers (header, tile
         .long 0x1700FFC3, 0x08C000F0, 0x545454
         .long 0x1300FF9F, 0x071000E0, 0x606060
         .long 0x1300FF87, 0x070000F0, 0x787878
+M_icon2:   ! Reco's own bomb icon: base, shade
+        .long 0x1300C0FF, 0x07280090, 0x808080
+        .long 0x1700FFC3, 0x07B000F0, 0x545454
 M_isize:   .long 0x000F000F
 M_hdr:     .long 0x11000000
 M_digtile: .long 0x04F80080
