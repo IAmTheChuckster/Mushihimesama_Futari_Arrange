@@ -134,6 +134,78 @@ str_arrow: .asciz ">"
 str_blank: .asciz " "
         .align 2
 
+! title_text_hook: replaces the text-draw function literal (0x0C092184) of the title screen routine, so every text
+! call of that routine goes through here and is forwarded to the game's text function 0x0C05CBD8 unchanged.
+! When the call is the "INSERT COIN" line (no credit yet), the title_filter is queued, and once it has seen the
+! "SALE BY AMI" glyphs (flag set by title_filter in the previous frame) the red "NOT FOR SALE" is drawn too.
+        .align 2
+title_text_hook:
+        mov.l   N_ins,r0
+        cmp/eq  r0,r7
+        bf      9f
+        sts.l   pr,@-r15
+        mov.l   r4,@-r15
+        mov.l   r5,@-r15
+        mov.l   r6,@-r15
+        mov.l   r7,@-r15
+        mov.l   r10,@-r15
+        mov.l   N_nsf,r1
+        mov.l   @r1,r0
+        tst     r0,r0
+        bt      1f
+        mov.l   N_cg,r10
+        mov.l   @r10,r0
+        mov.l   r0,@-r15         ! save colour
+        mov.l   N_red,r0
+        mov.l   r0,@r10
+        mov     #72,r4
+        mov.l   N_y2,r5
+        mov.l   N_s2,r7
+        mov.w   N_pri,r6
+        mov.l   N_T,r0
+        jsr     @r0
+        nop
+        mov     #73,r4
+        mov.l   N_y2,r5
+        mov.l   N_s2,r7
+        mov.w   N_pri,r6
+        mov.l   N_T,r0
+        jsr     @r0
+        nop
+        mov.l   @r15+,r0
+        mov.l   r0,@r10          ! restore colour
+1:      mov     #0,r0
+        mov.l   N_nsf,r1
+        mov.l   r0,@r1
+        mov.l   N_filt,r4        ! hide the "SALE BY AMI" glyph sprites in this frame's draw pass
+        mov     #0,r5
+        mov.w   N_pri2,r6
+        mov.l   N_sub,r0
+        jsr     @r0
+        nop
+        mov.l   @r15+,r10
+        mov.l   @r15+,r7
+        mov.l   @r15+,r6
+        mov.l   @r15+,r5
+        mov.l   @r15+,r4
+        lds.l   @r15+,pr
+9:      mov.l   N_T,r0
+        jmp     @r0
+        nop
+        .align 2
+N_pri:  .word   250
+N_pri2: .word   255
+        .align 2
+N_ins:  .long   0x0C1D2D64      ! the "INSERT COIN" string
+N_nsf:  .long   0x0C7BFF38      ! "SALE BY AMI was seen last frame" flag
+N_cg:   .long   0x0C05CB50
+N_red:  .long   0x80FF2020
+N_y2:   .long   285
+N_s2:   .long   str2
+N_T:    .long   0x0C05CBD8
+N_filt: .long   title_filter
+N_sub:  .long   0x0C05C394
+
 ! title_filter: draw-pass handler. The title screen's "SALE BY AMI" is nine 16x8 font glyph sprites (display list
 ! record: header, tile, dest, size, tint) at screen y 289 (dest y high half = origin + 0x17, size 0x000F0007).
 ! Every such sprite already in the display list is moved 64 px down, off the screen.
@@ -167,6 +239,9 @@ title_filter:
         mov.l   F_down,r6
         sub     r6,r0
         mov.l   r0,@(4,r1)
+        mov.l   F_flag,r6        ! tell title_text_hook that the line was there
+        mov     #1,r0
+        mov.l   r0,@r6
 2:      dt      r3
         bf      1b
         rts
@@ -180,3 +255,4 @@ F_dlp:  .long   0x0C05100C
 F_org:  .long   0x0C051004
 F_sz:   .long   0x000F0007
 F_down: .long   0x00400000
+F_flag: .long   0x0C7BFF38

@@ -88,6 +88,9 @@ patcher:
         mov.l   P_cap2,r1
         mov.w   P_cap2v,r0
         mov.w   r0,@r1             ! 0x0C06C782: mov.l @(14*4,PC),r1
+        mov.l   P_ttl,r1           ! title screen text-draw literal 0x0C092184 -> title_text_hook
+        mov.l   P_tth,r0
+        mov.l   r0,@r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -132,6 +135,8 @@ P_ph:       .long player_hook
 P_mslit:    .long 0xAC10458C
 P_p2lit:    .long 0xAC062F80
 P_p2h:      .long p2_hook
+P_ttl:      .long 0xAC092184
+P_tth:      .long title_text_hook
 P_msl1:     .long 0xAC104404
 P_msl2:     .long 0xAC104408
 P_msl3:     .long 0xAC10440C
