@@ -8,9 +8,9 @@ While Claude was used I put effort in making sure there are balanced gameplay.<b
 I did all the testing and planning.
 
 ## To Do
-1. Add Character swaps in-game
-   a. Reco-to-Palm uses
-   b. Palm-to-Reco uses
+1. Add Character swaps in-game<br>
+   a. Reco-to-Palm uses 0xB6<br>
+   b. Palm-to-Reco uses 0xDE<br>
 
    
 ## Bugs to fix
