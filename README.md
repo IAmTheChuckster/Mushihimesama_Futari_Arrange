@@ -14,7 +14,7 @@ I did all the testing and planning.
 
    
 ## Bugs to fix
-1. `NOT FOR SALE` and `SALE BY AMI` flash back and forth
+None known.
 
 ## Patch Notes
 - **Title menu:** after you insert a coin the title screen shows **ORIGINAL ARCADE** and **ARRANGE MODE** where "PRESS 1P OR 2P START" was.
@@ -22,19 +22,19 @@ I did all the testing and planning.
   - Up and Down move the arrow, Start confirms (the game starts as usual).
   - ORIGINAL ARCADE plays the original game. ARRANGE MODE already stores the chosen mode in RAM (`0x0C7BFF00`: 0 = original, 1 = arrange) and turns on the arrange changes below.
   - Uses the game's own text style (white with a grey shadow, like "CREDITS:").
-- **Title screen:** the "SALE BY AMI" line is replaced by a red NOT FOR SALE, both before and after the first coin.
+- **Title screen:** the "SALE BY AMI" line is replaced by a red NOT FOR SALE, both before and after the first coin. It no longer flashes back to SALE BY AMI while INSERT COIN blinks.
 - **Hyper Bomb (ARRANGE MODE only):** pressing bomb no longer fires the normal blast. Instead every bullet on screen is cancelled into big gems, using the game's own bullet-cancel (the same one you see when a big enemy dies). The character's bomb voice still plays, a bomb is still used, the gem multiplier is kept, and you are invulnerable for 2 seconds. ORIGINAL ARCADE keeps the normal bomb.
 - **Chain cancel (ARRANGE MODE only):** when an enemy is destroyed, every bullet within 48 px of it is cancelled into a small gem, and every bullet within 32 px of a cancelled bullet is cancelled too, so dense bullet clusters chain away.
 - **Hyper meter (ARRANGE MODE only):** the six empty 2P boxes at the bottom right fill from right to left, one box per 2000. Reco shows the red P2 bomb icon and Palm shows Reco's green swirl. Every gem fills it by its size: the four gem sizes give 1, 5, 10 and 15. At 12000 you get an extra bomb (up to the game's maximum) with a voice (Reco plays voice 0xF0, Palm plays 0xC8), every bullet on the screen is cancelled into big gems, and the boxes start again from empty. Reset on the title screen. The swirls slide down with the bottom bar when the stage ends, like the game's own bomb icons, and are hidden on the score tally and game over screens.
 - **x99999 multiplier and cash out (ARRANGE MODE only):** the gem multiplier (the x counter) now goes up to 99999 instead of 30000. While it is at the 99999 cap every gem and every bullet cancelled into a gem pays a flat 99999 points. **Cash out:** pressing the bomb button at x99999 cancels every bullet on the screen into big (gold) gems, each worth 99999 for the next 10 seconds, and the multiplier resets to 0. A bomb below the cap works as before. ORIGINAL ARCADE keeps the 30000 cap.
 - **God Mode only (ARRANGE MODE):** ARRANGE MODE always plays God Mode. The Mode Select screen steps ORIGINAL, MANIAC, GOD by itself and lands on God; your buttons are ignored there, so the mode cannot be chosen by hand.
 - **1P only (ARRANGE MODE):** 2P is disabled: 2P START and the 2P controls are ignored. ORIGINAL ARCADE still lets two players play.
-- **Boot screen:** the memory-check screen now reads FUTARI ARRANGE and 2026.11.10.
-- **Warning screen:** the "for use in Japan only" notice is replaced by an unofficial-project disclaimer, HAVE FUN!!! and 2026/11/10 FUTARI ARRANGE.
+- **Boot screen:** the memory-check screen now reads FUTARI ARRANGE and 2026.11.12.
+- **Warning screen:** the "for use in Japan only" notice is replaced by an unofficial-project disclaimer, HAVE FUN!!! and 2026/11/12 FUTARI ARRANGE.
 - Everything else in the game is unchanged; ORIGINAL ARCADE plays exactly like the original.
 
 ## Patching the game
-You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `2995da75`), the complete romset `futariarr.zip` (futariblk_u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+You need your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24. Both patchers check the input and give identical files: `futariarr_u4` (CRC `6ea25f3e`), the complete romset `futariarr.zip` (futariblk_u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web Patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).

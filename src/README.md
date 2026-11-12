@@ -14,7 +14,9 @@
 - `build.py` - builds the patched u4 from your own `futariblj.zip`.
 - `update_patchers.py` - embeds the changed bytes into `futari_patch.py`, `index.html` and the `.mra`.
 
-Build 13 gives `futariarr_u4` CRC `2995da75`.
+Build 35 gives `futariarr_u4` CRC `6ea25f3e`.
+
+- Title blink fix: the pre-coin title skips its INSERT COIN text call (literal `0x0C092184` -> `title_text_hook`) on the frames where the line blinks off (bit 4 of `0x0C383300` set), so SALE BY AMI used to flash back. `patch.s` changes `and #16,r0` at `0x0C0920B4` to `and #0,r0` so the call runs every frame, and `title_text_hook` tests the blink bit itself and skips only the INSERT COIN draw.
 
 Notes: a PC-relative `mov.l` must not sit in a branch delay slot (illegal on real SH-3). The yellow tint word is `0x80FFFF00` (neutral is `0x80808080`).
 

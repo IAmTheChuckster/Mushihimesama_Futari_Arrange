@@ -91,6 +91,9 @@ patcher:
         mov.l   P_ttl,r1           ! title screen text-draw literal 0x0C092184 -> title_text_hook
         mov.l   P_tth,r0
         mov.l   r0,@r1
+        mov.l   P_blk,r1           ! 0x0C0920B4: and #16,r0 -> and #0,r0, so the INSERT COIN call runs every frame
+        mov.w   P_blkv,r0          ! (title_text_hook does the blink, SALE BY AMI stays hidden on blink-off frames)
+        mov.w   r0,@r1
         mov.l   P_vars,r1
         mov     #GEMTYPE,r0
         mov.l   r0,@(8,r1)         ! gem type for the cancel
@@ -150,10 +153,12 @@ P_ms:       .long mode_set
 P_bootdst:  .long 0xAC1D2848
 P_warndst:  .long 0xAC1D2984
 P_warnlen:  .word 448
+P_blkv:     .word 0xC900
         .align 2
+P_blk:      .long 0xAC0920B4
 P_bootstr:  .ascii "     FUTARI ARRANGE     "
             .byte 0,0,0,0
-            .ascii "          2026.11.10          "
+            .ascii "          2026.11.12          "
         .align 2
 P_warnstr:
             .ascii "   THIS PROJECT IS UNOFFICIAL "
@@ -182,7 +187,7 @@ P_warnstr:
             .byte 0,0
             .ascii "                              "
             .byte 0,0
-            .ascii "   2026/11/10 FUTARI ARRANGE  "
+            .ascii "   2026/11/12 FUTARI ARRANGE  "
             .byte 0,0
         .align 2
         .include "menu.s"

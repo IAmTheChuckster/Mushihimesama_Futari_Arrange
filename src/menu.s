@@ -138,6 +138,8 @@ str_blank: .asciz " "
 ! call of that routine goes through here and is forwarded to the game's text function 0x0C05CBD8 unchanged.
 ! When the call is the "INSERT COIN" line (no credit yet), the title_filter is queued, and once it has seen the
 ! "SALE BY AMI" glyphs (flag set by title_filter in the previous frame) the red "NOT FOR SALE" is drawn too.
+! The game skips the INSERT COIN call on the frames where the line blinks off, which let SALE BY AMI flash back,
+! so patch.s makes that call happen every frame (blink test at 0x0C0920B4 masked to 0) and the blink is done here.
         .align 2
 title_text_hook:
         mov.l   N_ins,r0
@@ -189,6 +191,12 @@ title_text_hook:
         mov.l   @r15+,r5
         mov.l   @r15+,r4
         lds.l   @r15+,pr
+        mov.l   N_blink,r0       ! the game's INSERT COIN blink bit: set = this frame the line is not shown
+        mov.l   @r0,r0
+        tst     #16,r0
+        bt      9f
+        rts                      ! blink off: SALE BY AMI is still hidden, but skip the INSERT COIN text
+        nop
 9:      mov.l   N_T,r0
         jmp     @r0
         nop
@@ -205,6 +213,7 @@ N_s2:   .long   str2
 N_T:    .long   0x0C05CBD8
 N_filt: .long   title_filter
 N_sub:  .long   0x0C05C394
+N_blink:.long   0x0C383300      ! bit 4 = INSERT COIN blink (set = hidden this frame)
 
 ! title_filter: draw-pass handler. The title screen's "SALE BY AMI" is nine 16x8 font glyph sprites (display list
 ! record: header, tile, dest, size, tint) at screen y 289 (dest y high half = origin + 0x17, size 0x000F0007).

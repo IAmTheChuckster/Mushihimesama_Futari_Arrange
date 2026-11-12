@@ -41,11 +41,12 @@ ht = os.path.join(root, 'index.html'); h = open(ht).read()
 old = re.search(r'PATCHED_CRC = 0x([0-9a-f]{8})', h).group(1)
 h = h.replace(old, '%08x' % crc)
 h = re.sub(r'build \d+', 'build %s' % build, h)
+h = re.sub(r'(<part name=\\"futariarr_u4\\" crc=\\")[0-9a-f]{8}', lambda m: m.group(1) + '%08x' % crc, h)  # embedded MRA
 h = re.sub(r'\[0x1C4, "[^"]*"\]', '[0x1C4, "%s"]' % b1, h)
 h = re.sub(r'\[0x1F8000, "[^"]*"\]', '[0x1F8000, "%s"]' % b2, h)
 open(ht, 'w', newline='\n').write(h)
 
-mra = os.path.join(root, 'Mushihimesama Futari Arrange.mra'); m = open(mra).read()
+mra = os.path.join(root, 'mister', 'Mushihimesama Futari Arrange.mra'); m = open(mra).read()
 m = re.sub(r'(<part name="futariarr_u4" crc=")[0-9a-f]{8}', lambda x: x.group(1) + '%08x' % crc, m)
 open(mra, 'w', newline='\n').write(m)
 print('build', build, 'u4 CRC %08x' % crc, '(%d bytes at 0x1F8000)' % (end - 0x1F8000))
