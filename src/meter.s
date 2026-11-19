@@ -270,9 +270,3 @@ M_icon2:   ! Reco's own bomb icon: base, shade
         .long 0x1300C0FF, 0x07280090, 0x808080
         .long 0x1700FFC3, 0x07B000F0, 0x545454
 M_isize:   .long 0x000F000F
-M_hdr:     .long 0x11000000
-M_digtile: .long 0x04F80080
-M_digsize: .long 0x00070007
-M_numdest: .long ((0x138-NUMY)<<16)+NUMX
-M_white:   .long 0x808080
-M_recip10: .long 0xCCCCCCCD

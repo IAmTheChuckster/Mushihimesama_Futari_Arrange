@@ -13,3 +13,5 @@ work/
 *.sta
 *.png
 *.jpg
+.images/
+__pycache__/

@@ -73,7 +73,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 35</div>
+    <div class="eyebrow">Mushihime-Sama Futari · Cave CV1000 · build 43</div>
     <h1>Mushihimesama Futari Arrange Patcher</h1>
     <div class="privacy"><span class="dot"></span>Everything runs in your browser. Your ROMs are never uploaded.</div>
   </header>
@@ -89,7 +89,17 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
   </section>
 
   <section class="card">
-    <h2><span class="n">2</span>Check files</h2>
+    <h2><span class="n">2</span>Load your 360 GOD package</h2>
+    <label class="drop" id="dropGod">
+      <input type="file" id="fileGod" accept=".zip,.7z">
+      <strong>Drop your Xbox 360 Games-on-Demand .zip or .7z here, or click to choose.</strong>
+      <div class="sub">Required. Use your own Xbox 360 Games-on-Demand package of <b>Mushihimesama</b>, title ID <b>435A07E3</b> (not Futari; any file name). It must contain 5F9DF6331EAE85814989 and 5F9DF6331EAE85814989.data (any folder). The アレンジモード label is cut from it, here in your browser, and shown in ARRANGE MODE in place of the God Mode banner.</div>
+    </label>
+    <div class="loaded" id="loadedGod">No GOD package loaded.</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">3</span>Check files</h2>
     <div class="tablebox"><table>
       <thead><tr><th>File</th><th>Size</th><th>Expected CRC32</th><th>Found CRC32</th><th>Status</th></tr></thead>
       <tbody id="inrows"></tbody>
@@ -98,19 +108,17 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
   </section>
 
   <section class="card">
-    <h2><span class="n">3</span>Download patched files</h2>
+    <h2><span class="n">4</span>Download patched files</h2>
     <div class="progress" aria-hidden="true"><div id="bar"></div></div>
     <div class="tablebox"><table>
       <thead><tr><th>File</th><th>Expected CRC32</th><th>Built CRC32</th><th>Status</th></tr></thead>
-      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">6ea25f3e</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
+      <tbody><tr><td class="mono">futariarr_u4<span class="role">Patched program ROM (replaces u4)</span></td><td class="mono">0a577dde</td><td class="mono" id="outcrc">—</td><td><span class="pill" id="outstatus">Waiting</span></td></tr></tbody>
     </table></div>
     <div class="buttons">
       <button id="btnSet" disabled>Download futariarr.zip</button>
       <button id="btnMra" class="secondary" disabled>Mushihimesama Futari Arrange.mra</button>
-      <button id="btnU4zip" class="secondary" disabled>futariarr_u4.zip</button>
-      <button id="btnU4" class="secondary" disabled hidden>futariarr_u4</button>
     </div>
-    <p class="hint" id="dlhint">futariarr.zip is the full set with u4 replaced by futariarr_u4; u2, u23 and u24 are copied unchanged. For MiSTer, put futariarr.zip in your games folder and the .mra in _Arcade. Its futariarr_u4 CRC matches this build. For the real board, flash futariarr_u4 as u4, and back up your original u4 first.</p>
+    <p class="hint" id="dlhint">futariarr.zip is the full set with u4 replaced by futariarr_u4; u2, u23 and u24 are copied unchanged. For MiSTer, put futariarr.zip in your games folder and the .mra in _Arcade. Its futariarr_u4 CRC matches this build.</p>
     <p class="msg" id="dlmsg"></p>
   </section>
 
@@ -119,14 +127,14 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
 
 <script>
 (() => {
-  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x6ea25f3e, U4_SIZE = 0x200000;
+  const ORIG_CRC = 0xb9467b6d, PATCHED_CRC = 0x533936bc, FINAL_CRC = 0x0a577dde, U4_SIZE = 0x200000;
   const PATCH = [
     [0x1C4, "H4AAgA=="],
-    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAMYCfAwAADHRAOACIQERMNFnkAEhMNEw0AIhM9E10AIhM9E00AIhNNE10AIhW5ASgTTRNNACITTRNdACITXROtACITrRO9ACITvRSNACIUzHA2JH0TrjJGAAIRBD+48BcVfHA2JE0YiTJGAAIRBD+48BcTXRO9ACITXROtACITTROtACITTRNtACITPRNtACITPRNdACISjRKdACIR7RQpABIR7RH9ACIRzRPZABISTRJdACITLRYZABIQTRAeACEQDgAxEOkAQRBdArQAkAe6wA/wmsKCEJrDghfAx4AwAMMCoD0HgACQAJAAasgLwGrIi8fAz0BXwMUAYHrMBkEtArQAesDGV8DKgGCaysUXwM0AcJrKBRBqxotwasgscGrLzHAQCehlvRDtF8DFwIBqxkm3wMkAgQrIxFBqyAL3wM7AoJrIQhfAzwBBCsBEQQrAhEEKwMRBCscEUQrHRFEKx4RXwMuAp8DKYKfAxACnwMkAYdrEgoHayEKcABAMkJrLQgICAgIEYgVFVSQSBJUkFBUkdOIEUgICAgAAAAACAgICAgICAgICAwMjYyMS4uMTIxICAgICAgICAgIAkAICBUIElIIFNSUEpPQ0UgVFNJVSBPTkZGQ0lBSSBMAAAgIEEgRE5JICBTT04gVEZBSUZJTFRBREVXIFRJLEgAACAgRSBETlJPRVMgRFlCICxST0EgVFVPSElSRVogRAAAICBCICBZQUNFViAuTEEgTElSSEdTVFQgIE9IVCBFAAAgIE8gSVJJR0FOIExBR0VNQSBETkkgU1QgICAgICAAACAgQSBTU0NPQUlFVCBETklFVExMQ0VVVExBICAgIAAAICBQIE9SRVBUUiBZRVJBTU5JVyBUSSBISFRJRSBSAAAgIFIgU0VFUFRDVkkgRUlSSEdTVEggTE9FRFNSIC4AACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAAAICAgICAgICBIIFZBIEVVRiFOISEgICAgICAgICAgAAAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgIDIg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"]
+    [0x1F8000, "BdEG0gbTFmACIgRyEEP6iwTQK0AJAAkAH4AogHysAAAAAPwCfAwAADPRAOACIQERMtFrkAEhMtEy0AIhNdE30AIhNdE20AIhNtE30AIhX5ASgTbRNtACITbRN9ACITfRPNACITzRPdACIT3RStACIVDHA2JJ0TrjJGAAIRBD+48BcVvHA2JG0YyTJGAAIRBD+48BcTfRPdACITfRPNACITbRPNACITbRONACITXRONACITXRN9ACISrRK9ACISDRRpABISDRIdACIR7RQZABISbRJ9ACITXRNdACITLRYpABIQXRAeACEQDgAxEPkAQRBdArQAkACQB7rAD/CawoIQmsOCF8DIgDAAwwKgPQeAAJAAkABqyAvAasiLx8DAQGfAxgBgeswGQS0CtAB6wMZXwMuAYJrKxRfAzgBwmsoFEGrGi3BqyCxwasvMcBAJ6GW9EO0XwMbAgGrGSbfAygCBCsjEUGrIAvfAzkCgmshCF8DAAFEKwERBCsCEQQrAxEEKxwRRCsdEUQrHhFfAywCnwMngp8DDgKfAygBh2sSCgdrIQpwAEAyQmstCAFrFzEfAwQCyAgRiBUVVJBIElSQUFSR04gRTRCIDMgIAAAAAAgICAgICAgIDAyNjIxLi4xMDIgICAgICAgICAgICAJACAgVCBJSCBTUlBKT0NFIFRTSVUgT05GRkNJQUkgTAAAICBBIEROSSAgU09OIFRGQUlGSUxUQURFVyBUSSxIAAAgIEUgRE5ST0VTIERZQiAsUk9BIFRVT0hJUkVaIEQAACAgQiAgWUFDRVYgLkxBIExJUkhHU1RUICBPSFQgRQAAICBPIElSSUdBTiBMQUdFTUEgRE5JIFNUICAgICAgAAAgIEEgU1NDT0FJRVQgRE5JRVRMTENFVVRMQSAgICAAACAgUCBPUkVQVFIgWUVSQU1OSVcgVEkgSEhUSUUgUgAAICBSIFNFRVBUQ1ZJIEVJUkhHU1RIIExPRURTUiAuAAAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAAACAgICAgICAgSCBWQSBFVUYhTiEhICAgICAgICAgIAAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgAAAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAAACAgICAgICAgICAgICAgICAgICAg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"]
   ];
   const OUT_NAME = "futariarr_u4", SET_NAME = "futariarr.zip", MRA_NAME = "Mushihimesama Futari Arrange.mra";
-  // MiSTer MRA; the futariarr_u4 CRC is set from PATCHED_CRC when it is saved.
-  const MRA = "<!--\n  ikacore_CV1k MRA - Mushihimesama Futari Black Label Arrange.\n  Same layout as the other CV1k arrange MRAs (DDR3-direct delivery).\n\n  DELIVERY: the NAND and YMZ images do not stream over the ioctl/SPI\n  lane.  Both roms carry an `address=` attribute, so Main_MiSTer\n  assembles them and memcpys them straight into DDR3; the fabric sees\n  only a download pulse for those two.  Only u4 streams, so the ioctl\n  lane carries 4 MiB instead of the old 152 MiB.  Needs a Main_MiSTer\n  that parses `address` (2021 or later).  Rationale and evidence:\n  docs/mra_ddr3_direct_upload_plan.md.\n\n  Rom order is deliberate - DDR3 first, index 0 LAST.  Index 0's download\n  is what finally releases the CPU, so every image is in place before the\n  core runs, and any spurious run in an inter-rom gap is wiped by the u4\n  download's own reset hold.\n\n    <rom index=\"1\">  DDR3 0x34400000  u2  NAND dump incl. spare (132 MiB,\n                                          exact size)\n    <rom index=\"2\">  DDR3 0x3C800000  u23 YMZ chip 0, zero-padded to the\n                                          8 MiB slot\n                     DDR3 0x3D000000  u24 YMZ chip 1, zero-padded to the\n                                          8 MiB slot\n    <rom index=\"0\">  ioctl stream     u4  program NOR x2 (2 MiB file listed\n                                          twice = the undecoded-A21 mirror\n                                          the boot ROM expects)\n-->\n<misterromdescription>\n    <about author=\"ika-musume\" source=\"https://github.com/ika-musume/ikacore_CV1k\"/>\n    <name>Mushihimesama Futari Black Label Arrange</name>\n    <setname>futariarr</setname>\n    <year>2026</year>\n    <manufacturer>Cave</manufacturer>\n    <category>Shooter</category>\n    <rbf>ikacore_CV1k</rbf>\n\n    <rom index=\"1\" address=\"0x34400000\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"futariblk_u2\" crc=\"08c6fd62\"/>\n    </rom>\n\n    <rom index=\"2\" address=\"0x3C800000\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"u23\" crc=\"39f1e1f4\"/>\n        <part repeat=\"0x400000\">00</part>\n        <part name=\"u24\" crc=\"c631a766\"/>\n        <part repeat=\"0x400000\">00</part>\n    </rom>\n\n    <nvram index=\"3\" size=\"135680\"/>\n\n    <rom index=\"0\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"futariarr_u4\" crc=\"6ea25f3e\"/>\n        <part name=\"futariarr_u4\" crc=\"6ea25f3e\"/>\n    </rom>\n\n    <buttons names=\"Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State\" default=\"A,B,X,Y,Start,R,L,Select\"/>\n</misterromdescription>\n";
+  // MiSTer MRA; the futariarr_u4 CRC is FINAL_CRC (patch code + banner).
+  const MRA = "<!--\n  ikacore_CV1k MRA - Mushihimesama Futari Black Label Arrange.\n  Same layout as the other CV1k arrange MRAs (DDR3-direct delivery).\n\n  DELIVERY: the NAND and YMZ images do not stream over the ioctl/SPI\n  lane.  Both roms carry an `address=` attribute, so Main_MiSTer\n  assembles them and memcpys them straight into DDR3; the fabric sees\n  only a download pulse for those two.  Only u4 streams, so the ioctl\n  lane carries 4 MiB instead of the old 152 MiB.  Needs a Main_MiSTer\n  that parses `address` (2021 or later).  Rationale and evidence:\n  docs/mra_ddr3_direct_upload_plan.md.\n\n  Rom order is deliberate - DDR3 first, index 0 LAST.  Index 0's download\n  is what finally releases the CPU, so every image is in place before the\n  core runs, and any spurious run in an inter-rom gap is wiped by the u4\n  download's own reset hold.\n\n    <rom index=\"1\">  DDR3 0x34400000  u2  NAND dump incl. spare (132 MiB,\n                                          exact size)\n    <rom index=\"2\">  DDR3 0x3C800000  u23 YMZ chip 0, zero-padded to the\n                                          8 MiB slot\n                     DDR3 0x3D000000  u24 YMZ chip 1, zero-padded to the\n                                          8 MiB slot\n    <rom index=\"0\">  ioctl stream     u4  program NOR x2 (2 MiB file listed\n                                          twice = the undecoded-A21 mirror\n                                          the boot ROM expects)\n-->\n<misterromdescription>\n    <about author=\"ika-musume\" source=\"https://github.com/ika-musume/ikacore_CV1k\"/>\n    <name>Mushihimesama Futari Black Label Arrange</name>\n    <setname>futariarr</setname>\n    <year>2026</year>\n    <manufacturer>Cave</manufacturer>\n    <category>Shooter</category>\n    <rbf>ikacore_CV1k</rbf>\n\n    <rom index=\"1\" address=\"0x34400000\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"futariblk_u2\" crc=\"08c6fd62\"/>\n    </rom>\n\n    <rom index=\"2\" address=\"0x3C800000\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"u23\" crc=\"39f1e1f4\"/>\n        <part repeat=\"0x400000\">00</part>\n        <part name=\"u24\" crc=\"c631a766\"/>\n        <part repeat=\"0x400000\">00</part>\n    </rom>\n\n    <nvram index=\"3\" size=\"135680\"/>\n\n    <rom index=\"0\" zip=\"futariarr.zip\" md5=\"none\">\n        <part name=\"futariarr_u4\" crc=\"0a577dde\"/>\n        <part name=\"futariarr_u4\" crc=\"0a577dde\"/>\n    </rom>\n\n    <buttons names=\"Focus Shot,Bomb,Rapid Shot,B4,Start,Coin,Test,Service,Save State\" default=\"A,B,X,Y,Start,R,L,Select\"/>\n</misterromdescription>\n";
   const SET = [
     { name: "futariblk_u4",  size: 0x200000,  crc: 0xb9467b6d, role: "Patched" },
     { name: "futariblk_u2",  size: 138412032, crc: 0x08c6fd62, role: "Copied unchanged" },
@@ -206,7 +214,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     return new Blob([...parts, ...central, end.buffer], { type: "application/zip" });
   }
 
-  const state = { entries: null, u4Entry: null, loose: {}, patched: null };
+  const state = { entries: null, u4Entry: null, loose: {}, patched: null, u4orig: null, glyph: null, finalCrc: 0 };
   const base = n => { const b = n.split(/[\\/]/).pop().toLowerCase(); return (b === OUT_NAME || b === "u4") ? "futariblk_u4" : b; };
   const bar = v => { $("bar").style.width = Math.round(v * 100) + "%"; };
 
@@ -218,7 +226,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
       if (f) {
         crcTxt = f.crc == null ? "—" : hex(f.crc);
         if (f.size !== s.size) status = pill("err", "Wrong size");
-        else if (s.name === "futariblk_u4" && f.crc === PATCHED_CRC) status = pill("warn", "Already patched");
+        else if (s.name === "futariblk_u4" && (f.crc === PATCHED_CRC || f.crc === FINAL_CRC)) status = pill("warn", "Already patched");
         else if (f.crc !== s.crc) status = pill("err", "Wrong CRC");
         else status = pill("ok", "OK");
       } else if (state.entries || Object.keys(state.loose).length) status = s.name === "futariblk_u4" ? pill("err", "Missing") : pill("", "Not in input");
@@ -230,7 +238,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
   function resetOut() {
     state.patched = null; bar(0);
     $("outcrc").textContent = "—"; $("outstatus").className = "pill"; $("outstatus").textContent = "Waiting";
-    ["btnSet", "btnMra", "btnU4zip", "btnU4"].forEach(id => $(id).disabled = true);
+    ["btnSet", "btnMra"].forEach(id => $(id).disabled = true);
     $("checkmsg").textContent = ""; $("checkmsg").className = "msg"; $("dlmsg").textContent = "";
   }
   function fail(msg) { $("checkmsg").textContent = msg; $("checkmsg").className = "msg err"; bar(0); }
@@ -248,7 +256,7 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
           const entries = readZip(buf); state.entries = entries;
           for (const e of entries) {
             const nm = base(e.name);
-            const spec = SET.find(s => s.name === nm) || SET.find(s => s.size === e.usize && (s.crc === e.crc || (s.name === "futariblk_u4" && e.crc === PATCHED_CRC)));
+            const spec = SET.find(s => s.name === nm) || SET.find(s => s.size === e.usize && (s.crc === e.crc || (s.name === "futariblk_u4" && (e.crc === PATCHED_CRC || e.crc === FINAL_CRC))));
             if (spec && !found[spec.name]) { found[spec.name] = { size: e.usize, crc: e.crc }; if (spec.name === "futariblk_u4") state.u4Entry = e; }
           }
           if (state.u4Entry) {
@@ -269,21 +277,41 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     if (!u4data) return fail("No u4 found. Drop futariblj.zip or the u4 file from it.");
     if (u4data.length !== U4_SIZE) return fail("u4 is " + u4data.length.toLocaleString() + " bytes; the original is 2,097,152 bytes.");
     const c = crc32(u4data);
-    if (c === PATCHED_CRC) return fail("This u4 is already patched (CRC 6ea25f3e). Load the original dump instead.");
+    if (c === PATCHED_CRC || c === FINAL_CRC) return fail("This u4 is already patched. Load the original dump instead.");
     if (c !== ORIG_CRC) return fail("u4 CRC is " + hex(c) + ", not the original b9467b6d. This patch only works on the original dump.");
-    $("checkmsg").textContent = "Original u4 found (CRC b9467b6d). Patching…"; $("checkmsg").className = "msg ok";
+    state.u4orig = u4data;
+    tryPatch();
+  }
 
-    const out = new Uint8Array(u4data);
+  // patch the original u4; the アレンジモード banner from the GOD package goes in too when it is loaded
+  function tryPatch() {
+    state.patched = null;
+    ["btnSet", "btnMra"].forEach(id => $(id).disabled = true);
+    $("outcrc").textContent = "—"; $("outstatus").className = "pill"; $("dlmsg").textContent = "";
+    if (!state.u4orig) { $("outstatus").textContent = "Waiting"; return; }
+    const out = new Uint8Array(state.u4orig);
     for (const [off, data] of PATCH) out.set(b64(data), off);
     const oc = crc32(out); bar(.8);
-    $("outcrc").textContent = hex(oc);
-    if (oc !== PATCHED_CRC) { $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of 6ea25f3e, so nothing was offered for download."); }
-    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 35";
-    $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched.";
+    if (oc !== PATCHED_CRC) { $("outcrc").textContent = hex(oc); $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("The patched u4 came out with CRC " + hex(oc) + " instead of " + hex(PATCHED_CRC) + ", so nothing was offered for download."); }
+    if (!state.glyph) {
+      $("outcrc").textContent = "—"; $("outstatus").textContent = "Needs GOD package";
+      $("checkmsg").textContent = "Original u4 found (CRC b9467b6d). Load your 360 GOD package (435A07E3) in step 2 to finish futariarr_u4."; $("checkmsg").className = "msg ok";
+      return;
+    }
+    {
+      if (out.subarray(GLYPH_FILE_OFF, GLYPH_FILE_OFF + GLYPH_LEN).some(b => b !== 0xff)) return fail("The banner area of the u4 isn't empty.");
+      out.set(state.glyph, GLYPH_FILE_OFF);
+    }
+    state.finalCrc = crc32(out);
+    if (state.finalCrc !== FINAL_CRC) { $("outcrc").textContent = hex(state.finalCrc); $("outstatus").className = "pill err"; $("outstatus").textContent = "Wrong CRC"; return fail("futariarr_u4 came out with CRC " + hex(state.finalCrc) + " instead of " + hex(FINAL_CRC) + ", so nothing was offered for download."); }
+    $("outcrc").textContent = hex(state.finalCrc);
+    $("outstatus").className = "pill ok"; $("outstatus").textContent = "Matches build 43";
+    $("checkmsg").textContent = "Original u4 found (CRC b9467b6d) and patched with the アレンジモード banner from your GOD package.";
+    $("checkmsg").className = "msg ok";
     state.patched = out; bar(1);
-    $("btnU4zip").disabled = false; $("btnU4").disabled = false; $("btnMra").disabled = false;
+    $("btnMra").disabled = false;
     $("btnSet").disabled = !state.entries;
-    if (!state.entries) $("dlmsg").textContent = "futariarr.zip needs the original futariblj.zip as input; you loaded a loose u4, so only futariarr_u4 and the .mra are available.";
+    if (!state.entries) $("dlmsg").textContent = "futariarr.zip needs the original futariblj.zip as input; you loaded a loose u4, so only the .mra is available.";
   }
 
   const dosNow = () => ({ time: 0, date: (2026 - 1980) << 9 | 10 << 5 | 14 });
@@ -291,8 +319,8 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     const def = await deflateRaw(state.patched);
     const t = dosNow();
     const nameBytes = new TextEncoder().encode(OUT_NAME);
-    return def ? { nameBytes, method: 8, crc: PATCHED_CRC, csize: def.length, usize: U4_SIZE, time: t.time, date: t.date, data: def }
-               : { nameBytes, method: 0, crc: PATCHED_CRC, csize: U4_SIZE, usize: U4_SIZE, time: t.time, date: t.date, data: state.patched };
+    return def ? { nameBytes, method: 8, crc: state.finalCrc, csize: def.length, usize: U4_SIZE, time: t.time, date: t.date, data: def }
+               : { nameBytes, method: 0, crc: state.finalCrc, csize: U4_SIZE, usize: U4_SIZE, time: t.time, date: t.date, data: state.patched };
   }
   async function makeSet() {
     const u4 = await u4Item(), items = [];
@@ -304,7 +332,6 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
   }
 
   const inClaude = !!(window.claude && window.claude.use);
-  if (!inClaude) $("btnU4").hidden = false;
   async function save(filename, blob) {
     $("dlmsg").textContent = "";
     if (inClaude) {
@@ -319,9 +346,488 @@ footer { color: var(--muted); font-size: 13px; text-align: center; }
     }
   }
   $("btnSet").onclick = async () => { $("btnSet").disabled = true; try { await save(SET_NAME, await makeSet()); } finally { $("btnSet").disabled = false; } };
-  $("btnMra").onclick = () => save(MRA_NAME, new Blob([MRA.replace(/(<part name="futariarr_u4" crc=")[0-9a-fA-F]{8}/g, (m, p) => p + hex(PATCHED_CRC))], { type: "application/xml" }));
-  $("btnU4zip").onclick = async () => save(OUT_NAME + ".zip", buildZip([await u4Item()]));
-  $("btnU4").onclick = () => save(OUT_NAME, new Blob([state.patched], { type: "application/octet-stream" }));
+  $("btnMra").onclick = () => save(MRA_NAME, new Blob([MRA.replace(/(<part name="futariarr_u4" crc=")[0-9a-fA-F]{8}/g, (m, p) => p + hex(state.finalCrc))], { type: "application/xml" }));
+
+  // ---------------------------------------------------------------- 360 GOD package -> アレンジモード banner
+  // Same as god_label() + banner_picture() in patch.py: your own Mushihimesama GOD package (.zip or .7z, any name)
+  // -> 5F9DF6331EAE85814989.data/DataNNNN (hash blocks skipped) -> Xbox disc image -> /res/DISKDATA/C/h20.bin (Cave
+  // archive) -> 0_00_B.tga (Cave LZSS, 4096x4096 ARGB1555) -> アレンジモード, halved with the 2x2 rule (opaque when
+  // 2+ of the 4 pixels are, grey = their average) -> coloured like God Mode (red text, brown shadow) -> 'ARG2' +
+  // 16x64 picture at u4 offset GLYPH_FILE_OFF (src/banner.s).
+  // The zip / 7z / LZMA readers are the ones from the Muchi Muchi Pork! patcher.
+  const GOD_ID = "5F9DF6331EAE85814989", GOD_SHEET = ["res", "DISKDATA", "C", "h20.bin"], SHEET_ENTRY = "0_00_B.tga";
+  const SRC_X = 3153, SRC_Y = 2708, SRC_L = 122, GLYPH_FILE_OFF = 0x1FF000, GLYPH_LEN = 16 + 16 * 64 * 2, BANNER_CRC = 0x4b1f2f16;
+  const GOD_BLK = 0x1000, GOD_PER_FILE = 203 * 204;
+  const readAt = async (file, start, len) => new Uint8Array(await file.slice(start, start + len).arrayBuffer());
+  const u64 = (dv, o) => dv.getUint32(o, true) + dv.getUint32(o + 4, true) * 4294967296;
+
+  async function listZip(file) {
+    const tailStart = Math.max(0, file.size - 65557);
+    const tail = new DataView((await readAt(file, tailStart, file.size - tailStart)).buffer);
+    let eocd = -1;
+    for (let i = tail.byteLength - 22; i >= 0; i--) if (tail.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    if (eocd < 0) throw new Error("This isn't a readable zip.");
+    let count = tail.getUint16(eocd + 10, true), cdSize = tail.getUint32(eocd + 12, true), cdOff = tail.getUint32(eocd + 16, true);
+    if (count === 0xffff || cdSize === 0xffffffff || cdOff === 0xffffffff) {
+      const loc = eocd - 20;
+      if (loc < 0 || tail.getUint32(loc, true) !== 0x07064b50) throw new Error("This zip's directory can't be read.");
+      const z = new DataView((await readAt(file, u64(tail, loc + 8), 56)).buffer);
+      if (z.getUint32(0, true) !== 0x06064b50) throw new Error("This zip's directory can't be read.");
+      count = u64(z, 32); cdSize = u64(z, 40); cdOff = u64(z, 48);
+    }
+    const u8 = await readAt(file, cdOff, cdSize), cd = new DataView(u8.buffer), out = [], dec = new TextDecoder();
+    for (let n = 0, p = 0; n < count; n++) {
+      if (cd.getUint32(p, true) !== 0x02014b50) throw new Error("This zip's directory is damaged.");
+      const method = cd.getUint16(p + 10, true);
+      let csize = cd.getUint32(p + 20, true), usize = cd.getUint32(p + 24, true), lho = cd.getUint32(p + 42, true);
+      const fl = cd.getUint16(p + 28, true), xl = cd.getUint16(p + 30, true), cl = cd.getUint16(p + 32, true);
+      const name = dec.decode(u8.subarray(p + 46, p + 46 + fl));
+      for (let x = p + 46 + fl, xe = x + xl; x + 4 <= xe; x += 4 + cd.getUint16(x + 2, true)) {
+        if (cd.getUint16(x, true) !== 1) continue;
+        let q = x + 4;
+        if (usize === 0xffffffff) { usize = u64(cd, q); q += 8; }
+        if (csize === 0xffffffff) { csize = u64(cd, q); q += 8; }
+        if (lho === 0xffffffff) { lho = u64(cd, q); q += 8; }
+      }
+      out.push({ name, size: usize, dir: name.endsWith("/"), zip: { method, csize, lho } });
+      p += 46 + fl + xl + cl;
+    }
+    return out;
+  }
+
+  // Streaming LZMA / LZMA2 decoder with a ring-buffer dictionary. feed() adds input; decode(max) returns up to
+  // max new bytes (fewer at the end of the stream). The caller keeps enough input fed (see SevenStream).
+  function lzmaStream(isLzma2, props, unpackSize) {
+    let dictSize = isLzma2 ? (props[0] >= 40 ? 0xffffffff : (2 | (props[0] & 1)) * 2 ** (Math.floor(props[0] / 2) + 11))
+                           : props[1] | props[2] << 8 | props[3] << 16 | props[4] * 16777216;
+    const size = Math.min(Math.max(dictSize, 1 << 21), 1 << 30);   // ring >= dictionary, and >= one decode() call
+    const win = new Uint8Array(size);
+    let src = new Uint8Array(0), sp = 0, range = 0, code = 0, wp = 0, total = 0, dictStart = 0;   // dictStart: output position of the last dictionary reset (LZMA2)
+    let lc = 0, lp = 0, pb = 0, state = 0, rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0, P = null, remLen = 0, ended = false;
+    // LZMA2 chunk state: 0 = read control, 1 = in LZMA chunk, 2 = in stored chunk
+    let cst = 0, chunkLeft = 0, chunkPackEnd = 0;
+    const getByte = i => win[(wp - i - 1 + size) % size];
+    const putByte = b => { win[wp] = b; if (++wp === size) wp = 0; total++; };
+    const norm = () => { if (range < 16777216) { range = (range * 256) >>> 0; code = ((code * 256) + src[sp++]) >>> 0; } };
+    const bit = (a, i) => {
+      const p = a[i], bound = (range >>> 11) * p;
+      let b; if (code < bound) { range = bound; a[i] = p + ((2048 - p) >> 5); b = 0; } else { range -= bound; code -= bound; a[i] = p - (p >> 5); b = 1; }
+      norm(); return b;
+    };
+    const direct = n => { let r = 0; while (n--) { range >>>= 1; let b = 0; if (code >= range) { code -= range; b = 1; } r = r * 2 + b; norm(); } return r; };
+    const tree = (a, o, n) => { let m = 1; for (let i = 0; i < n; i++) m = (m << 1) + bit(a, o + m); return m - (1 << n); };
+    const rtree = (a, o, n) => { let m = 1, s = 0; for (let i = 0; i < n; i++) { const b = bit(a, o + m); m = (m << 1) + b; s |= b << i; } return s; };
+    const lenP = () => ({ c: new Uint16Array(2).fill(1024), low: new Uint16Array(128).fill(1024), mid: new Uint16Array(128).fill(1024), high: new Uint16Array(256).fill(1024) });
+    const len = (L, ps) => !bit(L.c, 0) ? tree(L.low, ps * 8, 3) : !bit(L.c, 1) ? 8 + tree(L.mid, ps * 8, 3) : 16 + tree(L.high, 0, 8);
+    const f = () => new Uint16Array(192).fill(1024);
+    const setProps = d => { lc = d % 9; d = Math.floor(d / 9); lp = d % 5; pb = Math.floor(d / 5); };
+    const reset = () => {
+      state = 0; rep0 = rep1 = rep2 = rep3 = 0; remLen = 0;
+      P = { lit: new Uint16Array(0x300 << (lc + lp)).fill(1024), m: f(), r: f(), g0: f(), g1: f(), g2: f(), l0: f(),
+        slot: new Uint16Array(256).fill(1024), pos: new Uint16Array(115).fill(1024), align: new Uint16Array(16).fill(1024), len: lenP(), rlen: lenP() };
+    };
+    const initRange = () => { sp++; code = 0; for (let i = 0; i < 4; i++) code = ((code << 8) | src[sp++]) >>> 0; range = 0xffffffff; };
+    // decode until `limit` total output bytes (or the end marker)
+    function run(limit) {
+      const pbm = (1 << pb) - 1, lpm = (1 << lp) - 1;
+      while (remLen > 0 && total < limit) { putByte(getByte(rep0)); remLen--; }
+      while (total < limit) {
+        const ps = total & pbm;
+        if (!bit(P.m, (state << 4) + ps)) {
+          const prev = total > dictStart ? getByte(0) : 0, base = 0x300 * (((total & lpm) << lc) + (prev >> (8 - lc)));
+          let s = 1;
+          if (state >= 7) {
+            let mb = getByte(rep0);
+            do { const m = (mb >> 7) & 1; mb <<= 1; const b = bit(P.lit, base + ((1 + m) << 8) + s); s = (s << 1) | b; if (m !== b) break; } while (s < 0x100);
+          }
+          while (s < 0x100) s = (s << 1) | bit(P.lit, base + s);
+          putByte(s & 0xff); state = state < 4 ? 0 : state < 10 ? state - 3 : state - 6;
+          continue;
+        }
+        let n;
+        if (bit(P.r, state)) {
+          if (total === dictStart) throw new Error("bad LZMA data");
+          if (!bit(P.g0, state)) {
+            if (!bit(P.l0, (state << 4) + ps)) { state = state < 7 ? 9 : 11; putByte(getByte(rep0)); continue; }
+          } else {
+            let d;
+            if (!bit(P.g1, state)) d = rep1; else { if (!bit(P.g2, state)) d = rep2; else { d = rep3; rep3 = rep2; } rep2 = rep1; }
+            rep1 = rep0; rep0 = d;
+          }
+          n = len(P.rlen, ps); state = state < 7 ? 8 : 11;
+        } else {
+          rep3 = rep2; rep2 = rep1; rep1 = rep0; n = len(P.len, ps); state = state < 7 ? 7 : 10;
+          const slot = tree(P.slot, Math.min(n, 3) * 64, 6);
+          if (slot < 4) rep0 = slot;
+          else {
+            const nd = (slot >> 1) - 1; let d = (2 | (slot & 1)) * 2 ** nd;
+            if (slot < 14) d += rtree(P.pos, d - slot, nd); else d += direct(nd - 4) * 16 + rtree(P.align, 0, 4);
+            rep0 = d;
+          }
+          if (rep0 === 0xffffffff) { ended = true; return; }
+          if (rep0 >= total - dictStart || rep0 >= size) throw new Error("bad LZMA data");
+        }
+        remLen = n + 2;
+        while (remLen > 0 && total < limit) { putByte(getByte(rep0)); remLen--; }
+      }
+    }
+    if (!isLzma2) { setProps(props[0]); reset(); }
+    let started = false;
+    return {
+      get ended() { return ended; },
+      get inputLeft() { return src.length - sp; },
+      feed(u8) { const n = new Uint8Array(src.length - sp + u8.length); n.set(src.subarray(sp)); n.set(u8, src.length - sp); chunkPackEnd -= sp; src = n; sp = 0; },
+      decode(max) {
+        const start = total, target = total + Math.min(max, size);
+        if (!isLzma2) {
+          if (!started) { initRange(); started = true; }
+          run(unpackSize ? Math.min(target, unpackSize) : target);
+          if (unpackSize && total >= unpackSize) ended = true;
+        } else {
+          while (total < target && !ended) {
+            if (cst === 0) {
+              const c = src[sp++];
+              if (c === 0) { ended = true; break; }
+              if (c < 0x80) {
+                if (c === 1) dictStart = total;      // stored chunk with a dictionary reset
+                chunkLeft = ((src[sp] << 8) | src[sp + 1]) + 1; sp += 2; cst = 2;
+              } else {
+                chunkLeft = ((c & 0x1f) << 16) + ((src[sp] << 8) | src[sp + 1]) + 1;
+                const pk = ((src[sp + 2] << 8) | src[sp + 3]) + 1; sp += 4;
+                const mode = (c >> 5) & 3;
+                if (mode === 3) dictStart = total;   // dictionary reset (each block of a multi-threaded archive)
+                if (mode >= 2) setProps(src[sp++]);
+                if (mode >= 1) reset();
+                chunkPackEnd = sp + pk; initRange(); cst = 1;
+              }
+            }
+            if (cst === 2) {
+              const k = Math.min(chunkLeft, target - total);
+              for (let i = 0; i < k; i++) putByte(src[sp++]);
+              chunkLeft -= k; if (!chunkLeft) cst = 0;
+            } else if (cst === 1) {
+              const lim = Math.min(total + chunkLeft, target), before = total;
+              run(lim);
+              chunkLeft -= total - before;
+              if (!chunkLeft) { sp = chunkPackEnd; cst = 0; }
+            }
+          }
+        }
+        const n = total - start, out = new Uint8Array(n);
+        for (let i = 0; i < n; i++) out[i] = win[(wp - n + i + size) % size];
+        return out;
+      }
+    };
+  }
+
+  async function list7z(file) {
+    const sh = new DataView((await readAt(file, 0, 32)).buffer);
+    if (sh.getUint32(0) !== 0x377abcaf || sh.getUint16(4) !== 0x271c) throw new Error("This isn't a readable 7z.");
+    const nhOff = 32 + u64(sh, 12), nhSize = u64(sh, 20);
+    if (nhOff + nhSize > file.size) throw new Error("This 7z is cut short.");
+    let b = await readAt(file, nhOff, nhSize), p = 0;
+    const byte = () => b[p++];
+    const num = () => {
+      const first = b[p++]; let mask = 0x80, v = 0;
+      for (let i = 0; i < 8; i++) { if (!(first & mask)) return v + (first & (mask - 1)) * 2 ** (8 * i); v += b[p++] * 2 ** (8 * i); mask >>= 1; }
+      return v;
+    };
+    const bits = (n, allCheck) => {
+      if (allCheck && byte()) return new Array(n).fill(true);
+      const r = []; let cur = 0;
+      for (let i = 0; i < n; i++) { if (!(i & 7)) cur = byte(); r.push(!!(cur & (0x80 >> (i & 7)))); }
+      return r;
+    };
+    const digests = n => { const d = bits(n, true); p += 4 * d.filter(Boolean).length; return d; };
+    function streams() {
+      const S = { packPos: 0, packSizes: [], folders: [], subSizes: null };
+      for (let id = byte(); id; id = byte()) {
+        if (id === 6) {
+          S.packPos = num(); const n = num();
+          for (let t = byte(); t; t = byte()) { if (t === 9) for (let i = 0; i < n; i++) S.packSizes.push(num()); else if (t === 10) digests(n); else p += num(); }
+        } else if (id === 7) {
+          if (byte() !== 11) throw new Error("This 7z's header can't be read.");
+          const nf = num(); if (byte()) throw new Error("This 7z's header can't be read.");
+          for (let k = 0; k < nf; k++) {
+            const coders = []; let tin = 0, tout = 0;
+            for (let c = num(); c--;) {
+              const fl = byte(), id = b.slice(p, p + (fl & 15)); p += fl & 15;
+              let ni = 1, no = 1; if (fl & 0x10) { ni = num(); no = num(); }
+              let pr = null; if (fl & 0x20) { const s = num(); pr = b.slice(p, p + s); p += s; }
+              coders.push({ id: [...id].map(x => x.toString(16).padStart(2, "0")).join(""), pr }); tin += ni; tout += no;
+            }
+            for (let i = 0; i < tout - 1; i++) { num(); num(); }
+            const np = tin - (tout - 1); if (np > 1) for (let i = 0; i < np; i++) num();
+            S.folders.push({ coders, tout, sizes: [], nsub: 1, crc: false });
+          }
+          for (let t = byte(); t; t = byte()) {
+            if (t === 12) S.folders.forEach(fo => { for (let i = 0; i < fo.tout; i++) fo.sizes.push(num()); });
+            else if (t === 10) digests(nf).forEach((d, i) => S.folders[i].crc = d); else p += num();
+          }
+        } else if (id === 8) {
+          let t = byte();
+          if (t === 13) { S.folders.forEach(fo => fo.nsub = num()); t = byte(); }
+          S.subSizes = [];
+          S.folders.forEach(fo => {
+            if (!fo.nsub) return;
+            const tot = fo.sizes[fo.sizes.length - 1]; let sum = 0;
+            for (let i = 1; i < fo.nsub; i++) { const s = t === 9 ? num() : 0; S.subSizes.push(s); sum += s; }
+            S.subSizes.push(tot - sum);
+          });
+          if (t === 9) t = byte();
+          while (t) { if (t === 10) digests(S.folders.reduce((a, fo) => a + (fo.nsub === 1 && fo.crc ? 0 : fo.nsub), 0)); else p += num(); t = byte(); }
+        } else throw new Error("This 7z's header can't be read.");
+      }
+      if (!S.subSizes) S.subSizes = S.folders.map(fo => fo.sizes[fo.sizes.length - 1]);
+      return S;
+    }
+    const coderOf = fo => {
+      if (fo.coders.some(x => x.id === "06f10701")) throw new Error("This 7z is encrypted. Re-pack it without a password.");
+      const c = fo.coders.filter(x => x.id !== "00");
+      if (c.length !== 1 || (c[0].id !== "030101" && c[0].id !== "21")) throw new Error("This 7z uses a compression this page can't read. Re-pack it with LZMA or LZMA2.");
+      return c[0];
+    };
+    let id = byte();
+    if (id === 0x17) {
+      const S = streams(), fo = S.folders[0], size = fo.sizes[fo.sizes.length - 1];
+      const packed = await readAt(file, 32 + S.packPos, S.packSizes[0]);
+      const c = coderOf(fo), d = lzmaStream(c.id === "21", c.pr, size);
+      d.feed(packed); b = d.decode(size);
+      p = 0; id = byte();
+    }
+    if (id !== 1) throw new Error("This 7z's header can't be read.");
+    let S = { subSizes: [], folders: [], packSizes: [], packPos: 0 }, out = [];
+    for (let t = byte(); t; t = byte()) {
+      if (t === 2) { for (let q = byte(); q; q = byte()) p += num(); }
+      else if (t === 3) streams();
+      else if (t === 4) S = streams();
+      else if (t === 5) {
+        const n = num(); let empty = new Array(n).fill(false), emptyFile = null, names = [];
+        for (let q = byte(); q; q = byte()) {
+          const size = num(), end = p + size;
+          if (q === 14) empty = bits(n, false);
+          else if (q === 15) emptyFile = bits(empty.filter(Boolean).length, false);
+          else if (q === 17) {
+            if (byte()) throw new Error("This 7z's header can't be read.");
+            let s = "";
+            while (p < end) { const ch = b[p] | (b[p + 1] << 8); p += 2; if (ch) s += String.fromCharCode(ch); else { names.push(s); s = ""; } }
+          }
+          p = end;
+        }
+        // where each non-empty file sits: folder, offset in the folder's output
+        let si = 0, ei = 0, fi = 0, left = 0, off = 0, packPos = 32 + S.packPos;
+        const packStart = []; S.folders.forEach((fo, i) => { packStart.push(packPos); packPos += S.packSizes[i] || 0; });
+        for (let i = 0; i < n; i++) {
+          const name = (names[i] || "").replace(/\\/g, "/");
+          if (empty[i]) { const isFile = emptyFile && emptyFile[ei]; ei++; out.push({ name, size: 0, dir: !isFile }); continue; }
+          while (!left) { left = S.folders[fi].nsub; off = 0; fi++; }
+          const fo = S.folders[fi - 1], size = S.subSizes[si++] || 0;
+          out.push({ name, size, dir: false, sz7: { coder: fo.coders, packPos: packStart[fi - 1], folderSize: fo.sizes[fo.sizes.length - 1], off } });
+          off += size; left--;
+        }
+        out.coderOf = coderOf;
+      } else p += num();
+    }
+    out.coderOf = coderOf;
+    return out;
+  }
+
+  // forward-only readers over one archive member (reopened when a read goes backwards)
+  function zipStream(file, e) {
+    let reader = null, buf = new Uint8Array(0), pos = 0;
+    const open = async () => {
+      const lh = new DataView((await readAt(file, e.zip.lho, 30)).buffer);
+      const start = e.zip.lho + 30 + lh.getUint16(26, true) + lh.getUint16(28, true);
+      let s = file.slice(start, start + e.zip.csize).stream();
+      if (e.zip.method === 8) s = s.pipeThrough(new DecompressionStream("deflate-raw"));
+      else if (e.zip.method !== 0) throw new Error("The GOD zip uses a compression method this page can't read.");
+      reader = s.getReader(); buf = new Uint8Array(0); pos = 0;
+    };
+    return { async readAt(off, n) {
+      if (!reader || off < pos) await open();
+      const out = new Uint8Array(n); let got = 0;
+      while (got < n) {
+        if (!buf.length) { const r = await reader.read(); if (r.done) throw new Error("A GOD data file is shorter than expected."); buf = r.value; }
+        if (pos < off) { const k = Math.min(off - pos, buf.length); buf = buf.subarray(k); pos += k; continue; }
+        const k = Math.min(n - got, buf.length); out.set(buf.subarray(0, k), got); buf = buf.subarray(k); got += k; pos += k;
+      }
+      return out;
+    } };
+  }
+  function sevenStream(file, e, coderOf) {
+    let dec = null, inPos = 0, pos = 0, pending = new Uint8Array(0);
+    const fo = { coders: e.sz7.coder }, c = coderOf(fo);
+    const open = () => { dec = lzmaStream(c.id === "21", c.pr, e.sz7.folderSize); inPos = e.sz7.packPos; pos = -e.sz7.off; pending = new Uint8Array(0); };
+    const more = async () => {
+      if (dec.inputLeft < (3 << 20) && inPos < file.size) { const k = Math.min(4 << 20, file.size - inPos); dec.feed(await readAt(file, inPos, k)); inPos += k; }
+      const out = dec.decode(1 << 20);
+      if (!out.length && dec.ended) throw new Error("A GOD data file is shorter than expected.");
+      return out;
+    };
+    return { async readAt(off, n) {
+      if (!dec || off < pos) open();
+      const out = new Uint8Array(n); let got = 0;
+      while (got < n) {
+        if (!pending.length) pending = await more();
+        if (pos < off) { const k = Math.min(off - pos, pending.length); pending = pending.subarray(k); pos += k; continue; }
+        const k = Math.min(n - got, pending.length); out.set(pending.subarray(0, k), got); pending = pending.subarray(k); got += k; pos += k;
+      }
+      return out;
+    } };
+  }
+
+
+  async function godDisc(file, listing, g) {
+    const streams = g.data.map(e => e.zip ? zipStream(file, e) : sevenStream(file, e, listing.coderOf));
+    async function read(off, size) {
+      const out = new Uint8Array(size); let o = 0;
+      while (size > 0) {
+        const block = Math.floor(off / GOD_BLK), inner = off % GOD_BLK, f = Math.floor(block / GOD_PER_FILE), b = block % GOD_PER_FILE;
+        const group = Math.floor(b / 204), k = b % 204, n = Math.min(size, GOD_BLK - inner);
+        if (f >= streams.length) throw new Error("The GOD package is missing data files.");
+        out.set(await streams[f].readAt((1 + group * 205 + 1 + k) * GOD_BLK + inner, n), o);
+        off += n; size -= n; o += n;
+      }
+      return out;
+    }
+    if (new TextDecoder().decode(await read(0x10000, 20)) !== "MICROSOFT*XBOX*MEDIA") throw new Error("That GOD package doesn't hold an Xbox disc image.");
+    const vd = new DataView((await read(0x10014, 8)).buffer);
+    // a file given as path components (folders are walked from the root)
+    async function find(path) {
+      let sec = vd.getUint32(0, true), size = vd.getUint32(4, true);
+      for (let depth = 0; depth < path.length; depth++) {
+        const data = await read(sec * 0x800, size), dv = new DataView(data.buffer), stack = [0];
+        let hit = null;
+        while (stack.length) {
+          const o = stack.pop();
+          if (o * 4 + 14 > data.length) continue;
+          const l = dv.getUint16(o * 4, true), r = dv.getUint16(o * 4 + 2, true);
+          if (l === 0xffff) continue;
+          const nl = data[o * 4 + 13], nm = String.fromCharCode(...data.subarray(o * 4 + 14, o * 4 + 14 + nl));
+          if (nm.toLowerCase() === path[depth].toLowerCase()) { hit = [dv.getUint32(o * 4 + 4, true), dv.getUint32(o * 4 + 8, true), data[o * 4 + 12]]; break; }
+          if (l) stack.push(l); if (r) stack.push(r);
+        }
+        const last = depth === path.length - 1;
+        if (!hit || !!(hit[2] & 0x10) === last) throw new Error(path.join("/") + " wasn't found in the GOD package. Is it Mushihimesama?");
+        [sec, size] = hit;
+      }
+      return [sec, size];
+    }
+    return { read, find };
+  }
+
+  // Cave LZSS entry -> the first `need` bytes of its output (flag bits from +12, MSB first: 1 = copy, BE u16 v:
+  // length (v & 31) + 3, distance v >> 5; 0 = one literal byte from the token data at +8)
+  function lzss(e, need) {
+    const dv = new DataView(e.buffer, e.byteOffset, e.byteLength), n = dv.getUint32(4), out = new Uint8Array(need);
+    let p = dv.getUint32(8), o = 0;
+    for (let i = 0; i < n && o < need; i++) {
+      if ((e[12 + (i >> 3)] >> (7 - (i & 7))) & 1) {
+        const v = (e[p] << 8) | e[p + 1]; p += 2;
+        const d = v >> 5; let k = (v & 31) + 3;
+        while (k-- && o < need) { out[o] = out[o - d]; o++; }
+      } else out[o++] = e[p++];
+    }
+    if (o < need) throw new Error("The 360 sheet is shorter than expected.");
+    return out;
+  }
+
+  // the banner picture as it goes into the u4 file (16-bit words byte-swapped like the rest of the file)
+  async function buildGlyph(file, listing, g, progress) {
+    const disc = await godDisc(file, listing, g);
+    progress("reading h20.bin…");
+    const [sec, size] = await disc.find(GOD_SHEET), base = sec * 0x800;
+    const arc = await disc.read(base, Math.min(size, 0x10000)), av = new DataView(arc.buffer);
+    if (av.getUint32(0) !== 0xc0090117) throw new Error("h20.bin in the GOD package isn't a Cave archive.");
+    let ent = null;
+    for (let k = 0, count = av.getUint32(12); k < count; k++) {
+      const o = 0x24 + k * 0x114; let nm = "";
+      for (let i = o + 16; i < o + 16 + 256 && arc[i]; i++) nm += String.fromCharCode(arc[i]);
+      if (nm.endsWith(SHEET_ENTRY)) { ent = [av.getUint32(o + 12), av.getUint32(o + 8)]; break; }
+    }
+    if (!ent) throw new Error(SHEET_ENTRY + " wasn't found in h20.bin.");
+    progress("reading the 360 sheet…");
+    const e = await disc.read(base + ent[0], ent[1]);
+    const hd = new DataView(lzss(e, 18).buffer);
+    const w = hd.getUint16(12, true), h = hd.getUint16(14, true), desc = hd.getUint8(17);
+    if (w !== 4096 || h !== 4096 || hd.getUint8(16) !== 16 || (desc & 15) !== 1) throw new Error("The 360 sheet isn't the expected 4096x4096 ARGB1555 picture.");
+    const topDown = !!(desc & 0x20);
+    progress("cutting out アレンジモード…");
+    const t = lzss(e, 18 + ((topDown ? SRC_Y + SRC_L - 1 : 4095 - SRC_Y) + 1) * w * 2);
+    const px = (x, y) => { const o = 18 + ((topDown ? y : 4095 - y) * w + x) * 2; return t[o] | (t[o + 1] << 8); };
+    const label = [];                             // 64 rows x 8 grey ARGB1555 words
+    for (let i = 0; i < 64; i++) { const row = []; label.push(row); for (let j = 0; j < 8; j++) {
+      let v = 0;
+      if (i < SRC_L >> 1) {
+        let n = 0, s = 0;
+        for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) {
+          const q = px(SRC_X + 2 * j + b, SRC_Y + 2 * i + a);
+          if (q & 0x8000) { n++; s += (q >> 10) & 31; }
+        }
+        if (n >= 2) { const c = Math.floor(s / n); v = 0x8000 | (c << 10) | (c << 5) | c; }
+      }
+      row.push(v);
+    } }
+    // colour it like God Mode: 16 x 64, text in columns 7-14, shadow one column lower and one row on
+    const pic = Array.from({ length: 64 }, () => new Array(16).fill(0)), shadow = 0x8000 | (12 << 10) | (6 << 5);
+    for (let i = 0; i < 63; i++) for (let j = 0; j < 8; j++) if (label[i][j] & 0x8000) pic[i + 1][j + 6] = shadow;
+    for (let i = 0; i < 64; i++) for (let j = 0; j < 8; j++) {
+      const v = label[i][j];
+      if (v & 0x8000) {
+        const t = Math.max(0, Math.min(17, ((v >> 10) & 31) - 14)), r = 25 + Math.floor(t * 6 / 17), g = 2 + Math.floor(t * 9 / 17);
+        pic[i][j + 7] = 0x8000 | (r << 10) | (g << 5) | g;
+      }
+    }
+    const be = new Uint8Array(GLYPH_LEN);         // big-endian, as patch.py checks it
+    be.set([0x41, 0x52, 0x47, 0x32]);             // 'ARG2'
+    for (let i = 0; i < 64; i++) for (let x = 0; x < 16; x++) { const k = 16 + 2 * (i * 16 + x); be[k] = pic[i][x] >> 8; be[k + 1] = pic[i][x] & 0xff; }
+    if (crc32(be) !== BANNER_CRC) throw new Error("The アレンジモード label in this GOD package isn't the expected picture (CRC " + hex(crc32(be)) + ").");
+    const out = new Uint8Array(GLYPH_LEN);        // as it goes into the u4 file: 16-bit words byte-swapped
+    for (let k = 0; k < GLYPH_LEN; k += 2) { out[k] = be[k + 1]; out[k + 1] = be[k]; }
+    return out;
+  }
+
+  function findGod(entries) {
+    const files = entries.filter(e => !e.dir).map(e => ({ ...e, name: e.name.replace(/\\/g, "/") }));
+    const pkg = files.find(e => e.name.split("/").pop().toUpperCase() === GOD_ID);
+    const re = new RegExp("(^|/)" + GOD_ID + "\\.data/Data(\\d{4})$", "i");
+    const data = files.filter(e => re.test(e.name)).sort((a, b) => +a.name.match(re)[2] - +b.name.match(re)[2]);
+    const missing = [];
+    if (!pkg) missing.push(GOD_ID);
+    if (!data.length) missing.push(GOD_ID + ".data/DataNNNN");
+    return { pkg, data, missing };
+  }
+  async function listArchive(file) {
+    const sig = await readAt(file, 0, 6);
+    if (sig[0] === 0x37 && sig[1] === 0x7a && sig[2] === 0xbc && sig[3] === 0xaf) return list7z(file);
+    if (sig[0] === 0x50 && sig[1] === 0x4b) return listZip(file);
+    throw new Error("This isn't a .zip or .7z file.");
+  }
+
+  async function loadGod(file) {
+    const msg = $("loadedGod");
+    state.glyph = null; tryPatch();
+    const say = t => msg.textContent = file.name + " (" + fmtSize(file.size) + "): " + t;
+    say("looking for the GOD package…");
+    try {
+      const listing = await listArchive(file), g = findGod(listing);
+      if (g.missing.length) throw new Error("not found: " + g.missing.join(" and ") + ". Is this the Mushihimesama Xbox 360 GOD package?");
+      if (g.data.some(e => e.zip) && typeof DecompressionStream === "undefined") throw new Error("This browser can't unzip files. Use a current Chrome, Edge, Firefox or Safari.");
+      say("found " + GOD_ID + " and " + g.data.length + " data file" + (g.data.length > 1 ? "s" : "") + "; reading the disc image…");
+      state.glyph = await buildGlyph(file, listing, g, say);
+      say("アレンジモード banner read.");
+    } catch (err) {
+      state.glyph = null;
+      say(err.message);
+    }
+    tryPatch();
+  }
+  const dropGod = $("dropGod"), inputGod = $("fileGod");
+  inputGod.onchange = () => inputGod.files.length && loadGod(inputGod.files[0]);
+  ["dragenter", "dragover"].forEach(ev => dropGod.addEventListener(ev, e => { e.preventDefault(); dropGod.classList.add("over"); }));
+  ["dragleave", "drop"].forEach(ev => dropGod.addEventListener(ev, e => { e.preventDefault(); dropGod.classList.remove("over"); }));
+  dropGod.addEventListener("drop", e => { if (e.dataTransfer.files.length) loadGod(e.dataTransfer.files[0]); });
+
 
   const drop = $("drop"), input = $("file");
   input.onchange = () => input.files.length && load([...input.files]);

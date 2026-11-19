@@ -91,6 +91,9 @@ patcher:
         mov.l   P_ttl,r1           ! title screen text-draw literal 0x0C092184 -> title_text_hook
         mov.l   P_tth,r0
         mov.l   r0,@r1
+        mov.l   P_endl,r1          ! list-close call literal 0x0C05C45C -> end_wrap (ARRANGE banner, banner.s)
+        mov.l   P_endw,r0
+        mov.l   r0,@r1
         mov.l   P_blk,r1           ! 0x0C0920B4: and #16,r0 -> and #0,r0, so the INSERT COIN call runs every frame
         mov.w   P_blkv,r0          ! (title_text_hook does the blink, SALE BY AMI stays hidden on blink-off frames)
         mov.w   r0,@r1
@@ -156,9 +159,12 @@ P_warnlen:  .word 448
 P_blkv:     .word 0xC900
         .align 2
 P_blk:      .long 0xAC0920B4
-P_bootstr:  .ascii "     FUTARI ARRANGE     "
+P_endl:     .long 0xAC05C45C
+P_endw:     .long end_wrap
+P_bootstr:
+            .include "boot_title.inc"   ! "FUTARI ARRANGE B<build>", 24 chars, written by build.py from src/BUILD
             .byte 0,0,0,0
-            .ascii "          2026.11.12          "
+            .ascii "        2026.11.20            "
         .align 2
 P_warnstr:
             .ascii "   THIS PROJECT IS UNOFFICIAL "
@@ -187,7 +193,7 @@ P_warnstr:
             .byte 0,0
             .ascii "                              "
             .byte 0,0
-            .ascii "   2026/11/12 FUTARI ARRANGE  "
+            .ascii "   2026/11/20 FUTARI ARRANGE  "
             .byte 0,0
         .align 2
         .include "menu.s"
@@ -196,5 +202,6 @@ P_warnstr:
         .include "meter.s"
         .include "modesel.s"
         .include "p2off.s"
+        .include "banner.s"
         .align 2
 blob_end:

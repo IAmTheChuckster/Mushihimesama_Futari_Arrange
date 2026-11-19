@@ -7,7 +7,7 @@ Needs binutils for SH (sh-elf-as, sh-elf-ld, sh-elf-objcopy). The ROM never leav
 repo only holds source. Writes OUT.zip (futariarr set: u2/u23/u24 copied, futariarr_u4 patched) and prints
 the patched u4 CRC32 and the changed bytes (for the patchers).
 """
-import os, subprocess, sys, tempfile, zipfile, zlib, base64
+import os, subprocess, sys, tempfile, zipfile, zlib
 
 ORIG_U4_CRC = 0xB9467B6D
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -16,8 +16,18 @@ ENTRY_OFF = 0x1C4          # u4 header: game entry pointer (original 0x0C002A30)
 ORIG_ENTRY = 0x0C002A30
 STUB_OFF = 0x1F8000
 GEMTYPE = int(os.environ.get('GEMTYPE', '1'))
+BUILD = int(open(os.path.join(HERE, 'BUILD')).read().split()[0])   # number of the build being made
+
+
+def boot_title(t):
+    """Boot screen first line (24-char field drawn from x 20, 8 px per char): FUTARI ARRANGE B<build>,
+    centred on the 240 px screen as close as the 8 px grid allows (a half step goes left)."""
+    text = 'FUTARI ARRANGE B%d' % BUILD
+    left = (100 - 4 * len(text)) // 8
+    line = (' ' * left + text).ljust(24)
+    assert len(line) == 24, line
+    open(os.path.join(t, 'boot_title.inc'), 'w').write('            .ascii "%s"' % line + chr(10))
 PRI = int(os.environ.get('PRI', '510'))
-BARY = 0
 INVLEN = int(os.environ.get('INVLEN', '120'))
 
 def sh(*a):
@@ -25,13 +35,14 @@ def sh(*a):
 
 def assemble():
     t = tempfile.mkdtemp()
+    boot_title(t)
     def build(src, addr, name, extra=()):
         o = os.path.join(t, name + '.o'); e = os.path.join(t, name + '.elf'); b = os.path.join(t, name + '.bin')
-        sh('sh-elf-as', '-big', '-I', HERE, *extra, '-o', o, os.path.join(HERE, src))
+        sh('sh-elf-as', '-big', '-I', HERE, '-I', t, *extra, '-o', o, os.path.join(HERE, src))
         sh('sh-elf-ld', '-e', '0', '-Ttext=0x%X' % addr, '-o', e, o)
         sh('sh-elf-objcopy', '-O', 'binary', '-j', '.text', e, b)
         return open(b, 'rb').read(), e
-    blob, _ = build('patch.s', 0x0C7C0000, 'blob', ['--defsym', 'GEMTYPE=%d' % GEMTYPE, '--defsym', 'INVLEN=%d' % INVLEN, '--defsym', 'BARY=%d' % BARY, '--defsym', 'PRI=%d' % PRI, '--defsym', 'BARX=%d' % int(os.environ.get('BARX','133')), '--defsym', 'BARROWS=%d' % int(os.environ.get('BARROWS','7')), '--defsym', 'TINT=%d' % int(os.environ.get('TINT','0xFF2020'),0), '--defsym', 'BARY0=%d' % int(os.environ.get('BARY0','3')), '--defsym', 'FULL=%d' % int(os.environ.get('FULL','12000')), '--defsym', 'NUMX=%d' % int(os.environ.get('NUMX','230')), '--defsym', 'NUMY=%d' % int(os.environ.get('NUMY','292'))])
+    blob, _ = build('patch.s', 0x0C7C0000, 'blob', ['--defsym', 'GEMTYPE=%d' % GEMTYPE, '--defsym', 'INVLEN=%d' % INVLEN, '--defsym', 'PRI=%d' % PRI, '--defsym', 'FULL=%d' % int(os.environ.get('FULL','12000'))])
     open(os.path.join(t, 'blob.bin'), 'wb').write(blob)
     stub, _ = build('stub.s', STUB_ADDR, 'stub', ['--defsym', 'BLOBLEN=%d' % len(blob)])
     return stub, blob
@@ -58,5 +69,5 @@ if __name__ == '__main__':
         for n in ('futariblk_u2', 'u23', 'u24'):
             o.writestr(n, z.read(n))
         o.writestr('futariarr_u4', new)
-    print('patched u4 CRC32 %08x' % zlib.crc32(new))
+    print('build %d, patched u4 CRC32 %08x' % (BUILD, zlib.crc32(new)))
     print('stub %d bytes + blob %d bytes at 0x%X' % (len(stub), len(blob), STUB_OFF))
