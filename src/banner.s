@@ -20,11 +20,6 @@ end_wrap:
         mov.l   @r1,r0
         tst     r0,r0
         bt      9f                  ! ORIGINAL ARCADE: list closed untouched
-        sts.l   pr,@-r15
-        mov.l   B_gdraw,r0          ! graze counter, linked to the score (graze.s)
-        jsr     @r0
-        nop
-        lds.l   @r15+,pr
         mov.l   B_glyph,r1
         mov.l   @r1,r0
         mov.l   B_magic,r2
@@ -109,7 +104,6 @@ B_n:     .word  512
         .align 2
 B_glyph: .long  0xA01FF000
 B_mode:  .long  0x0C7BFF00
-B_gdraw: .long  graze_draw
 B_emit:  .long  0x0C0512E4
 B_magic: .long  0x41524732          ! 'ARG2'
 B_wp:    .long  0x0C05100C

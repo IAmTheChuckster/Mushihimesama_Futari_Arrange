@@ -1,7 +1,7 @@
 # CLAUDE.md: CV1000 ROM patch projects
 
 This file is the handoff for Mushihimesama Futari Arrange (`IAmTheChuckster/Mushihimesama_Futari_Arrange`, current
-build 53) and the template for new CV1000 patch projects. Claude Code reads it at the start of every session in
+build 54) and the template for new CV1000 patch projects. Claude Code reads it at the start of every session in
 this repo. **Keep it up to date with every build** (see "Every build" below): new findings, rules, addresses, tools.
 
 ## Three ways to use it
@@ -173,7 +173,7 @@ CLAUDE.md     this file
 - Linking a new HUD element to an existing one: in the list-close hook, find the game's own records for it (e.g. score
   digits: source x `0x04F8`, dest row 304) and copy their header/tint; draw nothing when they are absent.
 - Score: add points with `0x0C06B120(stock 0x0C383A1C, points)`. Score-font digits: tile `0x04F80080` + 8 * digit,
-  8x8, 7 px apart (see `graze_draw`).
+  8x8, 7 px apart.
 - Debugger watchpoints do not fire in this build and Lua write taps crash; use pokes and watches instead.
 - SH-3: never put a PC-relative `mov.l` in a branch delay slot (illegal on real hardware even if MAME runs it).
 - 360 GOD package (Mushihimesama, title ID 435A07E3): see `.claude/god.md` for the disc image, Cave archive and
