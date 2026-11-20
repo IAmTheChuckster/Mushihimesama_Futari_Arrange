@@ -1,21 +1,44 @@
 # CLAUDE.md: CV1000 ROM patch projects
 
-Copy this file into the root of a new project and fill in the **Project** section. It holds the setup, workflow
-and lessons from Mushihimesama Futari Arrange (`IAmTheChuckster/Mushihimesama_Futari_Arrange`, build 43) so a new
-game patch can start where that one left off. Keep it up to date: add every new finding and rule here as you go.
+This file is the handoff for Mushihimesama Futari Arrange (`IAmTheChuckster/Mushihimesama_Futari_Arrange`, current
+build 53) and the template for new CV1000 patch projects. Claude Code reads it at the start of every session in
+this repo. **Keep it up to date with every build** (see "Every build" below): new findings, rules, addresses, tools.
 
-## Project (fill in)
-- Game / MAME set: `<set>` (parent `<parent>`), board CV1000-B (8 MB RAM) or CV1000-D (16 MB RAM)
-- Original program ROM: `<u4 name>`, CRC `<crc>`
-- Output set name: `<newset>`, patched u4 name `<newset>_u4`
-- Goal: <what the patch changes>
+## Three ways to use it
+1. **Continue this project** (same machine): read this file and `src/README.md`, then follow "Every build".
+2. **Rebuild this project on a new machine:**
+   1. Install the tools in "Machine setup" (Git, Claude Code, Python; WSL Ubuntu-24.04 with SH binutils, Pillow,
+      numpy; the MAME 0.289 test env from `IAmTheChuckster/mame0.289_claude` at `~/mame`).
+   2. `git clone https://github.com/IAmTheChuckster/Mushihimesama_Futari_Arrange` (to `D:\GitHub\...`).
+   3. Put the owner's own dumps in place (never in git): `roms/futariblj.zip` and `roms/435A07E3.zip` in the
+      repo, and `futariblj.zip` also in `~/mame/roms/`.
+   4. In WSL: `bash tools/wsl/build.sh` then `bash tools/wsl/update.sh`. With `src/BUILD` unchanged the patchers
+      must come out unchanged (`git status` clean) and `update.sh` must print `same as the tested u4: True`.
+      That proves the setup; carry on with "Every build".
+3. **Start a new game project** (another CV1000 game):
+   1. New repo; copy from this one: `CLAUDE.md`, `.gitignore`, `.nojekyll`, `src/stub.s`, `src/build.py`,
+      `src/update_patchers.py`, `src/BUILD` (set to 1), `tools/` (harness, `tools/wsl/*`), `patch.py` and
+      `index.html` as patcher templates, `mister/*.mra` as an MRA template. Start `src/patch.s` with only the
+      `patcher:` entry (hook installs + jump to the real entry) and grow it.
+   2. Fill in "Project" below and replace the Futari values: original u4 CRC, entry point (`0x1C4` header word),
+      free tail offset of u4 (check it is all `0xFF`), set/file names, RAM layout, addresses. Everything listed
+      under "Blitter / display list" and "Reverse engineering tips" is Futari-specific: find the new game's
+      equivalents with the same methods (RAM dumps, literal searches, VRAM from save states).
+   3. Rename this file's Futari examples as you replace them, so it stays true for the new project.
+
+## Project (this repo; fill in for a new one)
+- Game / MAME set: `futariblj` (parent `futaribl`), Mushihime-Sama Futari Black Label, CV1000-B (8 MB RAM)
+- Original program ROM: `futariblk_u4`, CRC `b9467b6d`; also u2 (NAND), u23, u24 (sound) unchanged
+- Output set: `futariarr.zip`, patched u4 `futariarr_u4`; MiSTer `mister/Mushihimesama Futari Arrange.mra`
+- Extra input: the owner's Xbox 360 GOD package of Mushihimesama, title ID 435A07E3 (ARRANGE banner art)
+- Goal: ORIGINAL ARCADE unchanged; ARRANGE MODE with the changes listed in README "Patch Notes"
 
 ## Owner and ground rules
 - The owner plans and tests; Claude reverse engineers and writes the patch and patcher code.
 - **No ROM data or game art in the repo, ever.** `.gitignore` excludes `*.zip`, `roms/`, `work/`, `*.bin`, ROM
   file names, `*.png`, `.images/`, `__pycache__/`. Patchers embed only the changed bytes; art from other
   packages (the 360 GOD package) is cut at patch time on the user's machine.
-- **Never commit or push unless the owner says so in that moment.** Don't offer commits by default. When asked
+- **Never commit or push unless the owner says so in that moment.** Never ask or offer to push or commit. When asked
   to push: commit (with the Claude co-author line) and `git push origin main` (works from the command line
   now; GitHub Desktop is the fallback).
 - **Never write build output into the repo's `roms/`** (it holds only the owner's dumps, e.g. `futariblj.zip`,
@@ -45,6 +68,7 @@ game patch can start where that one left off. Keep it up to date: add every new 
 ## Repo layout (proven)
 ```
 src/          *.s (SH-3 assembly), BUILD, build.py, update_patchers.py, README.md (addresses and hooks)
+tools/wsl/    build.sh (build + MAME test set), update.sh (update and check the patchers), sheet.py (contact sheets)
 tools/mame/   project harness (futari_harness.lua) and input schedules
 dev_notes/    findings about the game (mechanics, RAM map), marked VERIFIED or open
 mister/       MiSTer .mra (owner-edited name/date)
@@ -88,30 +112,38 @@ CLAUDE.md     this file
 - Frame renderer `0x0C05C3EC`: starts a list (`0x0C0512BC`), runs the queued handlers, then closes the list via
   the literal at `0x0C05C45C` -> `0x0C0512E4` (append one long) with `0xFFFFFFFF`. **Hook that literal** to
   change every list the blitter gets: draw-queue hooks miss frames during slowdown (the banner flashed).
+- **Performance:** code in the list-close hook runs every frame: never scan the whole list forwards. Search backwards
+  from the write pointer (HUD/banner draws are near the end) and stop when found. Measure slowdown by the frame
+  the stage 1 tally starts in a fixed invulnerable run (build 43 baseline 12324; build 48 with forward scans 12913).
 - An upload takes effect a few frames late: upload every frame (in the mode that needs it), not only on frames
   that draw the sprite, or the old art shows for ~3 frames.
 - Unused VRAM: Futari Black Label still holds the 1.5 "Ultra Mode" label (16x64 at `0x1548,0x107`); reuse such
   leftovers instead of guessing free space.
 
-## Build and test loop
-1. Edit `src/*.s` and raise `src/BUILD`. Build in WSL:
-   `python3 src/build.py ~/mame/roms/<set>.zip ~/mame/work/<newset>_new.zip` (prints build number and CRC).
-2. Test set: `~/mame/roms_arr/<set>.zip` with the patched u4 under the **original** file name (plus the GOD
-   picture written at `0x1FF000`, byte-swapped); run with `ROMPATH=$HOME/mame/roms_arr`. First boot
-   initialises NAND/EEPROM.
-3. Run: `GAME=<set> HARNESS=lua/<proj>_harness.lua BT_SCHED=... BT_SNAP=N scripts/run.sh FRAMES`.
-   Save a state (`BT_SAVE=frame:name`), load it from Lua (`BT_LOADSTATE`; `-state` hangs headless) and snapshot
-   every frame (`BT_SNAP=1`). `BT_POKE` to force values (e.g. a meter), `BT_WATCH` to log RAM per frame,
-   `BT_RAMSNAP` for full RAM dumps.
-4. Check frame by frame: contact sheets, crops, pixel counts. Blink/flicker bugs only show frame to frame.
-   Compare against the previous build (build it from `git archive HEAD src`) when unsure whether a change
-   altered anything.
-5. `python3 src/update_patchers.py <orig>.zip <new>.zip` (reads `src/BUILD` and `roms/435A07E3.zip`) updates
-   `patch.py`, `index.html` (patch bytes, CRCs, embedded MRA, download table) and the `.mra`. Then check that
-   `patch.py --god` output equals the tested ROM, update both READMEs and this file.
-6. Web patcher test: `preview_start` with `.claude/launch.json` (python http.server on 8765), then in the page
-   `fetch('/roms/...')` the files and dispatch a `drop` DragEvent with a DataTransfer on `#drop` / `#dropGod`;
-   read `#outstatus`, `#outcrc`. Stop the server afterwards.
+## Every build (checklist)
+1. Raise `src/BUILD` by one (it goes on the boot screen as `FUTARI ARRANGE B<n>` and into the patchers).
+2. Edit `src/*.s`. In WSL: `bash tools/wsl/build.sh` (assembles, prints the build number and CRC, installs the
+   test set `~/mame/roms_arr/futariblj.zip` with the banner picture).
+3. Test in MAME: `cd ~/mame; GAME=futariblj ROMPATH=$HOME/mame/roms_arr HARNESS=lua/futari_harness.lua
+   BT_SCHED=work/s/<schedule> BT_SNAP=N scripts/run.sh FRAMES`. Save a state (`BT_SAVE=frame:name`), load it
+   from Lua (`BT_LOADSTATE`; `-state` hangs headless), snapshot every frame (`BT_SNAP=1`), make contact sheets
+   (`tools/wsl/sheet.py`). `BT_POKE` forces values every frame, `BT_POKE1` once, `BT_WATCH` logs RAM per frame, `BT_RAMSNAP` dumps RAM.
+   To reach a stage end, keep the ship invulnerable: `BT_POKE=3700:c38340c:7fff:4` (stage 1 tally at about frame
+   12326 with `arr_play.txt`). The player state word `0x0C3833A8` is 0 on the tally; `player_hook` does not run on
+   the game over screen.
+   Check frame by frame (blink/flash bugs) and ORIGINAL ARCADE when the change could touch it. Compare against
+   the previous build (`git archive HEAD src`) when unsure.
+4. `bash tools/wsl/update.sh`: updates `patch.py`, `index.html` (patch bytes, CRCs, embedded MRA, download
+   table) and the `.mra` CRC, and checks `patch.py --god` gives exactly the tested u4.
+5. Update the docs, every build:
+   - `README.md`: "Current build" line, Patch Notes (plain English), CRC in "Patching the game", To Do / Bugs.
+   - `src/README.md`: the "Build N: patch code CRC ..., finished ... CRC ..." line and a note per new file/hook.
+   - `dev_notes/futariblj-mechanics.md`: findings (VERIFIED or open) with the build number.
+   - `CLAUDE.md` (this file): current build number at the top, new rules, tools, addresses, lessons.
+6. Web patcher check when `index.html` logic changed: `preview_start` with `.claude/launch.json` (http.server on
+   8765), `fetch('/roms/...')` the files in the page and dispatch a `drop` DragEvent with a DataTransfer on
+   `#drop` / `#dropGod`; read `#outstatus`, `#outcrc`; stop the server.
+7. Don't commit or push; tell the owner what changed. Push only when asked.
 
 ## Reverse engineering tips
 - RAM dump (`BT_RAMSNAP`), search for ASCII strings and 32-bit big-endian pointers to them; the code that uses
@@ -126,6 +158,22 @@ CLAUDE.md     this file
 - Some text (for example "SALE BY AMI") is pre-drawn sprites, not strings; handle it in the display list.
 - Blinking text: the game may skip the draw call entirely on blink-off frames; a hook on that call then misses
   frames (title NOT FOR SALE flashed). Make the call happen every frame and do the blink in the hook.
+- Ship (`0x0C383A68`/`6C`) and bullets (+20/+24 in the bullet list, manager `@0x0C27DE48` + `0x48440`, live = state
+  byte +8 is 1 or 2) share one coordinate system: 16.16, x across, y **up** from the bottom (screen y = 320 - y).
+  Plot list positions over a screenshot to confirm such things. The bullet list also holds harmless-looking
+  effects (green ring bullets, kind byte +9 = 0x0F, at the stage start).
+- The x counter (left) slides out to the left before the tally; anchor HUD followers on its "x" sign
+  (source `0x03E800C0`, row 256, x 4), its digits change sprites with the value. Sprite crops: check edge columns for
+  pixels of neighbouring art (column `0x04E7` next to the chrome digits had some).
+- HUD parts move independently: the score row is fixed, but the banner bar and bomb icons drop 8 px while a boss
+  gauge shows. Check which element actually moves (frame-by-frame crops) before linking.
+- Colour any sprite with the tint word (0x80 per channel = as drawn, e.g. gold 0x00FFA830); scale it by another
+  element's tint to keep its fades. Number fonts in VRAM: see `.images/fonts/` (score 0x04F8, chrome 0x04E7,
+  x counter 0x0390, system ASCII 0x03F8).
+- Linking a new HUD element to an existing one: in the list-close hook, find the game's own records for it (e.g. score
+  digits: source x `0x04F8`, dest row 304) and copy their header/tint; draw nothing when they are absent.
+- Score: add points with `0x0C06B120(stock 0x0C383A1C, points)`. Score-font digits: tile `0x04F80080` + 8 * digit,
+  8x8, 7 px apart (see `graze_draw`).
 - Debugger watchpoints do not fire in this build and Lua write taps crash; use pokes and watches instead.
 - SH-3: never put a PC-relative `mov.l` in a branch delay slot (illegal on real hardware even if MAME runs it).
 - 360 GOD package (Mushihimesama, title ID 435A07E3): see `.claude/god.md` for the disc image, Cave archive and

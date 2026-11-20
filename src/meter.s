@@ -125,7 +125,10 @@ player_hook:
         bt      6f
         add     #-1,r0
         mov.l   r0,@r1
-6:      mov.l   M_pend,r1
+6:      mov.l   M_gtick,r0       ! grazing (graze.s)
+        jsr     @r0
+        nop
+        mov.l   M_pend,r1
         mov.l   @r1,r0
         tst     r0,r0
         bt      7f
@@ -142,8 +145,11 @@ player_hook:
         bf      4f
         mov.l   M_latch,r1       ! player state 0 (score tally, game over): the game hides its icons, so do we
         mov     #0,r0
-        bra     8f
         mov.l   r0,@r1
+        mov.l   M_graze,r1       ! graze counter starts every stage at 0 (graze.s)
+        mov.l   r0,@r1
+        bra     8f
+        mov.l   r0,@(4,r1)
 4:
         mov.l   M_draw,r4
         mov     #0,r5
@@ -257,6 +263,8 @@ M_gemadd:  .long 0x0C06B730
 M_pupd:    .long 0x0C067B60
 M_submit:  .long 0x0C05C394
 M_draw:    .long meter_draw
+M_gtick:   .long graze_tick
+M_graze:   .long 0x0C7BFF3C
 M_dlp:     .long 0x0C05100C
 M_org:     .long 0x0C051004
 M_recip2k: .long 2147484        ! 2^32 / 2000

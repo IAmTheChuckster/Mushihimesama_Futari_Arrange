@@ -3,7 +3,7 @@
     python3 update_patchers.py ORIGINAL_futariblj.zip PATCHED.zip [BUILD] [--god 435A07E3.zip]
 
 Embeds only the changed bytes (no ROM data) into patch.py and index.html and fixes the CRCs in them and in the
-.mra. Run once after every build.
+.mra, and the build number in README.md ("Current build") and CLAUDE.md. Run once after every build.
 PATCHED_CRC is the u4 with the patch code only; FINAL_CRC is the finished futariarr_u4, with the アレンジモード
 banner cut from the owner's GOD package (default: roms/435A07E3.zip; no Cave art is stored in the repo, only the
 CRCs). The .mra, the download table and the README use FINAL_CRC.
@@ -70,4 +70,8 @@ open(ht, 'w', newline='\n', encoding='utf-8').write(h)
 
 mra = os.path.join(root, 'mister', 'Mushihimesama Futari Arrange.mra'); m = open(mra, encoding='utf-8').read()
 open(mra, 'w', newline='\n', encoding='utf-8').write(part(m, final))
+for doc, pat, rep in (('README.md', r'\*\*Current build: \d+\*\*', '**Current build: %s**' % build),
+                      ('CLAUDE.md', r'current(\s+)build \d+', lambda m: 'current%sbuild %s' % (m.group(1), build))):
+    fn = os.path.join(root, doc); t = open(fn, encoding='utf-8').read()
+    open(fn, 'w', newline='', encoding='utf-8').write(re.sub(pat, rep, t, count=1))
 print('build', build, 'patch CRC %08x, futariarr_u4 with banner %08x' % (crc, final), '(%d bytes at 0x1F8000)' % (end - 0x1F8000))

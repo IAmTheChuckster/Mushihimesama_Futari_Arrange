@@ -8,6 +8,7 @@ No ROM data is in this folder. Put your own `futariblj.zip` in the test environm
   - `BT_LOADSTATE=<name>`: load a save state from inside Lua (MAME's `-state` option hangs in headless runs).
   - `BT_RAMSNAP=f1,f2,...`: write the 8 MB work RAM to `work/ram_<frame>.bin` at those frames.
   - `BT_POKE=frame:addr:value:size,...`: write a value to RAM from that frame on (size 1, 2 or 4 bytes).
+  - `BT_POKE1=frame:addr:value:size,...`: the same, written only once on that frame.
   - `BT_WATCH=addr:size,...`: log those RAM values every frame to `work/watch.csv`.
 - `schedules/`: input schedules (`frame tokens`; `U D L R` stick, `A B C` buttons, `K` coin, `S` 1P start).
 

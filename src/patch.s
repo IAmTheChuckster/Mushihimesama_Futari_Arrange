@@ -203,5 +203,6 @@ P_warnstr:
         .include "modesel.s"
         .include "p2off.s"
         .include "banner.s"
+        .include "graze.s"
         .align 2
 blob_end:

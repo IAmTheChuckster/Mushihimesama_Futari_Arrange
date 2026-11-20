@@ -46,6 +46,8 @@ local ram_base = tonumber(os.getenv("BT_RAMBASE") or "0c000000", 16)
 local ram_len  = tonumber(os.getenv("BT_RAMLEN") or "800000", 16)
 local pokes = {}
 for fr, a, v, sz in (os.getenv("BT_POKE") or ""):gmatch("(%d+):(%x+):(%x+):?(%d*)") do pokes[#pokes+1] = {tonumber(fr), tonumber(a,16), tonumber(v,16), tonumber(sz) or 1} end
+-- BT_POKE1: same format, but written only once, on that frame
+for fr, a, v, sz in (os.getenv("BT_POKE1") or ""):gmatch("(%d+):(%x+):(%x+):?(%d*)") do pokes[#pokes+1] = {tonumber(fr), tonumber(a,16), tonumber(v,16), tonumber(sz) or 1, true} end
 local watch = {}
 for a, n in (os.getenv("BT_WATCH") or ""):gmatch("(%x+):(%d+)") do watch[#watch+1] = {tonumber(a,16), tonumber(n)} end
 local wfh = (#watch > 0) and io.open("work/watch.csv", "w") or nil
@@ -80,7 +82,7 @@ emu.register_frame_done(function()
     fh:write(space:read_range(ram_base, ram_base + ram_len - 1, 8)); fh:close()
   end
   for _, p in ipairs(pokes) do
-    if p[1] <= frame then
+    if (p[5] and p[1] == frame) or (not p[5] and p[1] <= frame) then
       if p[4] == 4 then space:write_u32(p[2], p[3]) elseif p[4] == 2 then space:write_u16(p[2], p[3]) else space:write_u8(p[2], p[3]) end
     end
   end

@@ -1,5 +1,6 @@
 # Mushihimesama Futari Arrange
 A gameplay patch for `Mushihime-Sama Futari Black Label (Japan, 2007/12/11 BLACK LABEL VER)`<br>
+**Current build: 53**<br>
 This repository holds only source, tools and notes. **No ROM data is included**; you patch your own legally owned dump.
 
 ## About
@@ -29,6 +30,7 @@ None known.
 - **x99999 multiplier and cash out (ARRANGE MODE only):** the gem multiplier (the x counter) now goes up to 99999 instead of 30000. While it is at the 99999 cap every gem and every bullet cancelled into a gem pays a flat 99999 points. **Cash out:** pressing the bomb button at x99999 cancels every bullet on the screen into big (gold) gems, each worth 99999 for the next 10 seconds, and the multiplier resets to 0. A bomb below the cap works as before. ORIGINAL ARCADE keeps the 30000 cap.
 - **God Mode only (ARRANGE MODE):** ARRANGE MODE always plays God Mode. The Mode Select screen steps ORIGINAL, MANIAC, GOD by itself and lands on God; your buttons are ignored there, so the mode cannot be chosen by hand.
 - **ARRANGE MODE banner:** the red "God Mode" banner under the score reads **アレンジモード** instead, in the same red with a dark brown shadow, from the stage intro on. The label is cut from your own Xbox 360 Mushihimesama package when you patch (see below). ORIGINAL ARCADE keeps its own banners.
+- **Grazing (ARRANGE MODE only):** every enemy bullet within 24 px of the centre of your ship counts as a graze, every frame it stays that close, also while you are invulnerable. Each graze is worth 100 points and adds 1 to the graze counter: gold digits just above the x counter on the left, left-justified like it. The counter only counts up, stops at 99999 and goes back to 0 after each stage (on the score tally) and on the title screen. It follows the x counter on the left: it shows, fades and moves up or down with it, and slides out to the left with it at the end of a stage.
 - **1P only (ARRANGE MODE):** 2P is disabled: 2P START and the 2P controls are ignored. ORIGINAL ARCADE still lets two players play.
 - **Boot screen:** the memory-check screen now reads FUTARI ARRANGE B<build> (for example B42) and 2026.11.20, centred.
 - **Warning screen:** the "for use in Japan only" notice is replaced by an unofficial-project disclaimer, HAVE FUN!!! and 2026/11/20 FUTARI ARRANGE.
@@ -39,7 +41,7 @@ You need:
 - your own **futariblj.zip** (MAME set, Black Label, 2007/12/11) with the original u4 (`futariblk_u4`, CRC `b9467b6d`), u2, u23 and u24;
 - your own **Xbox 360 Games-on-Demand package of Mushihimesama**, title ID **435A07E3** (a .zip, any file name, containing `5F9DF6331EAE85814989` and `5F9DF6331EAE85814989.data`). The アレンジモード banner is cut from it on your machine; it is required.
 
-Both patchers check the input and give identical files: `futariarr_u4` (CRC `0a577dde`), the complete romset `futariarr.zip` (futariblk_u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
+Both patchers check the input and give identical files: `futariarr_u4` (CRC `771f2bc1`), the complete romset `futariarr.zip` (futariblk_u2, u23, u24, futariarr_u4) and `Mushihimesama Futari Arrange.mra` for MiSTer.
 
 ### Web Patcher
 1. Open the [web patcher](https://iamthechuckster.github.io/Mushihimesama_Futari_Arrange/).
@@ -70,7 +72,7 @@ This patch was tested with MAME 0.289 and [CV1k core for the MiSTer FPGA by Raki
 It may even work on a PCB but do so on your own risk.
 
 ## Notes
-Findings about how the game works (controls, player data, title screen text) are in [`dev_notes/futariblj-mechanics.md`](dev_notes/futariblj-mechanics.md). Test tools for MAME are in [`tools/mame`](tools/mame). [`CLAUDE.md`](CLAUDE.md) has the setup and workflow for continuing this project or starting a new CV1000 patch.
+Findings about how the game works (controls, player data, title screen text) are in [`dev_notes/futariblj-mechanics.md`](dev_notes/futariblj-mechanics.md). Test tools for MAME are in [`tools/mame`](tools/mame) and [`tools/wsl`](tools/wsl) (build and check scripts). [`CLAUDE.md`](CLAUDE.md) has the setup and workflow for continuing this project or starting a new CV1000 patch.
 
 ## Credits
 
