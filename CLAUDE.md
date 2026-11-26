@@ -75,7 +75,7 @@ mister/       MiSTer .mra (owner-edited name/date)
 .claude/      god.md (360 GOD package extraction), launch.json (local server to test the web patcher)
 patch.py      stdlib-only Python patcher (needs --god)
 index.html    web patcher (GitHub Pages, runs in the browser, nothing uploaded)
-README.md     about, to do, bugs, patch notes, how to patch, credits, disclaimer
+README.md     about, patch notes, how to patch, credits, disclaimer (the owner keeps no To Do / Bugs sections)
 CLAUDE.md     this file
 ```
 
@@ -136,7 +136,7 @@ CLAUDE.md     this file
 4. `bash tools/wsl/update.sh`: updates `patch.py`, `index.html` (patch bytes, CRCs, embedded MRA, download
    table) and the `.mra` CRC, and checks `patch.py --god` gives exactly the tested u4.
 5. Update the docs, every build:
-   - `README.md`: "Current build" line, Patch Notes (plain English), CRC in "Patching the game", To Do / Bugs.
+   - `README.md`: "Current build" line, Patch Notes (plain English), CRC in "Patching the game".
    - `src/README.md`: the "Build N: patch code CRC ..., finished ... CRC ..." line and a note per new file/hook.
    - `dev_notes/futariblj-mechanics.md`: findings (VERIFIED or open) with the build number.
    - `CLAUDE.md` (this file): current build number at the top, new rules, tools, addresses, lessons.
